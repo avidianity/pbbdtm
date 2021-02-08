@@ -2,14 +2,21 @@
 
 namespace Controllers;
 
+use Exceptions\ForbiddenHTTPException;
 use Models\File;
 use Models\Request;
 
 class RequestController extends Controller
 {
+    /**
+     * @var \Models\User
+     */
+    protected $user;
+
     public function __construct()
     {
         auth();
+        $this->user = user();
     }
 
     public function index()
@@ -37,6 +44,7 @@ class RequestController extends Controller
 
     public function update()
     {
+        $this->admin();
         $id = input()->once('id');
 
         $request = Request::findOrFail($id);
@@ -61,6 +69,7 @@ class RequestController extends Controller
 
     public function destroy()
     {
+        $this->admin();
         $id = input()->once('id');
 
         $request = Request::findOrFail($id);
@@ -68,5 +77,12 @@ class RequestController extends Controller
         $request->delete();
 
         return response('', 204);
+    }
+
+    protected function admin()
+    {
+        if ($this->user->role !== 'Admin') {
+            throw new ForbiddenHTTPException();
+        }
     }
 }

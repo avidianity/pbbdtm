@@ -17,8 +17,17 @@ class Request extends Model
         'status',
     ];
 
+
     protected static function events()
     {
+        static::saving(function (self $request) {
+            $request->approved = $request->approved ? 1 : 0;
+        });
+
+        static::serializing(function (self $request) {
+            $request->approved = (bool)$request->approved;
+        });
+
         static::deleted(function (self $request) {
             if ($request->file !== null) {
                 $request->file->delete();

@@ -6,7 +6,11 @@ $configs = require_once __DIR__ . '/config.php';
 
 $_ENV['CONFIGS'] = $configs;
 
-importRecursive(['interfaces', 'exceptions', 'traits']);
+importRecursive(['interfaces']);
+
+require_once __DIR__ . '/exceptions/HTTPException.php';
+
+importRecursive(['exceptions', 'traits']);
 
 require_once __DIR__ . '/models/Model.php';
 require_once __DIR__ . '/controllers/Controller.php';

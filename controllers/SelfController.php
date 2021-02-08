@@ -4,6 +4,7 @@ namespace Controllers;
 
 use Libraries\Hash;
 use Models\File;
+use Models\Request;
 
 class SelfController extends Controller
 {
@@ -28,7 +29,11 @@ class SelfController extends Controller
 
     public function requests()
     {
-        return $this->user->requests;
+        return array_map(function (Request $request) {
+            $request->load(['documentType', 'file']);
+
+            return $request;
+        }, $this->user->requests);
     }
 
     public function update()

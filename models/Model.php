@@ -111,6 +111,18 @@ abstract class Model implements JSONable, Arrayable
     }
 
     /**
+     * Cast value if any cast exists
+     * 
+     * @param string $key
+     * @param string $value
+     * @param string $type
+     */
+    protected function cast($key, $value, $type)
+    {
+        //
+    }
+
+    /**
      * Mass-assign values into the the data
      * 
      * @param mixed|array $data
@@ -469,6 +481,7 @@ abstract class Model implements JSONable, Arrayable
      */
     public function jsonSerialize()
     {
+        $this->fireEvent('serializing');
         return $this->toJSON();
     }
 

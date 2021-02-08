@@ -56,6 +56,7 @@ class Application
             if ($result instanceof Response) {
                 $result->send();
             } else if ($result instanceof View) {
+                $this->setView($result);
                 $result->render($this);
             } else if (is_string($result) || $result instanceof Stringable) {
                 echo $result;
@@ -88,6 +89,10 @@ class Application
                     ->render($this);
             }
 
+            if (getHeader('Accept') === 'application/json') {
+                return response($exception, 500)->send();
+            }
+
             return view('errors.500', ['exception' => $exception])
                 ->setStatus(500)
                 ->render($this);
@@ -101,7 +106,6 @@ class Application
             header('Access-Control-Allow-Credentials: true');
             header('Access-Control-Max-Age: 86400');
         }
-
         if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 
             if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_METHOD']))

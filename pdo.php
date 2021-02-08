@@ -2,8 +2,11 @@
 
 use Libraries\Database;
 
+// Fetch environment
+$env = config('app.env');
+
 // Fetch configuration for database
-$config = config('database');
+$config = config('database.' . $env);
 
 // Create connection string
 $dsn = concatenate($config['driver'], ':', 'dbname=', $config['name'], ';host=', $config['host']);

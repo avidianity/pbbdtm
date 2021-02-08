@@ -18,16 +18,21 @@ class HTTPException extends Exception implements JSONable, Arrayable
     {
         parent::__construct($message, $this->status, $previous);
 
-        $data['stacktrace'] = config('app.debug') ? $this->getTrace() : [];
-        $data['message'] = $message;
-
         $this->data = $data;
         $this->setStatus($status);
     }
 
     public function toArray(): array
     {
-        return $this->data;
+        $data = [
+            'status' => $this->status,
+            'data' => $this->data,
+        ];
+        if (config('app.debug')) {
+            $data['message'] = $this->message;
+            $data['stacktrace'] = $this->getTrace();
+        }
+        return $data;
     }
 
     public function toJSON(): object

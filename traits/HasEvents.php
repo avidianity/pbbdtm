@@ -15,6 +15,7 @@ trait HasEvents
         'deleted' => [],
         'saving' => [],
         'saved' => [],
+        'serializing' => [],
     ];
 
     protected static function registerEvent($type, $callable)
@@ -71,6 +72,11 @@ trait HasEvents
     protected static function saved($callable)
     {
         static::registerEvent('saved', $callable);
+    }
+
+    protected static function serializing($callable)
+    {
+        static::registerEvent('serializing', $callable);
     }
 
     protected static function events()
