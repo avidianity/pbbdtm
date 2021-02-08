@@ -9,7 +9,16 @@ $env = config('app.env');
 $config = config('database.' . $env);
 
 // Create connection string
-$dsn = concatenate($config['driver'], ':', 'dbname=', $config['name'], ';host=', $config['host']);
+$dsn = concatenate(
+    $config['driver'],
+    ':',
+    'dbname=',
+    $config['name'],
+    ';host=',
+    $config['host'],
+    ';port=',
+    $config['port']
+);
 
 // Create instance
 $pdo = Database::getInstance($dsn, $config['username'], $config['password']);

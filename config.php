@@ -16,14 +16,16 @@ return [
             'host' => '127.0.0.1',
             'username' => 'root',
             'password' => '191799',
-            'name' => 'document'
+            'name' => 'document',
+            'port' => '3306',
         ],
         'prod' => [
-            'driver' => 'mysql',
-            'host' => '127.0.0.1',
-            'username' => 'root',
-            'password' => '191799',
-            'name' => 'document'
+            'driver' => 'postgres',
+            'host' => 'john.db.elephantsql.com',
+            'username' => 'xjqbjesi',
+            'password' => 'NQbPguK8i1e0b8caQVhvuV-3UhomNyxa',
+            'name' => 'xjqbjesi',
+            'port' => '5432',
         ],
     ],
     'view' => [
