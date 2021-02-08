@@ -1,0 +1,14 @@
+{
+	"name": "pbbdtm/backend",
+	"type": "project",
+	"license": "MIT",
+	"authors": [
+		{
+			"name": "John Michael Manlupig",
+			"email": "manlupigjohnmichael@gmail.com"
+		}
+	],
+	"require": {
+		"php": "^7.4"
+	}
+}
