@@ -49,7 +49,7 @@ function deleteMany($models, $class)
  */
 function redirect($path)
 {
-    $url = 'http://' . $_SERVER['HTTP_HOST'] . $path;
+    $url = config('app.url') . $path;
     header("Location: {$url}");
     exit;
 }
