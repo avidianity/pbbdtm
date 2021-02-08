@@ -27,6 +27,8 @@ class AuthController extends Controller
 
         $user = User::from($statement->fetchObject());
 
+        $user->load(['profilePicture']);
+
         if (!Hash::check($data['password'], $user->password)) {
             return response(['message' => 'Wrong password.'], 403);
         }

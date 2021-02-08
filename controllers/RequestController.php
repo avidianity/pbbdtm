@@ -81,7 +81,7 @@ class RequestController extends Controller
 
     protected function admin()
     {
-        if ($this->user->role !== 'Admin') {
+        if ($this->user->role === 'Student') {
             throw new ForbiddenHTTPException();
         }
     }

@@ -293,10 +293,10 @@ abstract class Model implements JSONable, Arrayable
      */
     public function update($data = [])
     {
+        $this->fill($data);
         $this
             ->fireEvent('updating')
             ->fireEvent('saving');
-        $this->fill($data);
 
         $data = $this->data;
         unset($data['id']);
