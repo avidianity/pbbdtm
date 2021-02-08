@@ -6,9 +6,8 @@ use Traits\Singleton;
 use Closure;
 use Controllers\Controller;
 use Exception;
-use Exceptions\NotFoundException as ExceptionsNotFoundException;
+use Exceptions\NotFoundException;
 use InvalidArgumentException;
-use NotFoundException;
 
 /**
  * Used to bind url routes with their proper handlers.
@@ -19,6 +18,7 @@ class Router
 
     protected static $routes = [];
     protected $prefix = null;
+    protected $fallback = null;
 
     /**
      * Registers a route
@@ -131,7 +131,6 @@ class Router
             if ($this->urlMatches($route['uri'], $url) && $requestMethod === $route['method']) {
                 if ($route['handle'] instanceof Closure) {
                     return $route['handle']();
-                    break;
                 }
 
                 if (is_string($route['handle']) && is_subclass_of($route['handle'], Controller::class)) {
@@ -154,8 +153,6 @@ class Router
                     }
                     $method = $handle[1];
                     return $controller->{$method}();
-                    return;
-                    break;
                 }
             }
         }
@@ -164,7 +161,39 @@ class Router
             return response('', 200);
         }
 
-        throw new ExceptionsNotFoundException();
+        if ($this->fallback !== null) {
+            $fallback = $this->fallback;
+            if ($fallback instanceof Closure) {
+                return $fallback();
+            }
+            if (is_subclass_of($fallback, Controller::class)) {
+                $controller = new $fallback();
+                if (is_callable($controller)) {
+                    return $controller();
+                }
+            }
+            if (is_array($fallback)) {
+                $handle = $fallback;
+                if (!class_exists($handle[0])) {
+                    throw new InvalidArgumentException('Handle must be a class of controller if array is supplied or the controller does not exist.');
+                }
+                $class = $handle[0];
+                $controller = new $class();
+                if (!method_exists($controller, $handle[1])) {
+                    throw new Exception($handle[1] . ' does not exist on ' . $handle[0]);
+                }
+                $method = $handle[1];
+                return $controller->{$method}();
+            }
+        }
+
+        throw new NotFoundException();
+    }
+
+    public function fallback($fallback)
+    {
+        $this->fallback = $fallback;
+        return $this;
     }
 
     public function apiResource($path, $class)

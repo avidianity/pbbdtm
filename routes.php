@@ -33,7 +33,7 @@ $router->group('/api', function (Router $router) {
     $router->get('/file', [FileController::class, 'stream']);
 });
 
-$router->get('/', function () {
+$router->fallback(function () {
     return view('home');
 });
 
