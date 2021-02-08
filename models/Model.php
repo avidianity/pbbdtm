@@ -170,8 +170,26 @@ abstract class Model implements JSONable, Arrayable
     {
         $object = new stdClass();
 
-        foreach ($this->toArray() as $property => $value) {
+        $data = $this->toArray();
+
+        $dates = [];
+
+        if (in_array('created_at', array_keys($data))) {
+            $dates['created_at'] = $data['created_at'];
+            unset($data['created_at']);
+        }
+
+        if (in_array('updated_at', array_keys($data))) {
+            $dates['updated_at'] = $data['updated_at'];
+            unset($data['updated_at']);
+        }
+
+        foreach ($data as $property => $value) {
             $object->{$property} = $value;
+        }
+
+        foreach ($dates as $key => $value) {
+            $object->{$key} = $value;
         }
 
         return $object;

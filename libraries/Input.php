@@ -118,7 +118,15 @@ class Input implements JSONable, Arrayable
 
     public function __get($name)
     {
-        return $this->data[$name];
+        return $this->get($name);
+    }
+
+    public function get($key, $default = null)
+    {
+        if (in_array($key, array_keys($this->data))) {
+            return $this->data[$key];
+        }
+        return $default;
     }
 
     public function toArray(): array

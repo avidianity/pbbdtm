@@ -62,7 +62,11 @@ function redirect($path)
  */
 function asset($path)
 {
-    return 'http://' . $_SERVER['HTTP_HOST'] . '/' . $path;
+    $separator = '';
+    if ($path[0] !== '/') {
+        $separator = '/';
+    }
+    return 'http://' . $_SERVER['HTTP_HOST'] . $separator . $path;
 }
 
 /**

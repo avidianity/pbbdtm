@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8" />
-    <link rel="icon" href="<?= asset('/favicon.ico') ?>" />
+    <link rel="icon" href="<?= asset('/assets/favicon-196.png') ?>" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <meta name="theme-color" content="#000000" />
     <meta name="description" content="Document Tracking and Monitoring System" />
