@@ -42,11 +42,11 @@ class AuthController extends Controller
 
     public function register()
     {
-        $data = input()->only(['email', 'password', 'name']);
+        $data = input()->only(['email', 'phone', 'password', 'name']);
 
         $data['password'] = Hash::make($data['password']);
 
-        $data['role'] = 'Student';
+        $data['role'] = 'Applicant';
 
         $user = User::create($data);
 

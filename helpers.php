@@ -49,7 +49,11 @@ function deleteMany($models, $class)
  */
 function redirect($path)
 {
-    $url = config('app.url') . $path;
+    $separator = '';
+    if ($path[0] !== '/') {
+        $separator = '/';
+    }
+    $url = config('app.url') . $separator . $path;
     header("Location: {$url}");
     exit;
 }
@@ -66,7 +70,7 @@ function asset($path)
     if ($path[0] !== '/') {
         $separator = '/';
     }
-    return 'http://' . $_SERVER['HTTP_HOST'] . $separator . $path;
+    return config('app.url') . $separator . $path;
 }
 
 /**

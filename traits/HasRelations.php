@@ -8,6 +8,8 @@ use LogicException;
 use Relations\BelongsTo;
 use Relations\HasMany;
 use Relations\HasOne;
+use Relations\MorphMany;
+use Relations\MorphTo;
 
 trait HasRelations
 {
@@ -26,6 +28,16 @@ trait HasRelations
     public function belongsTo($class, $foreignKey = null, $ownerKey = 'id')
     {
         return new BelongsTo($class, $foreignKey, $ownerKey, $this);
+    }
+
+    public function morphTo($morphable)
+    {
+        return new MorphTo($morphable, $this);
+    }
+
+    public function morphMany($class, $morphable)
+    {
+        return new MorphMany($class, $morphable, $this);
     }
 
     /**

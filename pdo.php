@@ -23,13 +23,16 @@ $dsn = concatenate(
 // Create instance
 $pdo = Database::getInstance($dsn, $config['username'], $config['password']);
 
+// Set object as default fetch mode
+$pdo->setAttribute(Database::ATTR_DEFAULT_FETCH_MODE, Database::FETCH_OBJ);
+
 // Throw exceptions on any SQL error
-$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+$pdo->setAttribute(Database::ATTR_ERRMODE, Database::ERRMODE_EXCEPTION);
 
 // Prevent emulating prepared statements in the database
-$pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
+$pdo->setAttribute(Database::ATTR_EMULATE_PREPARES, false);
 
 // prevent numeric columns from being cast into a string
-$pdo->setAttribute(PDO::ATTR_STRINGIFY_FETCHES, false);
+$pdo->setAttribute(Database::ATTR_STRINGIFY_FETCHES, false);
 
 return $pdo;

@@ -5,37 +5,27 @@ namespace Relations;
 use Interfaces\HasRelationships;
 use LogicException;
 use Models\Model;
-use PDO;
 
-class HasMany implements HasRelationships
+class MorphMany implements HasRelationships
 {
-    protected $child;
-    protected $foreignKey;
-    protected $ownerKey;
+    protected $class;
+    protected $morphable;
 
     /**
      * @var Model
      */
     protected $instance;
 
-    public function __construct($child, $foreignKey = null, $ownerKey = 'id', Model &$instance)
+    public function __construct($class, $morphable, Model &$instance)
     {
+        $this->class = $class;
+        $this->morphable = $morphable;
         $this->instance = $instance;
-        $this->child = $child;
-        $this->ownerKey = $ownerKey;
-        $this->foreignKey = $foreignKey !== null
-            ? $foreignKey
-            : $this->qualifyForeignKey();
-    }
-
-    protected function qualifyForeignKey()
-    {
-        return $this->instance->getTable() . '_id';
     }
 
     protected function getChildTable()
     {
-        $class = $this->child;
+        $class = $this->class;
         return (new $class())->getTable();
     }
 
@@ -43,17 +33,25 @@ class HasMany implements HasRelationships
     {
         $pdo = Model::getConnection();
 
+        $type = $this->morphable . '_type';
+        $key = $this->morphable . '_id';
+
         $query  = 'SELECT * FROM ' . $this->getChildTable() . ' ';
-        $query .= 'WHERE ' . $this->foreignKey . ' = :' . $this->foreignKey . ';';
+        $query .= "WHERE {$type} = :{$type} ";
+        $query .= "AND {$key} = :{$key};";
 
         $statement = $pdo->prepare($query);
-        $statement->execute([':' . $this->foreignKey => $this->instance->{$this->ownerKey}]);
+
+        $statement->execute([
+            ":{$type}" => get_class($this->instance),
+            ":{$key}" => $this->instance->id,
+        ]);
 
         if ($statement->rowCount() === 0) {
             return [];
         }
 
-        $class = $this->child;
+        $class = $this->class;
 
         return array_map(function ($row) use ($class) {
             return $class::from($row);
@@ -62,16 +60,16 @@ class HasMany implements HasRelationships
 
     public function create($data)
     {
-        $child = $this->child;
-        $data[$this->foreignKey] = $this->instance->{$this->ownerKey};
-        return $child::create($data);
+        $data[$this->morphable . '_type'] = get_class($this->instance);
+        $data[$this->morphable . '_id'] = $this->instance->id;
+
+        $class = $this->class;
+
+        return $class::create($data);
     }
 
     public function update($data)
     {
-        if (!$this->has()) {
-            throw new LogicException('Parent does not have a child to update.');
-        }
         return array_map(function ($row) use ($data) {
             return $row->update($data);
         }, $this->get());
@@ -79,9 +77,6 @@ class HasMany implements HasRelationships
 
     public function delete()
     {
-        if (!$this->has()) {
-            throw new LogicException('Parent does not have a child to delete.');
-        }
         return array_map(function ($row) {
             return $row->delete();
         }, $this->get());

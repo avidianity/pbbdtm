@@ -26,4 +26,7 @@ return [
     'storage' => [
         'path' => __DIR__ . '/storage/app/',
     ],
+    'logs' => [
+        'path' => __DIR__ . '/storage/logs/',
+    ]
 ];

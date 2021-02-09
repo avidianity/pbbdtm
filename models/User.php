@@ -12,7 +12,7 @@ class User extends Model
 {
     use HasTokens;
 
-    protected $fillable = ['name', 'email', 'password', 'role', 'profile_picture_id'];
+    protected $fillable = ['name', 'email', 'phone', 'password', 'role', 'profile_picture_id'];
     protected $hidden = ['password'];
 
     protected static function events()

@@ -5,7 +5,6 @@ namespace Relations;
 use Interfaces\HasRelationships;
 use LogicException;
 use Models\Model;
-use PDO;
 
 class HasOne implements HasRelationships
 {

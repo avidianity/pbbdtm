@@ -35,6 +35,11 @@ class Request extends Model
         });
     }
 
+    public function logs()
+    {
+        return $this->morphMany(Log::class, 'loggable');
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class);
