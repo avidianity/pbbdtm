@@ -1,14 +1,15 @@
 <?php
 
 use Controllers\AuthController;
+use Controllers\CMSController;
 use Controllers\DocumentTypeController;
 use Controllers\FileController;
+use Controllers\LogController;
 use Controllers\RequestController;
 use Controllers\SelfController;
+use Controllers\StatisticsController;
 use Controllers\UserController;
 use Libraries\Router;
-use Libraries\Str;
-use Models\User;
 
 $router = Router::getInstance();
 
@@ -22,6 +23,7 @@ $router->group('/api', function (Router $router) {
     $router->apiResource('/requests', RequestController::class);
     $router->apiResource('/document-types', DocumentTypeController::class);
     $router->apiResource('/users', UserController::class);
+    $router->apiResource('/cms', CMSController::class);
 
     $router->group('/self', function (Router $router) {
         $router->get('/', [SelfController::class, 'self']);
@@ -31,6 +33,8 @@ $router->group('/api', function (Router $router) {
     });
 
     $router->get('/file', [FileController::class, 'stream']);
+    $router->get('/logs', LogController::class);
+    $router->get('/statistics', StatisticsController::class);
 });
 
 $router->fallback(function () {

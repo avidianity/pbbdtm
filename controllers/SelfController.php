@@ -38,7 +38,7 @@ class SelfController extends Controller
 
     public function update()
     {
-        $data = input()->only(['name', 'email', 'password']);
+        $data = input()->only(['name', 'email', 'password', 'phone']);
 
         if (in_array('password', array_keys($data))) {
             $data['password'] = Hash::make($data['password']);

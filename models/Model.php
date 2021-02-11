@@ -100,6 +100,9 @@ abstract class Model implements JSONable, Arrayable
         if (in_array($key, array_keys($this->data))) {
             return $this->data[$key];
         }
+        if (in_array($key, array_keys($this->relationships))) {
+            return $this->relationships[$key];
+        }
         if (method_exists($this, $key)) {
             $result = $this->{$key}();
             if ($result instanceof HasRelationships) {
@@ -286,6 +289,26 @@ abstract class Model implements JSONable, Arrayable
     }
 
     /**
+     * Count rows from the database
+     * 
+     * @return int
+     */
+    public static function count()
+    {
+        $pdo = static::getConnection();
+
+        $query  = 'SELECT COUNT(*) as count FROM ' . (new static())->getTable() . ';';
+
+        $statement = $pdo->prepare($query);
+
+        $statement->execute();
+
+        $row = $statement->fetchObject();
+
+        return $row->count;
+    }
+
+    /**
      * Update current entry to the database
      * 
      * @param mixed $data
@@ -299,6 +322,7 @@ abstract class Model implements JSONable, Arrayable
             ->fireEvent('saving');
 
         $data = $this->data;
+        $id = $data['id'];
         unset($data['id']);
         unset($data['created_at']);
         unset($data['updated_at']);
@@ -320,7 +344,7 @@ abstract class Model implements JSONable, Arrayable
         $statement = static::$pdo->prepare($query);
 
         $inputs = [
-            ':id' => $this->id,
+            ':id' => $id,
         ];
 
         foreach ($data as $key => $value) {

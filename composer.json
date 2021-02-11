@@ -10,5 +10,19 @@
 	],
 	"require": {
 		"php": "^7.4"
+	},
+	"autoload": {
+		"psr-4": {
+			"Controllers\\": "controllers/",
+			"Exceptions\\": "exceptions/",
+			"Interfaces\\": "interfaces/",
+			"Libraries\\": "libraries/",
+			"Models\\": "models/",
+			"Relations\\": "relations/",
+			"Traits\\": "traits/"
+		},
+		"files": [
+			"./helpers.php"
+		]
 	}
 }

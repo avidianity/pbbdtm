@@ -7,6 +7,7 @@ use Exceptions\HTTPException;
 use Interfaces\JSONable;
 use Interfaces\Stringable;
 use Models\Model;
+use PDOException;
 
 class Application
 {
@@ -90,6 +91,11 @@ class Application
             }
 
             if (getHeader('Accept') === 'application/json') {
+                if ($exception instanceof PDOException) {
+                    $data = (array)json_decode(json_encode($exception));
+                    $data['stacktrace'] = $exception->getTrace();
+                    return response($data, 500)->send();
+                }
                 return response($exception, 500)->send();
             }
 

@@ -32,14 +32,22 @@ class RequestController extends Controller
 
         $request = Request::findOrFail($id);
 
-        $request->load(['user', 'documentType', 'file']);
+        $request->load(['user', 'documentType', 'file', 'logs']);
+
+        foreach ($request->logs as $log) {
+            $log->load(['user']);
+        }
 
         return $request;
     }
 
     public function store()
     {
-        return Request::create(input()->all());
+        $request = Request::create(input()->all());
+
+        $request->logs()->create(['action' => 'Applicant has issued a request.', 'user_id' => user()->id]);
+
+        return $request;
     }
 
     public function update()
@@ -63,6 +71,8 @@ class RequestController extends Controller
         }
 
         $request->update(input()->all());
+
+        $request->logs()->create(['action' => user()->role . ' has updated the request.', 'user_id' => user()->id]);
 
         return $request;
     }

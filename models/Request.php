@@ -6,6 +6,7 @@ namespace Models;
  * @property User $user
  * @property DocumentType $documentType
  * @property File|null $file
+ * @property Log[] $logs
  */
 class Request extends Model
 {
@@ -26,6 +27,10 @@ class Request extends Model
 
         static::serializing(function (self $request) {
             $request->approved = (bool)$request->approved;
+        });
+
+        static::deleting(function (self $request) {
+            deleteMany($request->logs, Log::class);
         });
 
         static::deleted(function (self $request) {
