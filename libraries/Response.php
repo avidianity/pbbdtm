@@ -3,6 +3,7 @@
 namespace Libraries;
 
 use Interfaces\Stringable;
+use Models\Model;
 
 class Response
 {
@@ -48,6 +49,11 @@ class Response
             if (!in_array('Content-Type', array_keys($this->headers))) {
                 setHeader('Content-Type', 'application/json');
             }
+            echo json_encode($result);
+            exit;
+        }
+
+        if ($result instanceof Model || is_array($result)) {
             echo json_encode($result);
             exit;
         }

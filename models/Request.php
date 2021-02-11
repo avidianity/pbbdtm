@@ -16,6 +16,7 @@ class Request extends Model
         'approved',
         'file_id',
         'status',
+        'expired',
     ];
 
 
@@ -23,10 +24,12 @@ class Request extends Model
     {
         static::saving(function (self $request) {
             $request->approved = $request->approved ? 1 : 0;
+            $request->expired = $request->expired ? 1 : 0;
         });
 
         static::serializing(function (self $request) {
             $request->approved = (bool)$request->approved;
+            $request->expired = (bool)$request->expired;
         });
 
         static::deleting(function (self $request) {

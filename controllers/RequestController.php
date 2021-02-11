@@ -2,6 +2,7 @@
 
 namespace Controllers;
 
+use DateTime;
 use Exceptions\ForbiddenHTTPException;
 use Models\File;
 use Models\Request;
@@ -17,6 +18,24 @@ class RequestController extends Controller
     {
         auth();
         $this->user = user();
+        /**
+         * @var Request[]
+         */
+        $approved = array_filter(Request::getAll(), function (Request $request) {
+            return $request->approved && !$request->expired;
+        });
+        foreach ($approved as $request) {
+            $date = DateTime::createFromFormat('Y-m-d H:i:s', $request->updated_at);
+
+            $now = time();
+
+            $days = round(($now - $date->getTimestamp()) / (60 * 60 * 24));
+
+            if ($days >= 15) {
+                $request->update(['expired' => true]);
+                $request->logs()->create(['action' => 'Request has expired.', 'user_id' => $request->user_id]);
+            }
+        }
     }
 
     public function index()
@@ -73,6 +92,8 @@ class RequestController extends Controller
         $request->update(input()->all());
 
         $request->logs()->create(['action' => user()->role . ' has updated the request.', 'user_id' => user()->id]);
+
+        $request->load(['file']);
 
         return $request;
     }

@@ -273,6 +273,9 @@ function toString($data)
 function getBearer()
 {
     $token = getHeader('Authorization');
+    if (!$token && input()->has('access_token')) {
+        $token = "Bearer " . input()->get('access_token');
+    }
     if ($token === null) {
         return null;
     }

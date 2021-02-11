@@ -13,9 +13,15 @@ class FileController extends Controller
 
         $file = File::findOrFail($id);
 
-        return response(Storage::get($file->path), 200, [
+        $headers = [
             'Content-Type' => $file->type,
             'Content-Size' => $file->size,
-        ]);
+        ];
+
+        if (input()->has('download') && input()->download === 'true') {
+            $headers['Content-Disposition'] = "attachment; filename=\"{$file->name}\"";
+        }
+
+        return response(Storage::get($file->path), 200, $headers);
     }
 }
