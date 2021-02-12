@@ -91,7 +91,7 @@ class Application
             }
 
             if (getHeader('Accept') === 'application/json') {
-                if ($exception instanceof PDOException) {
+                if ($exception instanceof Exception) {
                     $data = (array)json_decode(json_encode($exception));
                     $data['stacktrace'] = $exception->getTrace();
                     return response($data, 500)->send();

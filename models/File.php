@@ -7,6 +7,9 @@ use InvalidArgumentException;
 use Libraries\Storage;
 use Libraries\Str;
 
+/**
+ * @property Downloadable|null $downloadable
+ */
 class File extends Model
 {
     protected $fillable = [
@@ -23,6 +26,11 @@ class File extends Model
         static::deleted(function (self $file) {
             Storage::delete($file->path);
         });
+    }
+
+    public function downloadable()
+    {
+        return $this->hasOne(Downloadable::class);
     }
 
     public function jsonSerialize()
@@ -49,7 +57,7 @@ class File extends Model
         if ($binary === false) {
             if (base64_encode(base64_decode($url, true)) !== $url) {
                 throw new InvalidArgumentException(
-                    'File must be either a string url, base64 encoded file or an instance of Illuminate\Http\UploadedFile'
+                    'File must be either a string url or a base64 encoded file.'
                 );
             }
             $binary = base64_decode($url);

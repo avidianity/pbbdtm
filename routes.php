@@ -3,6 +3,7 @@
 use Controllers\AuthController;
 use Controllers\CMSController;
 use Controllers\DocumentTypeController;
+use Controllers\DownloadableController;
 use Controllers\FileController;
 use Controllers\LogController;
 use Controllers\RequestController;
@@ -24,11 +25,14 @@ $router->group('/api', function (Router $router) {
     $router->apiResource('/document-types', DocumentTypeController::class);
     $router->apiResource('/users', UserController::class);
     $router->apiResource('/cms', CMSController::class);
+    $router->apiResource('/downloadables', DownloadableController::class);
 
     $router->group('/self', function (Router $router) {
         $router->get('/', [SelfController::class, 'self']);
         $router->put('/', [SelfController::class, 'update']);
+        $router->patch('/', [SelfController::class, 'update']);
         $router->put('/profile', [SelfController::class, 'profile']);
+        $router->patch('/profile', [SelfController::class, 'profile']);
         $router->get('/requests', [SelfController::class, 'requests']);
     });
 
