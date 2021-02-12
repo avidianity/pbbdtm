@@ -1,4 +1,3 @@
-
 CREATE TABLE IF NOT EXISTS `cms` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `key` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
@@ -45,6 +44,7 @@ CREATE TABLE IF NOT EXISTS `request` (
   `user_id` bigint unsigned NOT NULL,
   `document_type_id` bigint unsigned NOT NULL,
   `approved` tinyint NOT NULL DEFAULT '0',
+  `expired` tinyint NOT NULL DEFAULT '0',
   `file_id` bigint unsigned DEFAULT NULL,
   `status` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT 'Received',
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
