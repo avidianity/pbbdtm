@@ -1,12 +1,15 @@
 <?php
 
+use Models\Model;
+use Symfony\Component\Dotenv\Dotenv;
+
 require_once __DIR__ . '/vendor/autoload.php';
 
-use Models\Model;
+$dotenv = new Dotenv();
 
-$configs = require_once __DIR__ . '/config.php';
+$dotenv->load(__DIR__ . '/.env');
 
-$_ENV['CONFIGS'] = $configs;
+$_ENV['CONFIGS'] = require_once __DIR__ . '/config.php';
 
 // Create database connection
 $pdo = require_once __DIR__ . '/pdo.php';

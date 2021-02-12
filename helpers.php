@@ -23,6 +23,22 @@ function view($path, $data = [])
 }
 
 /**
+ * Get an environment value
+ * 
+ * @param string $key
+ * @param mixed|null $default
+ * @return mixed|null
+ */
+function env($key, $default = null)
+{
+    if (!in_array($key, array_keys($_ENV))) {
+        return $default;
+    }
+    return $_ENV[$key];
+}
+
+
+/**
  * Delete a collection of models
  * 
  * @param \Models\Model[] $models

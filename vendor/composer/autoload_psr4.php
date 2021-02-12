@@ -7,6 +7,7 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'Traits\\' => array($baseDir . '/traits'),
+    'Symfony\\Component\\Dotenv\\' => array($vendorDir . '/symfony/dotenv'),
     'Relations\\' => array($baseDir . '/relations'),
     'Models\\' => array($baseDir . '/models'),
     'Libraries\\' => array($baseDir . '/libraries'),

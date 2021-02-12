@@ -7,6 +7,7 @@ namespace Composer\Autoload;
 class ComposerStaticInitfcf335e7aae19d11ad54d6627808029d
 {
     public static $files = array (
+        '6e3fae29631ef280660b3cdad06f25a8' => __DIR__ . '/..' . '/symfony/deprecation-contracts/function.php',
         'cbd205ac73a27d1b00546313efe8c33f' => __DIR__ . '/../..' . '/helpers.php',
     );
 
@@ -14,6 +15,10 @@ class ComposerStaticInitfcf335e7aae19d11ad54d6627808029d
         'T' => 
         array (
             'Traits\\' => 7,
+        ),
+        'S' => 
+        array (
+            'Symfony\\Component\\Dotenv\\' => 25,
         ),
         'R' => 
         array (
@@ -45,6 +50,10 @@ class ComposerStaticInitfcf335e7aae19d11ad54d6627808029d
         'Traits\\' => 
         array (
             0 => __DIR__ . '/../..' . '/traits',
+        ),
+        'Symfony\\Component\\Dotenv\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/dotenv',
         ),
         'Relations\\' => 
         array (
