@@ -1,5 +1,6 @@
 <?php
 
+use Models\CMS;
 use Models\Model;
 
 require_once __DIR__ . '/bootstrap.php';
@@ -44,5 +45,26 @@ foreach ($queries as $index => $query) {
 }
 
 echo "\nTables migrated successfully.\n";
+
+echo "\nImporting default CMS values\n";
+
+$cms = json_decode(file_get_contents(__DIR__ . '/cms.json'));
+
+$arrayed = [];
+
+foreach ($cms as $key => $value) {
+    $arrayed[] = [
+        'key' => $key,
+        'value' => $value,
+    ];
+}
+
+$total = count($arrayed);
+
+foreach ($arrayed as $index => $cms) {
+    $i = $index + 1;
+    echo "\nImporting {$i}/{$total}: Key: {$cms['key']} Value: {$cms['value']}\n";
+    CMS::create(['key' => $cms['key'], 'value' => $cms['value']]);
+}
 
 echo "\nDone\n";

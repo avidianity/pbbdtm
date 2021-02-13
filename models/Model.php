@@ -246,6 +246,30 @@ abstract class Model implements JSONable, Arrayable
     }
 
     /**
+     * Attaches the database name into the keys
+     * 
+     * @param string[] $keys
+     * @return string[]
+     */
+    protected static function justifyKeys($keys)
+    {
+        return array_map(function ($key) {
+            return static::justifyKey($key);
+        }, $keys);
+    }
+
+    /**
+     * Attaches the database name into the key
+     * 
+     * @param string $key
+     * @return string
+     */
+    protected static function justifyKey($key)
+    {
+        return (new static())->getTable() . '.' . $key;
+    }
+
+    /**
      * Create a new entry in the database
      * 
      * @param mixed $data
@@ -263,12 +287,12 @@ abstract class Model implements JSONable, Arrayable
         $table = $instance->getTable();
 
         $query  = 'INSERT INTO ' . $table . ' (';
-        $query .= implode(', ', array_keys($data)) . ') VALUES (';
+        $query .= implode(', ', static::justifyKeys(array_keys($data))) . ') VALUES (';
         $query .= implode(', ', array_map(function ($key) {
             return ':' . $key;
         }, array_keys($data))) . ');';
 
-        $statement = static::$pdo->prepare($query);
+        $statement = static::$pdo->prepare($query, [], $data);
 
         $inputs = [];
 
@@ -309,6 +333,17 @@ abstract class Model implements JSONable, Arrayable
     }
 
     /**
+     * Get current database name
+     * 
+     * @return string
+     */
+    protected static function getDatabaseName()
+    {
+        $env = config('app.env');
+        return config("database.$env.name");
+    }
+
+    /**
      * Update current entry to the database
      * 
      * @param mixed $data
@@ -329,19 +364,21 @@ abstract class Model implements JSONable, Arrayable
 
         $table = $this->getTable();
 
+        $dbname = static::getDatabaseName();
+
         $query  = 'UPDATE ' . $table . ' SET ';
 
         $params = [];
 
         foreach (array_keys($data) as $key) {
-            $params[] = $key . ' = :' . $key;
+            $params[] = static::justifyKey($key) . ' = :' . $key;
         }
 
         $query .= implode(', ', $params) . ' ';
 
-        $query .= 'WHERE id = :id;';
+        $query .= 'WHERE ' . static::justifyKey('id') . ' = :id;';
 
-        $statement = static::$pdo->prepare($query);
+        $statement = static::$pdo->prepare($query, [], $this->data);
 
         $inputs = [
             ':id' => $id,
@@ -387,7 +424,7 @@ abstract class Model implements JSONable, Arrayable
     {
         $this->fireEvent('deleting');
 
-        $statement = static::$pdo->prepare('DELETE FROM ' . $this->getTable() . ' WHERE id = :id;');
+        $statement = static::$pdo->prepare('DELETE FROM ' . $this->getTable() . ' WHERE ' . static::justifyKey('id') . ' = :id;', [], $this);
 
         $statement->execute([':id' => $this->id]);
 
@@ -420,10 +457,10 @@ abstract class Model implements JSONable, Arrayable
             $instance->fireEvent('deleting');
         }
 
-        $query = 'DELETE FROM ' . (new static())->getTable() . ' WHERE id IN(' . implode(', ', array_map(function () {
+        $query = 'DELETE FROM ' . (new static())->getTable() . ' WHERE ' . static::justifyKey('id') . ' IN(' . implode(', ', array_map(function () {
             return '?';
         }, $ids)) . ');';
-        $statement = static::$pdo->prepare($query);
+        $statement = static::$pdo->prepare($query, [], $ids);
 
         $statement->execute($ids);
 
@@ -465,11 +502,11 @@ abstract class Model implements JSONable, Arrayable
         }
 
         $query  = 'SELECT * FROM ' . (new static())->getTable() . ' ';
-        $query .= 'WHERE id IN (' . implode(', ', array_map(function () {
+        $query .= 'WHERE ' . static::justifyKey('id') . ' IN (' . implode(', ', array_map(function () {
             return '?';
         }, $ids)) . ');';
 
-        $statement = static::$pdo->prepare($query);
+        $statement = static::$pdo->prepare($query, [], $ids);
 
         $statement->execute($ids);
 
