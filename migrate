@@ -1,7 +1,9 @@
 <?php
 
+use Libraries\Hash;
 use Models\CMS;
 use Models\Model;
+use Models\User;
 
 require_once __DIR__ . '/bootstrap.php';
 
@@ -66,5 +68,20 @@ foreach ($arrayed as $index => $cms) {
     echo "\nImporting {$i}/{$total}: Key: {$cms['key']} Value: {$cms['value']}\n";
     CMS::create(['key' => $cms['key'], 'value' => $cms['value']]);
 }
+
+echo "\nCreating Administrator\n";
+
+User::create([
+    'name' => 'John Doe',
+    'email' => 'admin@admin.com',
+    'phone' => '639123456789',
+    'password' => Hash::make('admin'),
+    'role' => 'Admin',
+]);
+
+echo "\nAdministrator Credentials:\n";
+
+echo "\nEmail: admin@admin.com\n";
+echo "\nPassword: admin\n";
 
 echo "\nDone\n";
