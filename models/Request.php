@@ -2,6 +2,8 @@
 
 namespace Models;
 
+use Libraries\Str;
+
 /**
  * @property User $user
  * @property DocumentType $documentType
@@ -22,6 +24,10 @@ class Request extends Model
 
     protected static function events()
     {
+        static::creating(function (self $request) {
+            $request->request_id = Str::random(5) . '-' . Str::random(5) . '-' . date('Y');
+        });
+
         static::saving(function (self $request) {
             $request->approved = $request->approved ? 1 : 0;
             $request->expired = $request->expired ? 1 : 0;

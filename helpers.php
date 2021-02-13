@@ -4,6 +4,7 @@ use Exceptions\UnauthorizedHTTPException;
 use Interfaces\Arrayable;
 use Interfaces\JSONable;
 use Libraries\Input;
+use Libraries\Mailer;
 use Libraries\Response;
 use Libraries\Str;
 use Libraries\View;
@@ -20,6 +21,16 @@ function view($path, $data = [])
     return View::getInstance($path, $data)
         ->setPath($path)
         ->setData($data);
+}
+
+/**
+ * Get the mailer instance
+ * 
+ * @return \Libraries\Mailer
+ */
+function mailer()
+{
+    return Mailer::getInstance(...func_get_args());
 }
 
 /**

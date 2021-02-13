@@ -62,9 +62,17 @@ class RequestController extends Controller
 
     public function store()
     {
-        $request = Request::create(input()->all());
+        $request = Request::create(input()->except(['user_id']) + ['user_id' => user()->id]);
 
         $request->logs()->create(['action' => 'Applicant has issued a request.', 'user_id' => user()->id]);
+
+        $body  = 'You have submitted a new request.<br />';
+        $body .= 'Your Request ID is: ' . $request->request_id;
+
+        mailer()->setSubject('Request Creation')
+            ->setTo(user()->email)
+            ->setBody($body)
+            ->send();
 
         return $request;
     }

@@ -7,11 +7,18 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'Traits\\' => array($baseDir . '/traits'),
+    'Symfony\\Polyfill\\Php72\\' => array($vendorDir . '/symfony/polyfill-php72'),
+    'Symfony\\Polyfill\\Mbstring\\' => array($vendorDir . '/symfony/polyfill-mbstring'),
+    'Symfony\\Polyfill\\Intl\\Normalizer\\' => array($vendorDir . '/symfony/polyfill-intl-normalizer'),
+    'Symfony\\Polyfill\\Intl\\Idn\\' => array($vendorDir . '/symfony/polyfill-intl-idn'),
+    'Symfony\\Polyfill\\Iconv\\' => array($vendorDir . '/symfony/polyfill-iconv'),
     'Symfony\\Component\\Dotenv\\' => array($vendorDir . '/symfony/dotenv'),
     'Relations\\' => array($baseDir . '/relations'),
     'Models\\' => array($baseDir . '/models'),
     'Libraries\\' => array($baseDir . '/libraries'),
     'Interfaces\\' => array($baseDir . '/interfaces'),
     'Exceptions\\' => array($baseDir . '/exceptions'),
+    'Egulias\\EmailValidator\\' => array($vendorDir . '/egulias/email-validator/src'),
+    'Doctrine\\Common\\Lexer\\' => array($vendorDir . '/doctrine/lexer/lib/Doctrine/Common/Lexer'),
     'Controllers\\' => array($baseDir . '/controllers'),
 );

@@ -15,8 +15,8 @@ return [
             'driver' => env('DB_DRIVER', 'mysql'),
             'host' => env('DB_HOST', '127.0.0.1'),
             'username' => env('DB_USERNAME', 'root'),
-            'password' => env('DB_PASSWORD', ''),
-            'name' => env('DB_NAME', ''),
+            'password' => env('DB_PASSWORD'),
+            'name' => env('DB_NAME'),
             'port' => env('DB_PORT', 3306),
         ]
     ],
@@ -28,5 +28,11 @@ return [
     ],
     'logs' => [
         'path' => __DIR__ . '/storage/logs/',
+    ],
+    'email' => [
+        'host' => env('EMAIL_HOST', 'smtp.google.com'),
+        'username' => env('EMAIL_USERNAME'),
+        'password' => env('EMAIL_PASSWORD'),
+        'port' => env('EMAIL_PORT'),
     ]
 ];

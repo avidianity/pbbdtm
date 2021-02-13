@@ -21,6 +21,13 @@ class View
         $this->dir = config('view.path');
     }
 
+    public static function parse($path)
+    {
+        $view = new static($path);
+
+        return file_get_contents($view->getDir() . $view->getPath() . '.php');
+    }
+
     public function getPath()
     {
         return str_replace('.', '/', $this->path);
