@@ -24,7 +24,10 @@ return [
         'path' => __DIR__ . '/views/',
     ],
     'storage' => [
-        'path' => __DIR__ . '/storage/app/',
+        'driver' => env('STORAGE_DRIVER', 'file'),
+        'file' => [
+            'path' => __DIR__ . '/storage/app/',
+        ]
     ],
     'logs' => [
         'path' => __DIR__ . '/storage/logs/',

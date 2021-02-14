@@ -1,11 +1,21 @@
 CREATE TABLE IF NOT EXISTS `cms` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `key` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
-  `value` text CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+  `value` longtext CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+);
+
+CREATE TABLE IF NOT EXISTS `contact` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `email` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `message` longtext CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+);
 
 CREATE TABLE IF NOT EXISTS `document_type` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
@@ -13,7 +23,7 @@ CREATE TABLE IF NOT EXISTS `document_type` (
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+);
 
 CREATE TABLE IF NOT EXISTS `downloadable` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
@@ -23,7 +33,7 @@ CREATE TABLE IF NOT EXISTS `downloadable` (
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `file_id` (`file_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+);
 
 CREATE TABLE IF NOT EXISTS `file` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
@@ -34,7 +44,7 @@ CREATE TABLE IF NOT EXISTS `file` (
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+);
 
 CREATE TABLE IF NOT EXISTS `log` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
@@ -47,11 +57,11 @@ CREATE TABLE IF NOT EXISTS `log` (
   PRIMARY KEY (`id`),
   KEY `loggable_id` (`loggable_id`,`user_id`) USING BTREE,
   FULLTEXT KEY `loggable_type` (`loggable_type`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+);
 
 CREATE TABLE IF NOT EXISTS `request` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `request_id` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `request_id` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   `user_id` bigint unsigned NOT NULL,
   `document_type_id` bigint unsigned NOT NULL,
   `approved` tinyint NOT NULL DEFAULT '0',
@@ -61,7 +71,14 @@ CREATE TABLE IF NOT EXISTS `request` (
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+);
+
+CREATE TABLE IF NOT EXISTS `storage` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `path` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+  `content` longtext CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+  PRIMARY KEY (`id`)
+);
 
 CREATE TABLE IF NOT EXISTS `token` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
@@ -72,7 +89,7 @@ CREATE TABLE IF NOT EXISTS `token` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `hash` (`hash`),
   KEY `user_id` (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+);
 
 CREATE TABLE IF NOT EXISTS `user` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
@@ -87,4 +104,4 @@ CREATE TABLE IF NOT EXISTS `user` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`),
   UNIQUE KEY `profile_picture_id` (`profile_picture_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+);

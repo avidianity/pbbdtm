@@ -2,7 +2,6 @@
 
 namespace Controllers;
 
-use Libraries\Storage;
 use Models\File;
 
 class FileController extends Controller
@@ -26,6 +25,6 @@ class FileController extends Controller
             }
         }
 
-        return response(Storage::get($file->path), 200, $headers);
+        return response(storage()->get($file->path), 200, $headers);
     }
 }

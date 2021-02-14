@@ -18,24 +18,7 @@ class RequestController extends Controller
     {
         auth();
         $this->user = user();
-        /**
-         * @var Request[]
-         */
-        $approved = array_filter(Request::getAll(), function (Request $request) {
-            return $request->approved && !$request->expired;
-        });
-        foreach ($approved as $request) {
-            $date = DateTime::createFromFormat('Y-m-d H:i:s', $request->updated_at);
-
-            $now = time();
-
-            $days = round(($now - $date->getTimestamp()) / (60 * 60 * 24));
-
-            if ($days >= 15) {
-                $request->update(['expired' => true]);
-                $request->logs()->create(['action' => 'Request has expired.', 'user_id' => $request->user_id]);
-            }
-        }
+        Request::checkExpired();
     }
 
     public function index()
@@ -66,12 +49,16 @@ class RequestController extends Controller
 
         $request->logs()->create(['action' => 'Applicant has issued a request.', 'user_id' => user()->id]);
 
-        $body  = 'You have submitted a new request.<br />';
-        $body .= 'Your Request ID is: ' . $request->request_id;
+        $data = [
+            'name' => $request->user->name,
+            'requestID' => $request->request_id,
+            'documentType' => $request->documentType->name,
+            'date' => DateTime::createFromFormat('Y-m-d H:i:s', $request->updated_at)->format('F d, Y h:i A'),
+        ];
 
         mailer()->setSubject('Request Creation')
             ->setTo(user()->email)
-            ->setBody($body)
+            ->view('emails.new-request', $data)
             ->send();
 
         return $request;

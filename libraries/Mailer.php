@@ -2,10 +2,11 @@
 
 namespace Libraries;
 
+use Exception;
 use Exceptions\MailerException;
-use Swift_Mailer;
-use Swift_Message;
-use Swift_SmtpTransport;
+use Swift_Mailer as BaseMailer;
+use Swift_Message as Message;
+use Swift_SmtpTransport as SMTPTransport;
 use Traits\Singleton;
 
 class Mailer
@@ -92,17 +93,17 @@ class Mailer
 
     protected function ready()
     {
-        return ($this->mailer instanceof Swift_Mailer) !== false;
+        return $this->mailer instanceof BaseMailer;
     }
 
     protected function initMailer()
     {
-        $transport = new Swift_SmtpTransport($this->host, $this->port, 'tls');
+        $transport = new SMTPTransport($this->host, $this->port, 'tls');
 
         $transport->setUsername($this->username)
             ->setPassword($this->password);
 
-        $this->mailer = new Swift_Mailer($transport);
+        $this->mailer = new BaseMailer($transport);
 
         return $this;
     }
@@ -127,16 +128,35 @@ class Mailer
         if ($message) {
             $this->setBody($message);
         }
-        $message = (new Swift_Message($this->subject))
+        $message = (new Message($this->subject))
             ->setFrom([$this->from])
             ->setTo([$this->to])
             ->setBody($this->body, 'text/html');
 
-        $i = $this->mailer->send($message);
+        try {
+            return $this->mailer->send($message) !== 0;
+        } catch (Exception $e) {
+            return false;
+        } finally {
+            $this->to = '';
+            $this->body = '';
+        }
+    }
 
-        $this->to = '';
-        $this->body = '';
+    public function view($path, $data = [])
+    {
+        if (!View::exists($path)) {
+            throw new MailerException($path . ' does not exist on views.');
+        }
 
-        return $i !== 0;
+        $parsed = View::parse($path);
+
+        foreach ($data as $key => $value) {
+            $parsed = str_replace('$' . $key, $value, $parsed);
+        }
+
+        $this->setBody($parsed);
+
+        return $this;
     }
 }

@@ -34,6 +34,42 @@ function mailer()
 }
 
 /**
+ * Get the storage instance
+ * 
+ * @return \Interfaces\Storage
+ */
+function storage()
+{
+    $driver = config('storage.driver');
+    $class = map('storage.' . $driver);
+
+    return $class::getInstance();
+}
+
+
+/**
+ * Get a class name from the map 
+ * 
+ * @return string
+ */
+function map($path)
+{
+    $value = null;
+    $map = $_ENV['MAP'];
+    if ($path === null) {
+        return $map;
+    }
+    foreach (explode('.', $path) as $key) {
+        if ($value === null) {
+            $value = $map[$key];
+        } else {
+            $value = $value[$key];
+        }
+    }
+    return $value;
+}
+
+/**
  * Get an environment value
  * 
  * @param string $key

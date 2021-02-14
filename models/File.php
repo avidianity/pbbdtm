@@ -24,7 +24,7 @@ class File extends Model
     protected static function events()
     {
         static::deleted(function (self $file) {
-            Storage::delete($file->path);
+            storage()->delete($file->path);
         });
     }
 
@@ -68,7 +68,7 @@ class File extends Model
         $path = 'files/' . $data['name'];
         $data['path'] = $path;
         $data['size'] = strlen($binary);
-        Storage::put($path, $binary);
+        storage()->put($path, $binary);
         return new static($data);
     }
 

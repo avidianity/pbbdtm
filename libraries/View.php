@@ -25,7 +25,13 @@ class View
     {
         $view = new static($path);
 
-        return file_get_contents($view->getDir() . $view->getPath() . '.php');
+        $raw = file_get_contents($view->getDir() . $view->getPath() . '.php');
+
+        if (!View::exists($path) || !$raw) {
+            throw new LogicException($path . ' does not exist in views.');
+        }
+
+        return $raw;
     }
 
     public function getPath()

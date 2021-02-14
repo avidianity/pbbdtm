@@ -2,6 +2,7 @@
 
 use Controllers\AuthController;
 use Controllers\CMSController;
+use Controllers\ContactsController;
 use Controllers\DocumentTypeController;
 use Controllers\DownloadableController;
 use Controllers\FileController;
@@ -26,6 +27,7 @@ $router->group('/api', function (Router $router) {
     $router->apiResource('/users', UserController::class);
     $router->apiResource('/cms', CMSController::class);
     $router->apiResource('/downloadables', DownloadableController::class);
+    $router->apiResource('/contacts', ContactsController::class);
 
     $router->group('/self', function (Router $router) {
         $router->get('/', [SelfController::class, 'self']);

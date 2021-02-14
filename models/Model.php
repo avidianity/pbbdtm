@@ -251,7 +251,7 @@ abstract class Model implements JSONable, Arrayable
      * @param string[] $keys
      * @return string[]
      */
-    protected static function justifyKeys($keys)
+    public static function justifyKeys($keys)
     {
         return array_map(function ($key) {
             return static::justifyKey($key);
@@ -264,7 +264,7 @@ abstract class Model implements JSONable, Arrayable
      * @param string $key
      * @return string
      */
-    protected static function justifyKey($key)
+    public static function justifyKey($key)
     {
         return (new static())->getTable() . '.' . $key;
     }
