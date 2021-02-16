@@ -27,6 +27,9 @@ return [
         'driver' => env('STORAGE_DRIVER', 'file'),
         'file' => [
             'path' => __DIR__ . '/storage/app/',
+        ],
+        'dropbox' => [
+            'token' => env('DROPBOX_TOKEN')
         ]
     ],
     'logs' => [
@@ -37,5 +40,10 @@ return [
         'username' => env('EMAIL_USERNAME'),
         'password' => env('EMAIL_PASSWORD'),
         'port' => env('EMAIL_PORT'),
+    ],
+    'sms' => [
+        'sid' => env('TWILIO_SID'),
+        'token' => env('TWILIO_TOKEN'),
+        'service' => env('TWILIO_SERVICE'),
     ]
 ];

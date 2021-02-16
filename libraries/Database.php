@@ -2,25 +2,24 @@
 
 namespace Libraries;
 
-use Exception;
+use Interfaces\Singleton as SingletonContract;
 use PDO;
 use Traits\Singleton;
 
-class Database extends PDO
+class Database extends PDO implements SingletonContract
 {
     use Singleton;
 
     public function prepare($statement, $options = [], $data = [])
     {
-        $this->logQuery($statement, $data);
+        Log::record($statement, $data);
         return parent::prepare($statement, $options);
     }
 
-    protected function logQuery($query, $data)
+    public function query()
     {
-        $path = config('logs.path') . 'avidian.log';
-        $logs = file_get_contents($path);
-        $logs .= '[' . date('F j, Y, g:i a') . ']' . ' | ' . $query . ' | Data - ' . json_encode($data) . "\n";
-        file_put_contents($path, $logs);
+        $args = func_get_args();
+        Log::record($args[0]);
+        return parent::query(...$args);
     }
 }

@@ -56,10 +56,13 @@ class RequestController extends Controller
             'date' => DateTime::createFromFormat('Y-m-d H:i:s', $request->updated_at)->format('F d, Y h:i A'),
         ];
 
-        mailer()->setSubject('Request Creation')
-            ->setTo(user()->email)
-            ->view('emails.new-request', $data)
-            ->send();
+        // mailer()->setSubject('Request Creation')
+        //     ->setTo(user()->email)
+        //     ->view('emails.new-request', $data)
+        //     ->send();
+
+        message()->setTo(user()->phone)
+            ->send('Hi! This is a message from PBBDTM. You have made a request (ID: ' . $request->request_id . '). We will notify you on further updates.');
 
         return $request;
     }

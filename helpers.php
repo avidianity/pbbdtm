@@ -5,6 +5,7 @@ use Interfaces\Arrayable;
 use Interfaces\JSONable;
 use Libraries\Input;
 use Libraries\Mailer;
+use Libraries\Message;
 use Libraries\Response;
 use Libraries\Str;
 use Libraries\View;
@@ -46,6 +47,15 @@ function storage()
     return $class::getInstance();
 }
 
+/**
+ * Get the message instance
+ * 
+ * @return \Libraries\Message
+ */
+function message()
+{
+    return Message::getInstance();
+}
 
 /**
  * Get a class name from the map 

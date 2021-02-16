@@ -24,38 +24,65 @@ class Request extends Model
 
     public static function checkExpired()
     {
-        /**
-         * @var static[]
-         */
-        $approved = array_filter(static::getAll(), function (self $request) {
-            return $request->approved && !$request->expired;
-        });
-        foreach ($approved as $request) {
-            $date = DateTime::createFromFormat('Y-m-d H:i:s', $request->updated_at);
-
-            $now = time();
-
-            $days = round(($now - $date->getTimestamp()) / (60 * 60 * 24));
-
-            if ($days >= 15) {
-                $request->update(['expired' => true]);
-                $request->logs()->create(['action' => 'Request has expired.', 'user_id' => $request->user_id]);
-                $user = $request->user;
-
-                $data = [
-                    'name' => $user->name,
-                    'requestID' => $request->request_id,
-                    'documentType' => $request->documentType->name,
-                    'date' => DateTime::createFromFormat('Y-m-d H:i:s', $request->created_at)->format('F d, Y h:i A'),
-                    'lastStatus' => $request->status,
-                ];
-
-                mailer()->setSubject('Request Expiration Notice')
-                    ->setTo($user->email)
-                    ->view('emails.expired-request', $data)
-                    ->send();
+        foreach (static::getApproved() as $request) {
+            if ($request->getDaysFromNow() >= 5) {
+                $request->markAsExpired();
             }
         }
+        foreach (static::getNonReleasing() as $request) {
+            if ($request->getDaysFromNow() >= 15) {
+                $request->markAsExpired();
+            }
+        }
+    }
+
+    /**
+     * @return static[]
+     */
+    protected static function getApproved()
+    {
+        return array_filter(static::getAll(), function (self $request) {
+            return $request->approved && !$request->expired;
+        });
+    }
+
+    /**
+     * @return static[]
+     */
+    protected static function getNonReleasing()
+    {
+        return array_filter(static::getAll(), function (self $request) {
+            return !in_array($request->status, ['Releasing', 'Released', 'Rejected']);
+        });
+    }
+
+    public function getDaysFromNow()
+    {
+        $date = DateTime::createFromFormat('Y-m-d H:i:s', $this->updated_at);
+
+        $now = time();
+
+        return round(($now - $date->getTimestamp()) / (60 * 60 * 24));
+    }
+
+    public function markAsExpired()
+    {
+        $this->update(['expired' => true]);
+        $this->logs()->create(['action' => 'Request has expired.', 'user_id' => $this->user_id]);
+        $user = $this->user;
+
+        $data = [
+            'name' => $user->name,
+            'requestID' => $this->request_id,
+            'documentType' => $this->documentType->name,
+            'date' => DateTime::createFromFormat('Y-m-d H:i:s', $this->created_at)->format('F d, Y h:i A'),
+            'lastStatus' => $this->status,
+        ];
+
+        mailer()->setSubject('Request Expiration Notice')
+            ->setTo($user->email)
+            ->view('emails.expired-request', $data)
+            ->send();
     }
 
     protected static function events()

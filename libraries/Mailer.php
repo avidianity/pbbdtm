@@ -136,6 +136,7 @@ class Mailer
         try {
             return $this->mailer->send($message) !== 0;
         } catch (Exception $e) {
+            Log::record($e);
             return false;
         } finally {
             $this->to = '';

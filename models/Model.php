@@ -327,7 +327,7 @@ abstract class Model implements JSONable, Arrayable
 
         $statement->execute();
 
-        $row = $statement->fetchObject();
+        $row = $statement->fetch();
 
         return $row->count;
     }
@@ -479,9 +479,8 @@ abstract class Model implements JSONable, Arrayable
         $statement = static::$pdo->query('SELECT * FROM ' . (new static())->getTable() . ';');
 
         return array_map(function ($row) {
-            $instance = static::from($row);
-            return $instance;
-        }, $statement->fetchAll(Database::FETCH_ASSOC));
+            return static::from($row);
+        }, $statement->fetchAll());
     }
 
     /**
@@ -514,7 +513,7 @@ abstract class Model implements JSONable, Arrayable
             return null;
         }
 
-        $result = $statement->fetchAll(Database::FETCH_ASSOC);
+        $result = $statement->fetchAll();
 
         if ($single) {
             return static::from($result[0]);
