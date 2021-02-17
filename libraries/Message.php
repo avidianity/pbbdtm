@@ -5,7 +5,6 @@ namespace Libraries;
 use Exception;
 use Interfaces\Singleton as SingletonContract;
 use Traits\Singleton;
-use Twilio\Rest\Client;
 
 class Message implements SingletonContract
 {
@@ -15,26 +14,22 @@ class Message implements SingletonContract
     protected $from = 'PBBDTM';
     protected $message = '';
 
-    protected $sid;
     protected $token;
-    protected $service;
 
     /**
-     * @var \Twilio\Rest\Client
+     * @var \Libraries\SemaphoreClient
      */
     protected $client = null;
 
     public function __construct()
     {
-        $this->sid = config('sms.sid');
         $this->token = config('sms.token');
-        $this->service = config('sms.service');
         $this->init();
     }
 
     protected function init()
     {
-        $this->client = new Client($this->sid, $this->token);
+        $this->client = new SemaphoreClient($this->token);
 
         $this->reset();
 
@@ -74,12 +69,7 @@ class Message implements SingletonContract
             $this->setMessage($message);
         }
         try {
-            $message = $this->client
-                ->messages
-                ->create($this->getTo(), [
-                    'body' => $this->message,
-                    'messagingServiceSid' => $this->service,
-                ]);
+            $this->client->send($this->getTo(), $this->message);
 
             $this->reset();
             return true;

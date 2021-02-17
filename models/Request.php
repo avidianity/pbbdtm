@@ -20,6 +20,7 @@ class Request extends Model
         'file_id',
         'status',
         'expired',
+        'acknowledged',
     ];
 
     public static function checkExpired()
@@ -94,26 +95,31 @@ class Request extends Model
         static::saving(function (self $request) {
             $request->approved = $request->approved ? 1 : 0;
             $request->expired = $request->expired ? 1 : 0;
+            $request->acknowledged = $request->acknowledged ? 1 : 0;
         });
 
-        static::updated(function (self $request) {
-            $data = [
-                'name' => $request->user->name,
-                'requestID' => $request->request_id,
-                'updater' => user()->name,
-                'date' => DateTime::createFromFormat('Y-m-d H:i:s', $request->created_at)->format('F d, Y h:i A'),
-                'status' => $request->status,
-            ];
+        static::updating(function (self $request) {
+            $clean = static::findOrFail($request->id);
+            if ($clean->status !== $request->status) {
+                $data = [
+                    'name' => $request->user->name,
+                    'requestID' => $request->request_id,
+                    'updater' => user()->name,
+                    'date' => DateTime::createFromFormat('Y-m-d H:i:s', $request->created_at)->format('F d, Y h:i A'),
+                    'status' => $request->status,
+                ];
 
-            mailer()->setSubject('Request Updated')
-                ->setTo($request->user->email)
-                ->view('emails.updated-request', $data)
-                ->send();
+                mailer()->setSubject('Request Updated')
+                    ->setTo($request->user->email)
+                    ->view('emails.updated-request', $data)
+                    ->send();
+            }
         });
 
         static::serializing(function (self $request) {
             $request->approved = (bool)$request->approved;
             $request->expired = (bool)$request->expired;
+            $request->acknowledged = (bool)$request->acknowledged;
         });
 
         static::deleting(function (self $request) {

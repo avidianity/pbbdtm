@@ -32,6 +32,9 @@ return [
             'token' => env('DROPBOX_TOKEN')
         ]
     ],
+    'cache' => [
+        'driver' => env('CACHE_DRIVER', 'memory'),
+    ],
     'logs' => [
         'path' => __DIR__ . '/storage/logs/',
     ],
@@ -42,8 +45,6 @@ return [
         'port' => env('EMAIL_PORT'),
     ],
     'sms' => [
-        'sid' => env('TWILIO_SID'),
-        'token' => env('TWILIO_TOKEN'),
-        'service' => env('TWILIO_SERVICE'),
+        'token' => env('SEMAPHORE_TOKEN'),
     ]
 ];
