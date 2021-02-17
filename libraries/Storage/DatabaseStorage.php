@@ -4,6 +4,7 @@ namespace Libraries\Storage;
 
 use Exception;
 use Interfaces\Storage;
+use Libraries\Log;
 use Models\Storage as StorageModel;
 use Traits\Singleton;
 
@@ -20,6 +21,7 @@ class DatabaseStorage implements Storage
 
             return true;
         } catch (Exception $e) {
+            Log::record($e);
             return false;
         }
     }
@@ -42,6 +44,7 @@ class DatabaseStorage implements Storage
 
             return base64_decode(StorageModel::from($statement->fetch())->content);
         } catch (Exception $e) {
+            Log::record($e);
             return false;
         }
     }

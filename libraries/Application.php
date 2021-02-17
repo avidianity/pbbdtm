@@ -75,7 +75,7 @@ class Application
                 $status = $exception->getStatus();
 
                 if (getHeader('Accept') === 'application/json') {
-                    return response($exception, $status)->send();
+                    return response($exception, $status, $exception->getHeaders())->send();
                 }
 
                 if (View::exists('errors.' . $status)) {

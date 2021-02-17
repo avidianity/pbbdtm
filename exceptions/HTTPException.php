@@ -56,6 +56,11 @@ class HTTPException extends Exception implements JSONable, Arrayable
         return $this->status;
     }
 
+    public function getHeaders()
+    {
+        return $this->headers;
+    }
+
     public function withHeaders($headers)
     {
         foreach ($headers as $key => $value) {
