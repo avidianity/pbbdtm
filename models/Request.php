@@ -4,6 +4,7 @@ namespace Models;
 
 use DateTime;
 use Libraries\Str;
+use Queues\SendMail;
 use Queues\SendMessage;
 
 /**
@@ -81,10 +82,7 @@ class Request extends Model
             'lastStatus' => $this->status,
         ];
 
-        mailer()->setSubject('Request Expiration Notice')
-            ->setTo($user->email)
-            ->view('emails.expired-request', $data)
-            ->send();
+        queue()->register(new SendMail($user->email, 'emails.expired-request', 'Request Expiration Notice', $data));
 
         queue()->register(new SendMessage($user->phone, 'You Request (ID: ' . $this->request_id . ') has expired. It was created at ' . $data['date'] . '. It\'s last status was \'' . $this->status . '\'.'));
     }
@@ -112,10 +110,7 @@ class Request extends Model
                     'status' => $request->status,
                 ];
 
-                mailer()->setSubject('Request Updated')
-                    ->setTo($request->user->email)
-                    ->view('emails.updated-request', $data)
-                    ->send();
+                queue()->register(new SendMail($request->user->email, 'emails.updated-request', 'Request Updated', $data));
 
                 queue()->register(new SendMessage($request->user->phone, 'Your Request (ID: ' . $request->request_id . ') has been updated to \'' . $request->status . '\'.'));
             }
