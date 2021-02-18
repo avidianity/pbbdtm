@@ -22,7 +22,8 @@
 			"Libraries\\": "libraries/",
 			"Models\\": "models/",
 			"Relations\\": "relations/",
-			"Traits\\": "traits/"
+			"Traits\\": "traits/",
+			"Queues\\": "queues/"
 		},
 		"files": [
 			"./helpers.php"

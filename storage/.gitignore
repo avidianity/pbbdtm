@@ -1,5 +1,7 @@
 /app/*
 /logs/*
+/queue/*
 
 !/logs/.gitkeep
 !/app/.gitkeep
+!/queue/.gitkeep

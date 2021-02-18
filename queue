@@ -1,0 +1,14 @@
+<?php
+
+require_once __DIR__ . '/bootstrap.php';
+
+$manager = queue();
+
+$class = get_class($manager);
+
+echo "\nWorking Queue: {$class}\n";
+
+while (true) {
+    $manager->work();
+    sleep(2);
+}

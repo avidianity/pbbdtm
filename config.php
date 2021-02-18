@@ -46,5 +46,11 @@ return [
     ],
     'sms' => [
         'token' => env('SEMAPHORE_TOKEN'),
+    ],
+    'queue' => [
+        'driver' => env('QUEUE_DRIVER', 'file'),
+        'file' => [
+            'path' => __DIR__ . '/storage/queue/'
+        ]
     ]
 ];

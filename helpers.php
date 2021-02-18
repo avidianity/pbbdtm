@@ -49,6 +49,19 @@ function mailer()
 }
 
 /**
+ * Get the queue manager instance
+ * 
+ * @return \Interfaces\Queue\Manager
+ */
+function queue()
+{
+    $driver = config('queue.driver');
+    $class = map('queue.' . $driver);
+
+    return $class::getInstance();
+}
+
+/**
  * Get the storage instance
  * 
  * @return \Interfaces\Storage

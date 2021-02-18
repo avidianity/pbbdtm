@@ -4,6 +4,7 @@ namespace Models;
 
 use DateTime;
 use Libraries\Str;
+use Queues\SendMessage;
 
 /**
  * @property User $user
@@ -84,6 +85,8 @@ class Request extends Model
             ->setTo($user->email)
             ->view('emails.expired-request', $data)
             ->send();
+
+        queue()->register(new SendMessage($user->phone, 'You Request (ID: ' . $this->request_id . ') has expired. It was created at ' . $data['date'] . '. It\'s last status was \'' . $this->status . '\'.'));
     }
 
     protected static function events()
@@ -113,6 +116,8 @@ class Request extends Model
                     ->setTo($request->user->email)
                     ->view('emails.updated-request', $data)
                     ->send();
+
+                queue()->register(new SendMessage($request->user->phone, 'Your Request (ID: ' . $request->request_id . ') has been updated to \'' . $request->status . '\'.'));
             }
         });
 

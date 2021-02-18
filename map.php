@@ -8,5 +8,8 @@ return [
     ],
     'cache' => [
         'memory' => \Libraries\Cache\MemoryCache::class,
+    ],
+    'queue' => [
+        'file' => \Libraries\Queue\FileManager::class,
     ]
 ];
