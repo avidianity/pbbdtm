@@ -7,7 +7,7 @@
 return [
     'app' => [
         'url' => env('APP_URL', 'http://localhost:8000'),
-        'debug' => env('APP_DEBUG', true),
+        'debug' => (bool)env('APP_DEBUG', true),
         'env' => env('APP_ENV', 'dev'),
     ],
     'database' => [

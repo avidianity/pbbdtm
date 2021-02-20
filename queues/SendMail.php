@@ -24,7 +24,7 @@ class SendMail implements Queueable
     {
         mailer()->setSubject($this->subject)
             ->setTo($this->email)
-            ->view($this->view, $this->Data)
+            ->view($this->view, $this->data)
             ->send();
     }
 

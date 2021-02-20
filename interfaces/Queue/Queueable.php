@@ -2,15 +2,12 @@
 
 namespace Interfaces\Queue;
 
+use Interfaces\Serializable;
 use Throwable;
 
-interface Queueable
+interface Queueable extends Serializable
 {
     public function run();
-
-    public function __serialize(): array;
-
-    public function __unserialize(array $data): void;
 
     public function report(Throwable $exception): void;
 }

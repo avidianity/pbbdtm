@@ -14,14 +14,14 @@ class MemoryCache implements Cacheable
     public function get($key, $default = null)
     {
         if (in_array($key, array_keys($this->data))) {
-            return $this->data[$key];
+            return unserialize($this->data[$key]);
         }
         return $default;
     }
 
     public function set($key, $value)
     {
-        $this->data[$key] = $value;
+        $this->data[$key] = serialize($value);
         return $this;
     }
 
@@ -32,11 +32,9 @@ class MemoryCache implements Cacheable
 
     public function store($key, $callable)
     {
-        if ($this->has($key)) {
-            return $this->get($key);
+        if (!$this->has($key)) {
+            $this->set($key, $callable());
         }
-        $value = $callable();
-        $this->set($key, $value);
-        return $value;
+        return $this->get($key);
     }
 }
