@@ -349,11 +349,11 @@ function auth($callable = null)
  */
 function concatenate()
 {
-    $string = '';
+    $string = new Str();
     foreach (func_get_args() as $fragment) {
-        $string .= $fragment;
+        $string->append($fragment);
     }
-    return new Str($string);
+    return $string;
 }
 
 /**

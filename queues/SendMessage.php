@@ -3,6 +3,7 @@
 namespace Queues;
 
 use Interfaces\Queue\Queueable;
+use Throwable;
 
 class SendMessage implements Queueable
 {
@@ -33,5 +34,10 @@ class SendMessage implements Queueable
     {
         $this->to = $data['to'];
         $this->message = $data['message'];
+    }
+
+    public function report(Throwable $exception): void
+    {
+        //
     }
 }

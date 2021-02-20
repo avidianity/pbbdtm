@@ -17,4 +17,14 @@ interface Stringable extends JsonSerializable
      * @return static
      */
     public function toUpperCase();
+
+    /**
+     * @return static
+     */
+    public function prepend($string);
+
+    /**
+     * @return static
+     */
+    public function append($string);
 }

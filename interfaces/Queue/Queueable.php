@@ -2,7 +2,7 @@
 
 namespace Interfaces\Queue;
 
-use Serializable;
+use Throwable;
 
 interface Queueable
 {
@@ -11,4 +11,6 @@ interface Queueable
     public function __serialize(): array;
 
     public function __unserialize(array $data): void;
+
+    public function report(Throwable $exception): void;
 }

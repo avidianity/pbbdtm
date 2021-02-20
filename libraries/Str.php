@@ -45,4 +45,16 @@ class Str implements Stringable
     {
         return $this->data;
     }
+
+    public function prepend($string)
+    {
+        $this->data = $string . $this->data;
+        return $this;
+    }
+
+    public function append($string)
+    {
+        $this->data .= $string;
+        return $this;
+    }
 }

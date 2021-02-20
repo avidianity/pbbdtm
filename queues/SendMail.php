@@ -3,6 +3,7 @@
 namespace Queues;
 
 use Interfaces\Queue\Queueable;
+use Throwable;
 
 class SendMail implements Queueable
 {
@@ -43,5 +44,10 @@ class SendMail implements Queueable
         $this->view = $data['view'];
         $this->subject = $data['subject'];
         $this->data = (array)json_decode($data['data']);
+    }
+
+    public function report(Throwable $exception): void
+    {
+        //
     }
 }

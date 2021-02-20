@@ -2,12 +2,14 @@
 
 namespace Libraries\Queue;
 
-use Interfaces\Queue\Manager as QueueManager;
+use Interfaces\Queue\Manager;
 use Interfaces\Queue\Queueable;
+use Libraries\Log;
 use Libraries\Str;
+use Throwable;
 use Traits\Singleton;
 
-class FileManager implements QueueManager
+class FileManager implements Manager
 {
     use Singleton;
 
@@ -51,7 +53,14 @@ class FileManager implements QueueManager
                 $class = get_class($queueable);
                 echo "\nRunning: {$class} - {$data['date']}\n";
 
-                $queueable->run();
+                try {
+                    $queueable->run();
+                    return true;
+                } catch (Throwable $e) {
+                    $queueable->report($e);
+                    Log::record($e);
+                    return false;
+                }
 
                 unlink($file);
             }
