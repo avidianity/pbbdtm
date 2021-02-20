@@ -23,7 +23,7 @@ class SendMail implements Queueable
     public function run()
     {
         mailer()->setSubject($this->subject)
-            ->setTo($this->email)
+            ->setTo($this->to)
             ->view($this->view, $this->data)
             ->send();
     }

@@ -55,14 +55,13 @@ class FileManager implements Manager
 
                 try {
                     $queueable->run();
+                    unlink($file);
                     return true;
                 } catch (Throwable $e) {
                     $queueable->report($e);
                     Log::record($e);
                     return false;
                 }
-
-                unlink($file);
             }
         }
     }
