@@ -21,7 +21,7 @@
     <script src="<?= asset('/assets/js/core/popper.min.js') ?>"></script>
     <script src="<?= asset('/assets/js/core/bootstrap.min.js') ?>"></script>
     <script src="<?= asset('/assets/js/plugins/perfect-scrollbar.jquery.min.js') ?>"></script>
-    <script src="<?= asset('/assets/js/plugins/char.js') ?>.min.js') ?>"></script>
+    <script src="<?= asset('/assets/js/plugins/chartjs.min.js') ?>"></script>
     <script src="<?= asset('/assets/js/plugins/bootstrap-notify.js') ?>"></script>
     <script src="<?= asset('/assets/js/paper-dashboard.min.js') ?>" type="text/javascript"></script>
     <link href="<?= asset('/static/css/2.bf757237.chunk.css') ?>" rel="stylesheet">
