@@ -48,7 +48,7 @@
     <div id="root"></div>
     <script src="<?= asset('/static/js/loader.min.js') ?>"></script>
     <script src="<?= asset('/static/js/2.47a87e18.chunk.js') ?>"></script>
-    <script src="<?= asset('/static/js/main.9167213f.chunk.js') ?>"></script>
+    <script src="<?= asset('/static/js/main.875d293c.chunk.js') ?>"></script>
 </body>
 
 </html>
