@@ -10,6 +10,9 @@
 	],
 	"require": {
 		"php": "^7.4",
+		"ext-json": "*",
+		"ext-mbstring": "*",
+		"ext-openssl": "*",
 		"symfony/dotenv": "^5.2",
 		"swiftmailer/swiftmailer": "^6.2",
 		"spatie/dropbox-api": "^1.17"
