@@ -5,12 +5,27 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <meta name="theme-color" content="#000000" />
-    <meta name="description" content="Document Tracking and Monitoring System" />
+
+    <title>PUP Bansud Branch — Document Tracking and Monitoring System</title>
+    <meta name="title" content="PUP Bansud Branch — Document Tracking and Monitoring System">
+    <meta name="description" content="Polytechnic University of the Philippines Document Tracking and Monitoring System">
+
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="<?= config('app.url') ?>">
+    <meta property="og:title" content="PUP Bansud Branch — Document Tracking and Monitoring System">
+    <meta property="og:description" content="Polytechnic University of the Philippines Document Tracking and Monitoring System">
+    <meta property="og:image" content="<?= asset('/assets/manifest-icon-512.png') ?>">
+
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="<?= config('app.url') ?>">
+    <meta property="twitter:title" content="PUP Bansud Branch — Document Tracking and Monitoring System">
+    <meta property="twitter:description" content="Polytechnic University of the Philippines Document Tracking and Monitoring System">
+    <meta property="twitter:image" content="<?= asset('/assets/manifest-icon-512.png') ?>">
     <link rel="icon" type="image/png" sizes="196x196" href="<?= asset('/assets/favicon-196.png') ?>" />
+
     <link rel="apple-touch-icon" href="<?= asset('/assets/apple-icon-180.png') ?>" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <link rel="manifest" href="<?= asset('/manifest.json') ?>" />
-    <title>PBBDTM</title>
     <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700,200" rel="stylesheet" />
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" rel="stylesheet" />
     <link href="<?= asset('/assets/css/bootstrap.min.css') ?>" rel="stylesheet" />
