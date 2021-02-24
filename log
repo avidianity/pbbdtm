@@ -1,0 +1,11 @@
+<?php
+
+use Models\Exception;
+
+require_once __DIR__ . '/bootstrap.php';
+
+$contents = @file_get_contents(__DIR__ . '/storage/logs/avidian.log');
+
+echo $contents;
+
+echo var_export(Exception::getAll());

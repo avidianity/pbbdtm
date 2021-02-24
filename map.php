@@ -12,5 +12,6 @@ return [
     'queue' => [
         'sync' => \Libraries\Queue\SyncManager::class,
         'file' => \Libraries\Queue\FileManager::class,
+        'database' => \Libraries\Queue\DatabaseManager::class,
     ]
 ];

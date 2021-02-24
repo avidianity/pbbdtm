@@ -48,6 +48,6 @@ class SendMail implements Queueable
 
     public function report(Throwable $exception): void
     {
-        echo $exception;
+        //
     }
 }
