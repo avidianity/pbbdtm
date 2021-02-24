@@ -11,6 +11,10 @@ class Log
     public static function record($message, $data = [])
     {
         $path = static::getPath();
+
+        if (!file_exists($path)) {
+            file_put_contents($path, '');
+        }
         $logs = file_get_contents($path);
 
         if ($message instanceof Exception) {
