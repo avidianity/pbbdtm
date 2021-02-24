@@ -7,9 +7,13 @@ require_once __DIR__ . '/vendor/autoload.php';
 
 date_default_timezone_set('Asia/Manila');
 
-$dotenv = new Dotenv();
+$env = __DIR__ . '/.env';
 
-$dotenv->load(__DIR__ . '/.env');
+if (file_exists($env)) {
+    $dotenv = new Dotenv();
+
+    $dotenv->load($env);
+}
 
 $_ENV['CONFIGS'] = require_once __DIR__ . '/config.php';
 
