@@ -284,6 +284,9 @@ abstract class Model implements JSONable, Arrayable
 
         $data = $instance->getData();
 
+        $data['created_at'] = date('Y-m-d H:i:s');
+        $data['updated_at'] = date('Y-m-d H:i:s');
+
         $table = $instance->getTable();
 
         $query  = 'INSERT INTO ' . $table . ' (';
@@ -360,11 +363,9 @@ abstract class Model implements JSONable, Arrayable
         $id = $data['id'];
         unset($data['id']);
         unset($data['created_at']);
-        unset($data['updated_at']);
+        $data['updated_at'] = date('Y-m-d H:i:s');
 
         $table = $this->getTable();
-
-        $dbname = static::getDatabaseName();
 
         $query  = 'UPDATE ' . $table . ' SET ';
 
