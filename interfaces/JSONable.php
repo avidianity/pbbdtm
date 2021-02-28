@@ -9,5 +9,10 @@ use JsonSerializable;
  */
 interface JSONable extends JsonSerializable
 {
+    /**
+     * Cast into an object
+     *
+     * @return object
+     */
     public function toJSON(): object;
 }

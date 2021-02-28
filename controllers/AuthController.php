@@ -5,8 +5,16 @@ namespace Controllers;
 use Libraries\Hash;
 use Models\User;
 
+/**
+ * Responsible for any authentication-related actions
+ */
 class AuthController extends Controller
 {
+    /**
+     * Log a user in
+     *
+     * @return \Libraries\Response
+     */
     public function login()
     {
         $data = input()->only(['email', 'password']);
@@ -39,7 +47,11 @@ class AuthController extends Controller
         ]);
     }
 
-
+    /**
+     * Register a user
+     *
+     * @return \Libraries\Response
+     */
     public function register()
     {
         $data = input()->only(['email', 'phone', 'password', 'name']);
@@ -56,6 +68,11 @@ class AuthController extends Controller
         ], 201);
     }
 
+    /**
+     * Log a user out
+     *
+     * @return \Libraries\Response
+     */
     public function logout()
     {
         $token = getBearerModel();

@@ -8,10 +8,13 @@ use Interfaces\JSONable;
 use Interfaces\Stringable;
 use Models\Model;
 
+/**
+ * The base of the whole application
+ */
 class Application
 {
     /**
-     * @var Router
+     * @var \Libraries\Router
      */
     protected $router;
 
@@ -21,7 +24,7 @@ class Application
     protected $url;
 
     /**
-     * @var View
+     * @var \Libraries\View
      */
     protected $view;
 
@@ -48,10 +51,18 @@ class Application
         return $this;
     }
 
+    /**
+     * Start the application
+     *
+     * @return void
+     */
     public function start()
     {
         try {
+            // run the router against the parsed url
             $result = $this->router->run($this->url);
+
+            // handle the results accordingly
 
             if ($result instanceof Response) {
                 $result->send();
@@ -71,6 +82,8 @@ class Application
                 return response($result)->send();
             }
         } catch (Exception $exception) {
+            // catch any error and display it properly
+
             if ($exception instanceof HTTPException) {
                 $status = $exception->getStatus();
 
@@ -108,6 +121,12 @@ class Application
         }
     }
 
+    /**
+     * Enable Cross-Origin-Resource-Sharing to enable communication to the frontend
+     *
+     * @return void
+     * @link https://en.wikipedia.org/wiki/Cross-origin_resource_sharing
+     */
     public function enableCors()
     {
         if (isset($_SERVER['HTTP_ORIGIN'])) {

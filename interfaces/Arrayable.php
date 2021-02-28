@@ -3,7 +3,7 @@
 namespace Interfaces;
 
 /**
- * Allows cating any into an array.
+ * Allows casting the object into an array.
  */
 interface Arrayable
 {

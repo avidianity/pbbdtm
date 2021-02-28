@@ -2,6 +2,10 @@
 
 namespace Interfaces;
 
+/**
+ * Base interface for handling relational data
+ * @link https://en.wikipedia.org/wiki/Relational_database#RDBMS
+ */
 interface HasRelationships
 {
     public function get();

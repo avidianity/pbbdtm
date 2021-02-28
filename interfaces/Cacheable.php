@@ -2,6 +2,9 @@
 
 namespace Interfaces;
 
+/**
+ * The base interface for cache managers
+ */
 interface Cacheable extends Singleton
 {
     public function get($key, $default = null);
