@@ -55,6 +55,7 @@ class FileManager implements Manager
 
                 try {
                     $queueable->run();
+                    echo "\nDone: {$class} - {$data['date']}\n";
                     unlink($file);
                     return true;
                 } catch (Throwable $e) {

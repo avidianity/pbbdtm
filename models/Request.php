@@ -12,6 +12,7 @@ use Queues\SendMessage;
  * @property DocumentType $documentType
  * @property File|null $file
  * @property Log[] $logs
+ * @property Task[] $tasks
  */
 class Request extends Model
 {
@@ -124,6 +125,7 @@ class Request extends Model
 
         static::deleting(function (self $request) {
             deleteMany($request->logs, Log::class);
+            deleteMany($request->tasks, Task::class);
         });
 
         static::deleted(function (self $request) {
@@ -131,6 +133,11 @@ class Request extends Model
                 $request->file->delete();
             }
         });
+    }
+
+    public function tasks()
+    {
+        return $this->hasMany(Task::class);
     }
 
     public function logs()

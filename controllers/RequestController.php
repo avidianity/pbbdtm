@@ -18,7 +18,6 @@ class RequestController extends Controller
 
     public function __construct()
     {
-        auth();
         $this->user = user();
         Request::checkExpired();
     }
@@ -26,7 +25,7 @@ class RequestController extends Controller
     public function index()
     {
         return array_map(function (Request $request) {
-            return $request->load(['user', 'documentType', 'file']);
+            return $request->load(['user', 'documentType', 'file', 'tasks']);
         }, Request::getAll());
     }
 
@@ -36,7 +35,7 @@ class RequestController extends Controller
 
         $request = Request::findOrFail($id);
 
-        $request->load(['user', 'documentType', 'file', 'logs']);
+        $request->load(['user', 'documentType', 'file', 'logs', 'tasks']);
 
         foreach ($request->logs as $log) {
             $log->load(['user']);

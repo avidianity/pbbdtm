@@ -13,7 +13,7 @@ class DocumentType extends Model
     protected static function events()
     {
         static::deleting(function (self $type) {
-            deleteMany($type->requests, static::class);
+            deleteMany($type->requests, Request::class);
         });
     }
 

@@ -10,6 +10,7 @@ use Controllers\LogController;
 use Controllers\RequestController;
 use Controllers\SelfController;
 use Controllers\StatisticsController;
+use Controllers\TaskController;
 use Controllers\UserController;
 use Libraries\Router;
 
@@ -28,6 +29,7 @@ $router->group('/api', function (Router $router) {
     $router->apiResource('/cms', CMSController::class);
     $router->apiResource('/downloadables', DownloadableController::class);
     $router->apiResource('/contacts', ContactsController::class);
+    $router->apiResource('/requests/tasks', TaskController::class);
 
     $router->group('/self', function (Router $router) {
         $router->get('/', [SelfController::class, 'self']);

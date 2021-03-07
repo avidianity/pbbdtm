@@ -32,9 +32,10 @@ class DatabaseManager implements Manager
             $queueable = unserialize($queue->payload);
 
             try {
-                $queueable->run();
                 $class = get_class($queueable);
                 echo "\nRunning: {$class} - {$queue->created_at}\n";
+                $queueable->run();
+                echo "\nDone: {$class} - {$queue->created_at}\n";
             } catch (Throwable $exception) {
                 $queueable->report($exception);
                 Log::record($exception);

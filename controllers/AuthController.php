@@ -58,6 +58,47 @@ class AuthController extends Controller
 
         $data['password'] = Hash::make($data['password']);
 
+        $pdo = User::getConnection();
+
+        $errors = [];
+
+        $query  = 'SELECT * FROM ' . (new User())->getTable() . ' ';
+        $query .= 'WHERE email = :email LIMIT 1;';
+
+        $statement = $pdo->prepare($query);
+
+        $statement->execute([':email' => $data['email']]);
+
+        if ($statement->rowCount() !== 0) {
+            $errors['email'] = ['Email already exists.'];
+        }
+
+        $query  = 'SELECT * FROM ' . (new User())->getTable() . ' ';
+        $query .= 'WHERE name = :name LIMIT 1;';
+
+        $statement = $pdo->prepare($query);
+
+        $statement->execute([':name' => $data['name']]);
+
+        if ($statement->rowCount() !== 0) {
+            $errors['name'] = ['Name already exists.'];
+        }
+
+        $query  = 'SELECT * FROM ' . (new User())->getTable() . ' ';
+        $query .= 'WHERE phone = :phone LIMIT 1;';
+
+        $statement = $pdo->prepare($query);
+
+        $statement->execute([':phone' => $data['phone']]);
+
+        if ($statement->rowCount() !== 0) {
+            $errors['phone'] = ['Phone already exists.'];
+        }
+
+        if (count($errors) > 0) {
+            return response(['errors' => $errors], 422);
+        }
+
         $data['role'] = 'Applicant';
 
         $user = User::create($data);
