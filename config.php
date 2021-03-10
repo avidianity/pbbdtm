@@ -9,6 +9,9 @@ return [
         'url' => env('APP_URL', 'http://localhost:8000'),
         'debug' => (bool)env('APP_DEBUG', true),
         'env' => env('APP_ENV', 'dev'),
+        'frontend' => [
+            'url' => env('FRONTEND_URL', 'http://localhost:3000'),
+        ],
     ],
     'database' => [
         'dev' => [

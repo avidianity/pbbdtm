@@ -7,7 +7,7 @@ namespace Models;
  */
 class Downloadable extends Model
 {
-    protected $fillable = ['name', 'file_id'];
+    protected $fillable = ['name', 'file_id', 'category'];
 
     protected static function events()
     {

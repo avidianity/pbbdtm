@@ -85,7 +85,10 @@ class Request extends Model
 
         queue()->register(new SendMail($user->email, 'emails.expired-request', 'Request Expiration Notice', $data));
 
-        queue()->register(new SendMessage($user->phone, 'You Request (ID: ' . $this->request_id . ') has expired. It was created at ' . $data['date'] . '. It\'s last status was \'' . $this->status . '\'.'));
+        $text  = 'You Request (ID: ' . $this->request_id . ') has expired. It was created at ' . $data['date'] . '. It\'s last status was \'' . $this->status . '\'.';
+        $text .= sprintf('%s%s', config('app.frontend.url'), "/dashboard/requests/{$this->id}");
+
+        queue()->register(new SendMessage($user->phone, $text));
     }
 
     protected static function events()

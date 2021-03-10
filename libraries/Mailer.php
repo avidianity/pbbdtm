@@ -4,6 +4,7 @@ namespace Libraries;
 
 use Exception;
 use Exceptions\MailerException;
+use Models\CMS;
 use Swift_Mailer as BaseMailer;
 use Swift_Message as Message;
 use Swift_SmtpTransport as SMTPTransport;
@@ -128,6 +129,29 @@ class Mailer
         if ($message) {
             $this->setBody($message);
         }
+        $this->body .= "<br />";
+
+        $pdo = CMS::getConnection();
+
+        $table = (new CMS())->getTable();
+
+        $query  = "SELECT * FROM {$table} WHERE {$table}.key = :key LIMIT 1;";
+
+        $statement = $pdo->prepare($query);
+
+        $statement->execute([':key' => 'faqs']);
+
+        if ($statement->rowCount() > 0) {
+            $cms = CMS::from($statement->fetch());
+            $faqs = (array)json_decode($cms->value);
+            $this->body .= "<br />FAQS:<br /><br />";
+            foreach ($faqs as $faq) {
+                $faq = (array)$faq;
+                $this->body .= "{$faq['question']}<br />";
+                $this->body .= "{$faq['answer']}<br /><br />";
+            }
+        }
+
         $message = (new Message($this->subject))
             ->setFrom([$this->from])
             ->setTo([$this->to])

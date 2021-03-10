@@ -60,7 +60,7 @@ class DownloadableController extends Controller
 
         $downloadable->load(['file']);
 
-        $data = input()->only(['name', 'file']);
+        $data = input()->only(['name', 'file', 'category']);
 
         if (input()->has('file')) {
             $downloadable->file->delete();

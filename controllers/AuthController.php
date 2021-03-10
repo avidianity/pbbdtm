@@ -54,7 +54,7 @@ class AuthController extends Controller
      */
     public function register()
     {
-        $data = input()->only(['email', 'phone', 'password', 'name']);
+        $data = input()->only(['email', 'phone', 'password', 'name', 'type', 'student_id_number']);
 
         $data['password'] = Hash::make($data['password']);
 
