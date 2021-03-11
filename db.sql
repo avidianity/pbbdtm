@@ -1,3 +1,5 @@
+SET FOREIGN_KEY_CHECKS=0;
+
 CREATE TABLE IF NOT EXISTS `cms` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `key` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
@@ -141,3 +143,4 @@ CREATE TABLE IF NOT EXISTS `user` (
   UNIQUE KEY `profile_picture_id` (`profile_picture_id`),
   CONSTRAINT `FK_user_file` FOREIGN KEY (`profile_picture_id`) REFERENCES `file` (`id`)
 );
+SET FOREIGN_KEY_CHECKS=1;
