@@ -35,8 +35,7 @@ CREATE TABLE IF NOT EXISTS `downloadable` (
   `created_at` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   `updated_at` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `file_id` (`file_id`),
-  CONSTRAINT `FK_downloadable_file` FOREIGN KEY (`file_id`) REFERENCES `file` (`id`)
+  KEY `file_id` (`file_id`)
 );
 
 CREATE TABLE IF NOT EXISTS `file` (
@@ -61,8 +60,7 @@ CREATE TABLE IF NOT EXISTS `log` (
   PRIMARY KEY (`id`),
   KEY `loggable_id` (`loggable_id`,`user_id`) USING BTREE,
   KEY `FK_log_user` (`user_id`),
-  FULLTEXT KEY `loggable_type` (`loggable_type`),
-  CONSTRAINT `FK_log_user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
+  FULLTEXT KEY `loggable_type` (`loggable_type`)
 );
 
 CREATE TABLE IF NOT EXISTS `queue` (
@@ -87,9 +85,7 @@ CREATE TABLE IF NOT EXISTS `request` (
   `updated_at` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`id`),
   KEY `FK_request_user` (`user_id`),
-  KEY `FK_request_file` (`file_id`),
-  CONSTRAINT `FK_request_file` FOREIGN KEY (`file_id`) REFERENCES `file` (`id`),
-  CONSTRAINT `FK_request_user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
+  KEY `FK_request_file` (`file_id`)
 );
 
 CREATE TABLE IF NOT EXISTS `storage` (
@@ -110,8 +106,7 @@ CREATE TABLE IF NOT EXISTS `task` (
   `created_at` timestamp NOT NULL,
   `updated_at` timestamp NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `request_id` (`request_id`),
-  CONSTRAINT `FK_task_request` FOREIGN KEY (`request_id`) REFERENCES `request` (`id`)
+  KEY `request_id` (`request_id`)
 );
 
 CREATE TABLE IF NOT EXISTS `token` (
@@ -122,8 +117,7 @@ CREATE TABLE IF NOT EXISTS `token` (
   `updated_at` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `hash` (`hash`),
-  KEY `user_id` (`user_id`),
-  CONSTRAINT `FK_token_user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
+  KEY `user_id` (`user_id`)
 );
 
 CREATE TABLE IF NOT EXISTS `user` (
@@ -140,7 +134,6 @@ CREATE TABLE IF NOT EXISTS `user` (
   `updated_at` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`),
-  UNIQUE KEY `profile_picture_id` (`profile_picture_id`),
-  CONSTRAINT `FK_user_file` FOREIGN KEY (`profile_picture_id`) REFERENCES `file` (`id`)
+  UNIQUE KEY `profile_picture_id` (`profile_picture_id`)
 );
 SET FOREIGN_KEY_CHECKS=1;
