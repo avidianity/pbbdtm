@@ -9,6 +9,8 @@ require_once __DIR__ . '/bootstrap.php';
 
 $pdo = Model::getConnection();
 
+$pdo->query('SET FOREIGN_KEY_CHECKS=0');
+
 $env = config('app.env');
 
 $dbname = config("database.{$env}.name");
@@ -78,6 +80,8 @@ User::create([
     'password' => Hash::make('admin'),
     'role' => 'Admin',
 ]);
+
+$pdo->query('SET FOREIGN_KEY_CHECKS=1');
 
 echo "\nAdministrator Credentials:\n";
 
