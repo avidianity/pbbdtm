@@ -24,6 +24,7 @@ class Request extends Model
         'status',
         'expired',
         'acknowledged',
+        'evaluation',
     ];
 
     public static function checkExpired()
