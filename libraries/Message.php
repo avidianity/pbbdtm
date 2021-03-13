@@ -74,6 +74,7 @@ class Message implements SingletonContract
             $this->reset();
             return true;
         } catch (Exception $e) {
+            throw $e;
             Log::record($e);
             return false;
         }

@@ -12,7 +12,7 @@ use GuzzleHttp\Client;
 
 class SemaphoreClient
 {
-    const API_BASE = 'http://beta.semaphore.co/api/v4/';
+    const API_BASE = 'http://api.semaphore.co/api/v4/';
 
     public $apikey;
     public $senderName = null;

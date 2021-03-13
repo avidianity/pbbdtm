@@ -38,6 +38,6 @@ class SendMessage implements Queueable
 
     public function report(Throwable $exception): void
     {
-        //
+        throw $exception;
     }
 }
