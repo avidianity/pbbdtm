@@ -125,10 +125,7 @@ class Router
      */
     public function run($url)
     {
-        $requestMethod = strtolower($_SERVER['REQUEST_METHOD']);
-        if (input()->has('_method')) {
-            $requestMethod = strtolower(input()->get('_method', $requestMethod));
-        }
+        $requestMethod = strtolower(input()->get('_method', $_SERVER['REQUEST_METHOD']));
 
         foreach (static::$routes as $route) {
             if ($this->urlMatches($route['uri'], $url) && $requestMethod === $route['method']) {

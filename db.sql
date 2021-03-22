@@ -20,10 +20,21 @@ CREATE TABLE IF NOT EXISTS `contact` (
 CREATE TABLE IF NOT EXISTS `document_type` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
-  `requirements` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `requirements` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+  `expiry_days` smallint NOT NULL DEFAULT '15',
   `created_at` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   `updated_at` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`id`)
+);
+
+CREATE TABLE IF NOT EXISTS `document_type_file` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `file_id` bigint unsigned NOT NULL,
+  `document_type_id` bigint unsigned NOT NULL,
+  `created_at` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `updated_at` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `document_type_id` (`document_type_id`,`file_id`)
 );
 
 CREATE TABLE IF NOT EXISTS `downloadable` (
@@ -81,11 +92,23 @@ CREATE TABLE IF NOT EXISTS `request` (
   `file_id` bigint unsigned DEFAULT NULL,
   `status` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT 'Received',
   `evaluation` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci DEFAULT NULL,
+  `copies` smallint NOT NULL DEFAULT '1',
+  `reason` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT 'N/A',
   `created_at` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   `updated_at` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`id`),
   KEY `FK_request_user` (`user_id`),
   KEY `FK_request_file` (`file_id`)
+);
+
+CREATE TABLE IF NOT EXISTS `request_file` (
+  `id` bigint unsigned NOT NULL DEFAULT '0',
+  `request_id` bigint unsigned NOT NULL,
+  `file_id` bigint unsigned NOT NULL,
+  `created_at` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `updated_at` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `request_id` (`request_id`,`file_id`)
 );
 
 CREATE TABLE IF NOT EXISTS `storage` (
@@ -103,8 +126,8 @@ CREATE TABLE IF NOT EXISTS `task` (
   `title` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   `done` tinyint(1) NOT NULL DEFAULT '0',
   `request_id` bigint unsigned NOT NULL,
-  `created_at` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
-  `updated_at` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+  `created_at` timestamp NOT NULL,
+  `updated_at` timestamp NOT NULL,
   PRIMARY KEY (`id`),
   KEY `request_id` (`request_id`)
 );

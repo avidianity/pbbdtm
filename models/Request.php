@@ -170,4 +170,9 @@ class Request extends Model
     {
         return $this->belongsTo(File::class);
     }
+
+    public function files()
+    {
+        return $this->hasMany(RequestFile::class);
+    }
 }
