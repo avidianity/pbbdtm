@@ -8,7 +8,7 @@ namespace Models;
 class DocumentType extends Model
 {
     protected static $table = 'document_type';
-    protected $fillable = ['name', 'requirements'];
+    protected $fillable = ['name', 'requirements', 'expiry_days'];
 
     protected static function events()
     {
@@ -20,5 +20,10 @@ class DocumentType extends Model
     public function requests()
     {
         return $this->hasMany(Request::class);
+    }
+
+    public function files()
+    {
+        return $this->hasMany(DocumentTypeFile::class);
     }
 }

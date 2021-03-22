@@ -3,6 +3,8 @@
 namespace Controllers;
 
 use Models\DocumentType;
+use Models\DocumentTypeFile;
+use Models\File;
 
 class DocumentTypeController extends Controller
 {
@@ -27,7 +29,21 @@ class DocumentTypeController extends Controller
 
     public function store()
     {
-        return DocumentType::create(input()->all());
+        $data = input()->all();
+        $documentType = DocumentType::create($data);
+
+        if (input()->has('files')) {
+            foreach (input()->file('files') as $file) {
+                $model = File::process($file->fetch());
+                $model->save();
+                DocumentTypeFile::create([
+                    'document_type_id' => $documentType->id,
+                    'file_id' => $file->id,
+                ]);
+            }
+        }
+
+        return $documentType;
     }
 
     public function update()
@@ -37,6 +53,18 @@ class DocumentTypeController extends Controller
         $documentType = DocumentType::findOrFail($id);
 
         $documentType->update(input()->all());
+
+        if (input()->has('files')) {
+            deleteMany($documentType->files, DocumentTypeFile::class);
+            foreach (input()->file('files') as $file) {
+                $model = File::process($file->fetch());
+                $model->save();
+                DocumentTypeFile::create([
+                    'document_type_id' => $documentType->id,
+                    'file_id' => $file->id,
+                ]);
+            }
+        }
 
         return $documentType;
     }

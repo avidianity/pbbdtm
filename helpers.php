@@ -195,6 +195,16 @@ function dump($data, $mode = 'var_export')
 }
 
 /**
+ * Checks if array is an associative array
+ * @param array $array
+ * @return bool
+ */
+function isAssociativeArray($array)
+{
+    return count(array_filter(array_keys($array), 'is_string')) > 0;
+}
+
+/**
  * Recursively import all the files inside a directory
  * 
  * @param string $path

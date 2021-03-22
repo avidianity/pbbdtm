@@ -4,7 +4,6 @@ namespace Models;
 
 use finfo;
 use InvalidArgumentException;
-use Libraries\Storage;
 use Libraries\Str;
 
 /**
@@ -54,14 +53,12 @@ class File extends Model
 
         $binary = @file_get_contents($url);
 
-        if ($binary === false) {
-            if (base64_encode(base64_decode($url, true)) !== $url) {
-                throw new InvalidArgumentException(
-                    'File must be either a string url or a base64 encoded file.'
-                );
-            }
-            $binary = base64_decode($url);
+        if (base64_encode(base64_decode($url, true)) !== $url) {
+            throw new InvalidArgumentException(
+                'File must be either a string url or a base64 encoded file.'
+            );
         }
+        $binary = base64_decode($url);
 
         $data['type'] = (new finfo(FILEINFO_MIME_TYPE))->buffer($binary);
         $data['name'] = static::generateFileName($data['type']);
@@ -131,8 +128,7 @@ class File extends Model
             'text/comma-separated-values' => 'csv',
             'application/vnd.msexcel' => 'csv',
             'application/x-director' => 'dcr',
-            'application/vnd.openxmlformats-officedocument.wordprocessingml.document' =>
-            'docx',
+            'application/vnd.openxmlformats-officedocument.wordprocessingml.document' => 'docx',
             'application/x-dvi' => 'dvi',
             'message/rfc822' => 'eml',
             'application/x-msdownload' => 'exe',
@@ -274,6 +270,6 @@ class File extends Model
             'text/x-scriptzsh' => 'zsh',
         ];
 
-        return isset($mime_map[$mime]) ? $mime_map[$mime] : false;
+        return $mime_map[$mime];
     }
 }

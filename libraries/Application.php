@@ -51,6 +51,11 @@ class Application
         return $this;
     }
 
+    public function getView()
+    {
+        return $this->view;
+    }
+
     /**
      * Start the application
      *
@@ -142,5 +147,14 @@ class Application
             if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']))
                 header("Access-Control-Allow-Headers: {$_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']}");
         }
+    }
+
+    public function __get($name)
+    {
+        if ($this->view->hasData($name)) {
+            return $this->view->getData($name);
+        }
+
+        return null;
     }
 }

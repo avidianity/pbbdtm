@@ -12,6 +12,10 @@ class Input implements JSONable, Arrayable
     use Singleton;
 
     protected $data = [];
+    /**  
+     * @var \Libraries\File[]
+     */
+    protected $files = [];
 
     public function __construct()
     {
@@ -26,6 +30,16 @@ class Input implements JSONable, Arrayable
         }
         foreach ($_POST as $key => $value) {
             $this->data[$key] = $this->castToCorrectType($value);
+        }
+        foreach ($_FILES as $key => $payload) {
+            if (isAssociativeArray($payload)) {
+                $this->files[$key] = new File($payload);
+            } else {
+                $this->files[$key] = [];
+                foreach ($payload as $key => $file) {
+                    $this->files[$key][] = new File($file);
+                }
+            }
         }
         $this->convertEmptyStringsToNull();
         $this->clean();
@@ -97,7 +111,7 @@ class Input implements JSONable, Arrayable
      */
     public function all()
     {
-        return $this->data;
+        return array_merge($this->data, $this->files);
     }
 
     /**
@@ -125,12 +139,15 @@ class Input implements JSONable, Arrayable
         if (in_array($key, array_keys($this->data))) {
             return $this->data[$key];
         }
+        if (in_array($key, array_keys($this->files))) {
+            return $this->files[$key];
+        }
         return $default;
     }
 
     public function toArray(): array
     {
-        return $this->data;
+        return $this->all();
     }
 
     public function toJSON(): object
@@ -162,6 +179,22 @@ class Input implements JSONable, Arrayable
      */
     public function has($key)
     {
-        return in_array($key, array_keys($this->data));
+        return in_array($key, array_keys($this->data)) || in_array($key, array_keys($this->files));
+    }
+
+    public function files()
+    {
+        return $this->files;
+    }
+
+    /**
+     * Get a file or an array of files
+     *
+     * @param string $key
+     * @return \Libraries\File|\Libraries\File[]
+     */
+    public function file($key)
+    {
+        return $this->files[$key];
     }
 }

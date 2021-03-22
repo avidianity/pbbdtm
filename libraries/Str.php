@@ -18,6 +18,11 @@ class Str implements Stringable
         return $this->data;
     }
 
+    public function toString()
+    {
+        return $this->__toString();
+    }
+
     public static function random($length)
     {
         $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -56,5 +61,10 @@ class Str implements Stringable
     {
         $this->data .= $string;
         return $this;
+    }
+
+    public static function from($data)
+    {
+        return new static($data);
     }
 }

@@ -25,6 +25,8 @@ class Request extends Model
         'expired',
         'acknowledged',
         'evaluation',
+        'copies',
+        'reason',
     ];
 
     public static function checkExpired()
@@ -35,7 +37,7 @@ class Request extends Model
             }
         }
         foreach (static::getNonReleasing() as $request) {
-            if ($request->getDaysFromNow() >= 15) {
+            if ($request->getDaysFromNow() >= $request->documentType->expiry_days) {
                 $request->markAsExpired();
             }
         }
@@ -95,7 +97,9 @@ class Request extends Model
     protected static function events()
     {
         static::creating(function (self $request) {
-            $request->request_id = Str::random(5) . '-' . Str::random(5) . '-' . date('Y');
+            $request->request_id = Str::from(Str::random(5) . '-' . Str::random(5) . '-' . date('Y'))
+                ->toLowerCase()
+                ->toString();
         });
 
         static::saving(function (self $request) {

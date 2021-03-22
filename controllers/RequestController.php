@@ -46,7 +46,30 @@ class RequestController extends Controller
 
     public function store()
     {
-        $request = Request::create(input()->except(['user_id']) + ['user_id' => user()->id]);
+        $id = user()->id;
+        $documentID = input()->get('document_type_id');
+
+        $pdo = Request::getConnection();
+
+        $query  = 'SELECT COUNT(*) as count FROM ' . (new Request())->getTable() . ' ';
+        $query .= 'WHERE user_id = :user_id AND document_type_id = :document_type_id ';
+        $query .= 'AND approved = :approved';
+
+        $statement = $pdo->prepare($query);
+
+        $statement->execute([
+            ':user_id' => $id,
+            ':document_type_id' => $documentID,
+            ':approved' => 0,
+        ]);
+
+        $row = $statement->fetch();
+
+        if ($row->count > 0) {
+            return response(['message' => 'You already have a request for this type of document.'], 403);
+        }
+
+        $request = Request::create(input()->except(['user_id']) + ['user_id' => $id]);
 
         $request->logs()->create(['action' => 'Applicant has issued a request.', 'user_id' => user()->id]);
 
