@@ -105,8 +105,8 @@ CREATE TABLE IF NOT EXISTS `request_file` (
   `id` bigint unsigned NOT NULL DEFAULT '0',
   `request_id` bigint unsigned NOT NULL,
   `file_id` bigint unsigned NOT NULL,
-  `created_at` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `updated_at` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `created_at` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+  `updated_at` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`id`),
   KEY `request_id` (`request_id`,`file_id`)
 );
@@ -126,8 +126,8 @@ CREATE TABLE IF NOT EXISTS `task` (
   `title` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   `done` tinyint(1) NOT NULL DEFAULT '0',
   `request_id` bigint unsigned NOT NULL,
-  `created_at` timestamp NOT NULL,
-  `updated_at` timestamp NOT NULL,
+  `created_at` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+  `updated_at` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`id`),
   KEY `request_id` (`request_id`)
 );
