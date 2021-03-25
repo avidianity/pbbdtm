@@ -5,11 +5,15 @@ namespace Libraries;
 use ArrayAccess;
 use Closure;
 use Countable;
+use Interfaces\Arrayable;
 use Iterator;
 use JsonSerializable;
 
-class Collection implements ArrayAccess, Countable, Iterator, JsonSerializable
+class Collection implements ArrayAccess, Countable, Iterator, JsonSerializable, Arrayable
 {
+    /**
+     * @var array
+     */
     protected $items = [];
     protected $keys = [];
 
@@ -150,5 +154,10 @@ class Collection implements ArrayAccess, Countable, Iterator, JsonSerializable
     public function join($glue)
     {
         return implode($glue, $this->all());
+    }
+
+    public function toArray(): array
+    {
+        return $this->all();
     }
 }
