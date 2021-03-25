@@ -4,6 +4,7 @@ namespace Models;
 
 /**
  * @property Request[] $requests
+ * @property DocumentTypeFile[] $files
  */
 class DocumentType extends Model
 {

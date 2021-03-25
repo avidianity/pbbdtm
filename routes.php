@@ -4,6 +4,7 @@ use Controllers\AuthController;
 use Controllers\CMSController;
 use Controllers\ContactsController;
 use Controllers\DocumentTypeController;
+use Controllers\DocumentTypeFileController;
 use Controllers\DownloadableController;
 use Controllers\FileController;
 use Controllers\LogController;
@@ -31,6 +32,8 @@ $router->group('/api', function (Router $router) {
     $router->apiResource('/contacts', ContactsController::class);
     $router->apiResource('/requests/tasks', TaskController::class);
 
+    $router->delete('/document-types/files', [DocumentTypeFileController::class, 'destroy']);
+
     $router->group('/self', function (Router $router) {
         $router->get('/', [SelfController::class, 'self']);
         $router->put('/', [SelfController::class, 'update']);
@@ -43,6 +46,7 @@ $router->group('/api', function (Router $router) {
     $router->get('/file', [FileController::class, 'stream']);
     $router->get('/logs', LogController::class);
     $router->get('/statistics', StatisticsController::class);
+    $router->get('/requests/expiring', [RequestController::class, 'expiring']);
 });
 
 $router->fallback(function () {

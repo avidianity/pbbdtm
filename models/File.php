@@ -47,18 +47,22 @@ class File extends Model
      * @param string $url
      * @return static
      */
-    public static function process(string $url)
+    public static function process(string $url, $decode = true)
     {
         $data = [];
 
-        $binary = @file_get_contents($url);
+        if ($decode) {
+            $binary = @file_get_contents($url);
 
-        if (base64_encode(base64_decode($url, true)) !== $url) {
-            throw new InvalidArgumentException(
-                'File must be either a string url or a base64 encoded file.'
-            );
+            if (base64_encode(base64_decode($url, true)) !== $url) {
+                throw new InvalidArgumentException(
+                    'File must be either a string url or a base64 encoded file.'
+                );
+            }
+            $binary = base64_decode($url);
+        } else {
+            $binary = $url;
         }
-        $binary = base64_decode($url);
 
         $data['type'] = (new finfo(FILEINFO_MIME_TYPE))->buffer($binary);
         $data['name'] = static::generateFileName($data['type']);

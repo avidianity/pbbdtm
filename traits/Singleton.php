@@ -15,7 +15,7 @@ trait Singleton
     protected static $instance = null;
 
     /**
-     * Get the instance of this class
+     * Get the instance of this class.
      * 
      * @return static
      */

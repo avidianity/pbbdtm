@@ -63,6 +63,11 @@ class Str implements Stringable
         return $this;
     }
 
+    public function split($delimiter)
+    {
+        return new Collection(explode($delimiter, $this->toString()));
+    }
+
     public static function from($data)
     {
         return new static($data);

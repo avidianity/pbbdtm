@@ -33,7 +33,19 @@ class Input implements JSONable, Arrayable
         }
         foreach ($_FILES as $key => $payload) {
             if (isAssociativeArray($payload)) {
-                $this->files[$key] = new File($payload);
+                if (!isAssociativeArray($payload['name'])) {
+                    $this->files[$key] = [];
+                    foreach ($payload as $name => $value) {
+                        foreach ($value as $index => $data) {
+                            if (!isset($this->files[$key][$index])) {
+                                $this->files[$key][$index] = new File();
+                            }
+                            $this->files[$key][$index]->{$name} = $data;
+                        }
+                    }
+                } else {
+                    $this->files[$key] = new File($payload);
+                }
             } else {
                 $this->files[$key] = [];
                 foreach ($payload as $key => $file) {

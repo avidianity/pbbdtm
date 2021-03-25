@@ -3,6 +3,7 @@
 use Exceptions\UnauthorizedHTTPException;
 use Interfaces\Arrayable;
 use Interfaces\JSONable;
+use Libraries\Collection;
 use Libraries\Input;
 use Libraries\Mailer;
 use Libraries\Message;
@@ -333,6 +334,17 @@ function toObject($iterable)
 function input()
 {
     return Input::getInstance();
+}
+
+/**
+ * Create a new collection array
+ * 
+ * @param iterable $items
+ * @return \Libraries\Collection
+ */
+function collect($items = [])
+{
+    return new Collection($items);
 }
 
 /**

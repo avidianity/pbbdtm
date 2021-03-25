@@ -24,7 +24,7 @@ class Mailer
     protected $subject = '';
 
     /**
-     * @var \Swift_Mailer|null
+     * @var BaseMailer|null
      */
     protected $mailer = null;
 

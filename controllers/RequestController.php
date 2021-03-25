@@ -137,6 +137,11 @@ class RequestController extends Controller
         return response('', 204);
     }
 
+    public function expiring()
+    {
+        return Request::getExpiring();
+    }
+
     protected function admin()
     {
         if ($this->user->role === 'Student') {
