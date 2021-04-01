@@ -17,7 +17,7 @@ class BelongsTo implements HasRelationships
      */
     protected $instance;
 
-    public function __construct($parent, $foreignKey = null, $ownerKey = 'id', Model &$instance)
+    public function __construct($parent, $foreignKey = null, $ownerKey = 'id', Model &$instance = null)
     {
         $this->instance = $instance;
         $this->parent = $parent;

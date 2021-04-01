@@ -2,6 +2,7 @@
 
 namespace Libraries;
 
+use Exception;
 use Interfaces\Stringable;
 use Models\Model;
 
@@ -53,7 +54,7 @@ class Response
             exit;
         }
 
-        if ($result instanceof Model || is_array($result)) {
+        if ($result instanceof Model || is_array($result) || $result instanceof Collection || $result instanceof Exception) {
             echo json_encode($result);
             exit;
         }

@@ -16,7 +16,7 @@ class Database extends PDO implements SingletonContract
         return parent::prepare($statement, $options);
     }
 
-    public function query($statement, $mode = PDO::ATTR_DEFAULT_FETCH_MODE, $arg3 = null, array $ctoargs = array())
+    public function query(...$rest)
     {
         $args = func_get_args();
         Log::record($args[0]);

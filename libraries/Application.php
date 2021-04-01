@@ -83,7 +83,7 @@ class Application
                     $response->setStatus(201);
                 }
                 return $response->send();
-            } else if (is_object($result) || is_array($result) || $result instanceof JSONable) {
+            } else if (is_object($result) || is_array($result) || $result instanceof JSONable || $result instanceof Collection) {
                 return response($result)->send();
             }
         } catch (Exception $exception) {

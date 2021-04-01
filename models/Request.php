@@ -48,7 +48,7 @@ class Request extends Model
      */
     protected static function getApproved()
     {
-        return array_filter(static::getAll(), function (self $request) {
+        return collect(static::getAll())->filter(function (self $request) {
             return $request->approved && !$request->expired;
         });
     }
@@ -58,14 +58,13 @@ class Request extends Model
      */
     public static function getExpiring()
     {
-        $requests = array_map(function (self $request) {
+        return collect(static::getAll())->map(function (self $request) {
             $request->load(['user', 'documentType']);
             return $request;
-        }, static::getAll());
-
-        return array_filter($requests, function (self $request) {
-            return $request->getDaysFromNow() >= $request->documentType->expiry_days - 2;
-        });
+        })
+            ->filter(function (self $request) {
+                return $request->getDaysFromNow() >= $request->documentType->expiry_days - 1;
+            });
     }
 
     /**
@@ -73,7 +72,7 @@ class Request extends Model
      */
     protected static function getNonReleasing()
     {
-        return array_filter(static::getAll(), function (self $request) {
+        return collect(static::getAll())->filter(function (self $request) {
             return !in_array($request->status, ['Releasing', 'Released', 'Rejected']);
         });
     }
