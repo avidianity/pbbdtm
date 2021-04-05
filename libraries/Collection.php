@@ -9,6 +9,9 @@ use Interfaces\Arrayable;
 use Iterator;
 use JsonSerializable;
 
+/**
+ * @property-read int $length
+ */
 class Collection implements ArrayAccess, Countable, Iterator, JsonSerializable, Arrayable
 {
     /**
@@ -83,13 +86,31 @@ class Collection implements ArrayAccess, Countable, Iterator, JsonSerializable, 
         return $this->items;
     }
 
+    public function first()
+    {
+        if ($this->count() > 0) {
+            return $this->items[0];
+        }
+
+        return null;
+    }
+
+    public function last()
+    {
+        if ($this->count() > 0) {
+            return $this->items[$this->length - 1];
+        }
+
+        return null;
+    }
+
     public function map(Closure $callback)
     {
         $items = [];
 
         $callback->bindTo($this, $this);
 
-        foreach ($this->all() as $key => $value) {
+        foreach ($this as $key => $value) {
             $items[$key] = $callback($value, $key);
         }
 
@@ -100,7 +121,7 @@ class Collection implements ArrayAccess, Countable, Iterator, JsonSerializable, 
     {
         $callback->bindTo($this, $this);
 
-        foreach ($this->all() as $key => $value) {
+        foreach ($this as $key => $value) {
             $callback($value, $key);
         }
 
@@ -113,13 +134,36 @@ class Collection implements ArrayAccess, Countable, Iterator, JsonSerializable, 
 
         $callback->bindTo($this, $this);
 
-        foreach ($this->all() as $key => $value) {
+        foreach ($this as $key => $value) {
             if ($callback($value, $key)) {
                 $items[$key] = $value;
             }
         }
 
         return new static($items);
+    }
+
+    public function reduce(Closure $callback, $start = null)
+    {
+        $result = $start;
+
+        $callback->bindTo($this, $this);
+
+        foreach ($this as $key => $value) {
+            $result = $callback($result, $value, $key);
+        }
+
+        return $result;
+    }
+
+    public function reverse()
+    {
+        return new static(array_reverse($this->items));
+    }
+
+    public function toBase()
+    {
+        return new self($this->items);
     }
 
     public function set($key, $value)
@@ -130,6 +174,10 @@ class Collection implements ArrayAccess, Countable, Iterator, JsonSerializable, 
 
     public function get($key)
     {
+        if ($key === 'length') {
+            return $this->count();
+        }
+
         return $this->offsetGet($key);
     }
 

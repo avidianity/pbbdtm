@@ -4,7 +4,7 @@ namespace Models;
 
 class Task extends Model
 {
-    protected $fillable = ['for', 'title', 'done', 'request_id'];
+    protected $fillable = ['for', 'title', 'done', 'name', 'request_id'];
 
     protected static function events()
     {

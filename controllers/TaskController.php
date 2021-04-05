@@ -36,7 +36,7 @@ class TaskController extends Controller
      */
     public function store()
     {
-        return Task::create(input()->only(['for', 'title', 'done', 'request_id']));
+        return Task::create(input()->only(['for', 'title', 'done', 'request_id', 'name']));
     }
 
     /**
@@ -51,7 +51,7 @@ class TaskController extends Controller
 
         $task = Task::findOrFail($id);
 
-        $task->update(input()->only(['for', 'title', 'done']));
+        $task->update(input()->only(['for', 'title', 'done', 'name']));
 
         return $task;
     }
