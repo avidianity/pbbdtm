@@ -62,15 +62,17 @@ class AuthController extends Controller
 
         $errors = [];
 
-        $query  = 'SELECT * FROM ' . (new User())->getTable() . ' ';
-        $query .= 'WHERE student_id_number = :student_id_number LIMIT 1;';
+        if (isset($data['student_id_number'])) {
+            $query  = 'SELECT * FROM ' . (new User())->getTable() . ' ';
+            $query .= 'WHERE student_id_number = :student_id_number LIMIT 1;';
 
-        $statement = $pdo->prepare($query);
+            $statement = $pdo->prepare($query);
 
-        $statement->execute([':student_id_number' => $data['student_id_number']]);
+            $statement->execute([':student_id_number' => $data['student_id_number']]);
 
-        if ($statement->rowCount() !== 0) {
-            $errors['student_id_number'] = ['Student ID Number already exists.'];
+            if ($statement->rowCount() !== 0) {
+                $errors['student_id_number'] = ['Student ID Number already exists.'];
+            }
         }
 
         $query  = 'SELECT * FROM ' . (new User())->getTable() . ' ';
