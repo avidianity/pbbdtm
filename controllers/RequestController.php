@@ -6,6 +6,7 @@ use DateTime;
 use Exceptions\ForbiddenHTTPException;
 use Models\File;
 use Models\Request;
+use Models\RequestFile;
 use Queues\SendMail;
 use Queues\SendMessage;
 
@@ -25,7 +26,11 @@ class RequestController extends Controller
     public function index()
     {
         return array_map(function (Request $request) {
-            return $request->load(['user', 'documentType', 'file', 'tasks']);
+            $request->load(['user', 'documentType', 'file', 'tasks', 'files']);
+            foreach ($request->files as $file) {
+                $file->load(['file']);
+            }
+            return $request;
         }, Request::getAll());
     }
 
@@ -35,7 +40,11 @@ class RequestController extends Controller
 
         $request = Request::findOrFail($id);
 
-        $request->load(['user', 'documentType', 'file', 'logs', 'tasks']);
+        $request->load(['user', 'documentType', 'file', 'logs', 'tasks', 'files']);
+
+        foreach ($request->files as $file) {
+            $file->load(['file']);
+        }
 
         foreach ($request->logs as $log) {
             $log->load(['user']);
@@ -80,6 +89,18 @@ class RequestController extends Controller
             'date' => DateTime::createFromFormat('Y-m-d H:i:s', $request->updated_at)->format('F d, Y h:i A'),
         ];
 
+        if (input()->has('files')) {
+            foreach (input()->file('files') as $file) {
+                $model = File::process($file->fetch(), false);
+                $model->name = $file->name;
+                $model->save();
+                RequestFile::create([
+                    'request_id' => $request->id,
+                    'file_id' => $model->id,
+                ]);
+            }
+        }
+
         queue()->register(new SendMail(user()->email, 'emails.new-request', 'Request Creation', $data));
 
         $message = 'Hi! This is a message from PBBDTM. You have made a request (ID: ' . $request->request_id . '). We will notify you on further updates.';
@@ -117,6 +138,18 @@ class RequestController extends Controller
         }
 
         $request->update($data);
+
+        if (input()->has('files')) {
+            deleteMany($request->files, RequestFile::class);
+            foreach (input()->file('files') as $file) {
+                $model = File::process($file->fetch(), false);
+                $model->save();
+                RequestFile::create([
+                    'request_id' => $request->id,
+                    'file_id' => $file->id,
+                ]);
+            }
+        }
 
         $request->logs()->create(['action' => user()->role . ' has updated the request.', 'user_id' => user()->id]);
 

@@ -83,7 +83,7 @@ class DocumentTypeController extends Controller
         if (input()->has('files')) {
             deleteMany($documentType->files, DocumentTypeFile::class);
             foreach (input()->file('files') as $file) {
-                $model = File::process($file->fetch());
+                $model = File::process($file->fetch(), false);
                 $model->save();
                 DocumentTypeFile::create([
                     'document_type_id' => $documentType->id,
