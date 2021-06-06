@@ -137,8 +137,6 @@ class RequestController extends Controller
             $request->file_id = $file->id;
         }
 
-        $request->update($data);
-
         if (input()->has('files')) {
             deleteMany($request->files, RequestFile::class);
             foreach (input()->file('files') as $file) {
