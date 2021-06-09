@@ -149,6 +149,9 @@ class RequestController extends Controller
             }
         }
 
+        $request->fill(input()->all());
+        $request->save();
+
         $request->logs()->create(['action' => user()->role . ' has updated the request.', 'user_id' => user()->id]);
 
         $request->load(['file']);
