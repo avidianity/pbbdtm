@@ -118,15 +118,17 @@ class RequestController extends Controller
 
         $request = Request::findOrFail($id);
 
-        $data = input()->all();
+        $data = input()->except(['file_id']);
 
         if (input()->get('status', $request->status) !== $request->status) {
             $data['acknowledged'] = false;
         }
 
+        $request->fill($data);
+
         if (input()->has('file')) {
-            $raw = input()->file;
-            $file = File::process($raw);
+            $raw = input()->file('file');
+            $file = File::process($raw->fetch(), false);
 
             $file->save();
 
@@ -149,7 +151,6 @@ class RequestController extends Controller
             }
         }
 
-        $request->fill(input()->all());
         $request->save();
 
         $request->logs()->create(['action' => user()->role . ' has updated the request.', 'user_id' => user()->id]);

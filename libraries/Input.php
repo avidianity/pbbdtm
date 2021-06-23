@@ -20,7 +20,7 @@ class Input implements JSONable, Arrayable
     public function __construct()
     {
         $stream = json_decode(file_get_contents('php://input'), true);
-        if ($stream !== null) {
+        if ($stream !== null && is_iterable($stream)) {
             foreach ($stream as $key => $value) {
                 $this->data[$key] = $this->castToCorrectType($value);
             }
@@ -33,7 +33,7 @@ class Input implements JSONable, Arrayable
         }
         foreach ($_FILES as $key => $payload) {
             if (isAssociativeArray($payload)) {
-                if (!isAssociativeArray($payload['name'])) {
+                if (!isAssociativeArray($payload['name']) && is_iterable($payload['name'])) {
                     $this->files[$key] = [];
                     foreach ($payload as $name => $value) {
                         foreach ($value as $index => $data) {
