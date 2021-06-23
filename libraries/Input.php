@@ -85,7 +85,7 @@ class Input implements JSONable, Arrayable
             }
             return (int)$value;
         }
-        if (is_null($value)) {
+        if (is_null($value) && $value === 'null') {
             return null;
         }
         if (is_bool($value)) {
