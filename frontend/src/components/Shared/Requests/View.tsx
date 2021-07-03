@@ -17,7 +17,8 @@ export function View() {
 	const [request, setRequest] = useState<Request | null>(null);
 	const history = useHistory();
 	const [updating, setUpdating] = useState(false);
-	const [currentStatus, setCurrentStatus] = useState<string>('Registrar');
+	const [currentStatus, setCurrentStatus] = useState('Registrar');
+	const [smsMessage, setSmsMessage] = useState('');
 
 	const user = state.get<User>('user');
 
@@ -25,50 +26,14 @@ export function View() {
 		try {
 			const { data } = await axios.get<Request>(`/requests/show?id=${requestID}`);
 			setRequest(data);
+			setSmsMessage(
+				`Your Request (ID: ${data.request_id}) has been updated to ${getNextStatus(user.role)}. ${
+					window.location.origin
+				}/dashboard/requests/${data.id}`
+			);
 		} catch (error) {
 			handleError(error);
 			history.goBack();
-		}
-	};
-
-	const createTask = async (forTask: string) => {
-		const title = prompt('Enter title');
-		if (!title) {
-			toastr.error('You must provide a title.');
-			return;
-		}
-		try {
-			await axios.post(`/requests/tasks`, {
-				for: forTask,
-				title,
-				request_id: request?.id,
-				done: false,
-				name: user.name,
-			});
-			toastr.success('Task created successfully.');
-			fetchRequest(`${request?.id}`);
-		} catch (error) {
-			console.log(error.toJSON());
-			toastr.error('Unable to create task.', 'Oops!');
-		}
-	};
-
-	const editTask = async (task: Task) => {
-		const title = prompt('Enter title', task.title);
-		if (!title) {
-			toastr.error('You must provide a title.');
-			return;
-		}
-		try {
-			await axios.put(`/requests/tasks?id=${task.id}`, {
-				title,
-				name: user.name,
-			});
-			toastr.info('Task updated.', 'Notice');
-			fetchRequest(`${request?.id}`);
-		} catch (error) {
-			console.log(error.toJSON());
-			toastr.error('Unable to update task.', 'Oops!');
 		}
 	};
 
@@ -84,17 +49,6 @@ export function View() {
 		} catch (error) {
 			console.log(error.toJSON());
 			toastr.error('Unable to update task.', 'Oops!');
-		}
-	};
-
-	const deleteTask = async (task: Task) => {
-		try {
-			await axios.delete(`/requests/tasks?id=${task.id}`);
-			toastr.info('Task deleted.', 'Notice');
-			fetchRequest(`${request?.id}`);
-		} catch (error) {
-			console.log(error.toJSON());
-			toastr.error('Unable to delete task.', 'Oops!');
 		}
 	};
 
@@ -123,15 +77,15 @@ export function View() {
 					return 1;
 				case 'Payment':
 					return 2;
-				case 'Processing':
-					return 3;
 				case 'Evaluating':
-					return 4;
+					return 3;
 				case 'Evaluated':
-					return 5;
+					return 4;
 				case 'Signed':
-					return 5;
+					return 4;
 				case 'Releasing':
+					return 4;
+				case 'Released':
 					return 5;
 				default:
 					return 0;
@@ -156,9 +110,7 @@ export function View() {
 			case 'Admin':
 				return 'Forward for payment to Cashier';
 			case 'Cashier':
-				return 'Mark as paid and forward to Processing';
-			case 'Processing':
-				return 'Forward to Evaluation';
+				return 'Mark as paid and forward to Evaluation';
 			case 'Evaluation':
 				return 'Forward to Signing';
 			case 'Director':
@@ -180,30 +132,14 @@ export function View() {
 				if (assignedRole) {
 					data.for = assignedRole;
 				}
-				switch (role) {
-					case 'Admin':
-						return 'Payment';
-					case 'Cashier':
-						return 'Processing';
-					case 'Processing':
-						return 'Evaluating';
-					case 'Evaluation':
-						return 'Evaluated';
-					case 'Director':
-						return 'Signed';
-					case 'Registrar':
-						return 'Signed';
-					case 'Releasing':
-						return 'Releasing';
-					default:
-						throw new Error(`Invalid role. ${role}`);
-				}
+				return getNextStatus(role);
 			})(user.role);
 			await axios.put('/requests', {
 				...data,
 				id: request?.id,
 				status,
 				acknowledged: ['Releasing', 'Released'].includes(status),
+				sms_message: smsMessage,
 			});
 			toastr.info('Request has been updated and forwarded.', 'Notice');
 			history.goBack();
@@ -215,14 +151,31 @@ export function View() {
 		}
 	};
 
+	const getNextStatus = (role: Roles) => {
+		switch (role) {
+			case 'Admin':
+				return 'Payment';
+			case 'Cashier':
+				return 'Evaluating';
+			case 'Evaluation':
+				return 'Evaluated';
+			case 'Director':
+				return 'Signed';
+			case 'Registrar':
+				return 'Signed';
+			case 'Releasing':
+				return 'Releasing';
+			default:
+				throw new Error(`Invalid role. ${role}`);
+		}
+	};
+
 	const isForwardable = () => {
 		switch (user.role) {
 			case 'Admin':
 				return request?.status === 'Received';
 			case 'Cashier':
 				return request?.status === 'Payment';
-			case 'Processing':
-				return request?.status === 'Processing';
 			case 'Evaluation':
 				return request?.status === 'Evaluating';
 			case 'Director':
@@ -233,6 +186,7 @@ export function View() {
 				return request?.status === 'Signed';
 		}
 	};
+
 	const origin = window.location.origin;
 	const exportToPDF = async () => {
 		toastr.info('Printing. Please wait.');
@@ -345,7 +299,7 @@ export function View() {
 										className={`btn btn-info btn-sm ${outIf(updating || !request.acknowledged, 'disabled')}`}
 										onClick={(e) => {
 											e.preventDefault();
-											forward();
+											$('#forwardRequestModal').modal('toggle');
 										}}
 										disabled={updating || !request.acknowledged}>
 										<i className='fas fa-bell'></i>{' '}
@@ -404,14 +358,6 @@ export function View() {
 										return statuses.map((status, index) => (
 											<li className='list-group-item' key={index}>
 												<div className='d-flex align-items-center'>
-													{taskBelongsToUser(status) ? (
-														<div className='mr-4'>
-															<i
-																className='bi bi-plus-circle clickable'
-																title='Add Task'
-																onClick={() => createTask(status)}></i>
-														</div>
-													) : null}
 													{level !== 0 ? (
 														level >= index + 1 ? (
 															<i className='bi bi-check-circle-fill mr-1'></i>
@@ -455,14 +401,6 @@ export function View() {
 																						title='Mark as Done'
 																						onClick={() => markTask(task, true)}></i>
 																				)}
-																				<i
-																					className='bi bi-info-circle clickable'
-																					title='Edit'
-																					onClick={() => editTask(task)}></i>
-																				<i
-																					className='bi bi-x-circle mx-1 clickable'
-																					title='Delete'
-																					onClick={() => deleteTask(task)}></i>
 																			</div>
 																		) : null}
 																	</div>
@@ -571,17 +509,25 @@ export function View() {
 							</button>
 						</div>
 						<div className='modal-body'>
-							<select
+							{user.role === 'Evaluation' ? (
+								<select
+									className='form-control'
+									onChange={(e) => {
+										setCurrentStatus(e.target.value);
+									}}>
+									{['Registrar', 'Director'].map((status, index) => (
+										<option value={status} key={index}>
+											{status}
+										</option>
+									))}
+								</select>
+							) : null}
+							<textarea
+								cols={20}
+								rows={5}
 								className='form-control'
-								onChange={(e) => {
-									setCurrentStatus(e.target.value);
-								}}>
-								{['Registrar', 'Director'].map((status, index) => (
-									<option value={status} key={index}>
-										{status}
-									</option>
-								))}
-							</select>
+								onChange={(e) => setSmsMessage(e.target.value)}
+								value={smsMessage}></textarea>
 						</div>
 						<div className='modal-footer'>
 							<button
@@ -590,20 +536,7 @@ export function View() {
 								onClick={(e) => {
 									e.preventDefault();
 									$('#forwardRequestModal').modal('hide');
-									if (
-										[
-											'Admin',
-											'Processing',
-											'Cashier',
-											'Evaluation',
-											'Director',
-											'Registrar',
-											'Releasing',
-											'Applicant',
-										].includes(currentStatus)
-									) {
-										forward(currentStatus);
-									}
+									forward(currentStatus);
 								}}>
 								Forward
 							</button>

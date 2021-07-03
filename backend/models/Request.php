@@ -134,11 +134,6 @@ class Request extends Model
                 ];
 
                 queue()->register(new SendMail($request->user->email, 'emails.updated-request', 'Request Updated', $data));
-
-                $text  = 'Your Request (ID: ' . $request->request_id . ') has been updated to \'' . $request->status . '\'.';
-                $text .= sprintf('%s%s', config('app.frontend.url'), "/dashboard/requests/{$request->id}");
-
-                queue()->register(new SendMessage($request->user->phone, $text));
             }
         });
 

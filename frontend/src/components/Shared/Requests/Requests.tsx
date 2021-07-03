@@ -89,8 +89,6 @@ const Requests: FC<Props> = () => {
 		switch (user.role) {
 			case 'Admin':
 				return requests;
-			case 'Processing':
-				return requests.filter((request) => request.status === 'Processing');
 			case 'Cashier':
 				return requests.filter((request) => request.status === 'Payment');
 			case 'Evaluation':
@@ -112,8 +110,6 @@ const Requests: FC<Props> = () => {
 				return user.role === 'Admin';
 			case 'Payment':
 				return user.role === 'Cashier';
-			case 'Processing':
-				return user.role === 'Processing';
 			case 'Evaluating':
 				return user.role === 'Evaluation';
 			case 'Evaluated':

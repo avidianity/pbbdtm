@@ -13,9 +13,9 @@ declare global {
 		modal(mode: ModalModes);
 	}
 
-	type RequestStatus = 'Received' | 'Processing' | 'Payment' | 'Evaluating' | 'Evaluated' | 'Signed' | 'Releasing' | 'Released';
+	type RequestStatus = 'Received' | 'Payment' | 'Evaluating' | 'Evaluated' | 'Signed' | 'Releasing' | 'Released';
 
-	type Roles = 'Admin' | 'Processing' | 'Cashier' | 'Evaluation' | 'Registrar' | 'Director' | 'Releasing' | 'Applicant';
+	type Roles = 'Admin' | 'Cashier' | 'Evaluation' | 'Registrar' | 'Director' | 'Releasing' | 'Applicant';
 
 	type ValueOf<T> = T[keyof T];
 

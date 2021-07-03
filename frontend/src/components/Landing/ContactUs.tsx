@@ -100,7 +100,7 @@ export function ContactUs() {
 								rows={4}
 								placeholder='Tell us your thoughts and feelings...'></textarea>
 							<div className='row'>
-								<div className='col-md-4 ml-auto mr-auto'>
+								<div className='col-md-4 ml-auto mr-auto text-center'>
 									<button
 										type='submit'
 										className={`btn btn-danger btn-lg btn-fill ${outIf(processing, 'disabled')}`}
@@ -110,6 +110,35 @@ export function ContactUs() {
 								</div>
 							</div>
 						</form>
+					</div>
+				</div>
+				<div className='row'>
+					<div className='col-12 col-md-6 offset-md-3 pt-5 text-center'>
+						<a href='#'>
+							<i className='fab fa-facebook fa-2x mx-2'></i>
+						</a>
+						<a href='#'>
+							<i className='fab fa-twitter fa-2x mx-2'></i>
+						</a>
+						<a href='#'>
+							<i className='fab fa-youtube fa-2x mx-2'></i>
+						</a>
+						<a href='#'>
+							<i className='fab fa-linkedin fa-2x mx-2'></i>
+						</a>
+					</div>
+					<div className='col-12 col-md-6 offset-md-3 pt-5'>
+						<h6>Contact Us</h6>
+						<div className='row'>
+							<div className='col-3'>
+								<b>PHONE</b>
+							</div>
+							<div className='col-9'>091234567890</div>
+							<div className='col-3'>
+								<b>EMAIL</b>
+							</div>
+							<div className='col-9'>email@pup.com</div>
+						</div>
 					</div>
 				</div>
 			</div>

@@ -95,15 +95,13 @@ export function Form() {
 	const getUserStatusables = (): Array<RequestStatus> => {
 		switch (user.role) {
 			case 'Admin':
-				return ['Received', 'Processing', 'Payment', 'Evaluating', 'Evaluated', 'Signed', 'Releasing', 'Released'];
+				return ['Received', 'Payment', 'Evaluating', 'Evaluated', 'Signed', 'Releasing', 'Released'];
 			case 'Registrar':
-				return ['Received', 'Processing', 'Payment', 'Evaluating', 'Evaluated', 'Signed', 'Releasing', 'Released'];
+				return ['Received', 'Payment', 'Evaluating', 'Evaluated', 'Signed', 'Releasing', 'Released'];
 			case 'Director':
-				return ['Received', 'Processing', 'Payment', 'Evaluating', 'Evaluated', 'Signed', 'Releasing', 'Released'];
+				return ['Received', 'Payment', 'Evaluating', 'Evaluated', 'Signed', 'Releasing', 'Released'];
 			case 'Cashier':
-				return ['Payment', 'Processing'];
-			case 'Processing':
-				return ['Processing', 'Evaluating'];
+				return ['Payment', 'Evaluating'];
 			case 'Evaluation':
 				return ['Signed', 'Released'];
 			case 'Releasing':

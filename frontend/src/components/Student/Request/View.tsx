@@ -54,14 +54,12 @@ export function View() {
 					return 1;
 				case 'Payment':
 					return 2;
-				case 'Processing':
-					return 3;
 				case 'Evaluating':
-					return 4;
+					return 3;
 				case 'Signed':
-					return 5;
+					return 4;
 				case 'Releasing':
-					return 6;
+					return 5;
 				default:
 					return 0;
 			}

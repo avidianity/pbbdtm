@@ -1,10 +1,1 @@
-export const statuses = [
-	'Received',
-	'Payment',
-	'Processing',
-	'Evaluating',
-	'Evaluated',
-	'Signed',
-	'Releasing',
-	'Released',
-] as Array<RequestStatus>;
+export const statuses = ['Received', 'Payment', 'Evaluating', 'Evaluated', 'Signed', 'Releasing', 'Released'] as Array<RequestStatus>;

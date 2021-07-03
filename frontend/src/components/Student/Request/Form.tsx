@@ -20,7 +20,6 @@ export function Form() {
 	});
 	const [refs, setRefs] = useState<RefObject<HTMLInputElement>[]>([]);
 	const [files, setFiles] = useState<(File | null)[]>([]);
-
 	const [types, setTypes] = useState<Array<DocumentType>>([]);
 
 	const history = useHistory();
@@ -55,6 +54,22 @@ export function Form() {
 		// eslint-disable-next-line
 	}, []);
 
+	const user = state.get<User>('user');
+
+	const createTask = async (title: string, request: Request) => {
+		try {
+			await axios.post(`/requests/tasks`, {
+				for: 'Received',
+				title,
+				request_id: request.id,
+				done: false,
+				name: user.name,
+			});
+		} catch (error) {
+			console.log(error.toJSON());
+		}
+	};
+
 	const submit = async () => {
 		if (processing) return;
 		setProcessing(true);
@@ -65,9 +80,18 @@ export function Form() {
 				payload.append(key, data[key]);
 			}
 
+			const type = types.find((type) => type.id === data.document_type_id);
+
 			files.filter((file) => file instanceof File).forEach((file) => payload.append('files[]', file!));
 
-			await axios.post<Request>('/requests', payload);
+			const { data: request } = await axios.post<Request>('/requests', payload);
+
+			if (type) {
+				await Promise.all(
+					Array.from<string>(JSON.parse(type.requirements as any)).map((requirement) => createTask(requirement, request))
+				);
+			}
+
 			setFiles([]);
 			toastr.success('Request created successfully.');
 		} catch (error) {
