@@ -342,7 +342,8 @@ export function View() {
 										? `${request.logs[0].user.name} - ${dayjs(request.logs[0].created_at).format('MMMM DD, YYYY')}`
 										: 'N/A'}
 								</p>
-								<p className='card-text mb-1'>Status: {request.status}</p>
+								<p className='card-text'>Status: {request.status}</p>
+								<p className='card-text mb-1'>Date and Time: {dayjs(request.created_at).format('MMMM DD, YYYY h:i A')}</p>
 								<p className='card-title'>Files:</p>
 								<div className='container-fluid'>
 									<div className='row'>
@@ -381,13 +382,7 @@ export function View() {
 																		) : (
 																			<i className='bi bi-circle mr-1'></i>
 																		)}
-																		<span>
-																			{task.title} -{' '}
-																			<small>
-																				by {task.name} |{' '}
-																				{dayjs(task.updated_at).format('MMMM DD, YYYY hh:mm A')}
-																			</small>
-																		</span>
+																		<span>{task.title}</span>
 																		{taskBelongsToUser(status) ? (
 																			<div className='ml-auto'>
 																				{task.done ? (

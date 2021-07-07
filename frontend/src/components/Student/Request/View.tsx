@@ -214,7 +214,51 @@ export function View() {
 											<li className='list-group-item' key={index}>
 												{level !== 0 ? (
 													level >= index + 1 ? (
-														<i className='bi bi-check-circle-fill mr-1'></i>
+														(() => {
+															switch (user.role) {
+																case 'Admin':
+																	return status === 'Received' && !request.acknowledged ? (
+																		<i className='bi bi-check-circle mr-1'></i>
+																	) : (
+																		<i className='bi bi-check-circle-fill mr-1'></i>
+																	);
+																case 'Cashier':
+																	return status === 'Payment' && !request.acknowledged ? (
+																		<i className='bi bi-check-circle mr-1'></i>
+																	) : (
+																		<i className='bi bi-check-circle-fill mr-1'></i>
+																	);
+																case 'Evaluation':
+																	return status === 'Evaluating' && !request.acknowledged ? (
+																		<i className='bi bi-check-circle mr-1'></i>
+																	) : (
+																		<i className='bi bi-check-circle-fill mr-1'></i>
+																	);
+																case 'Registrar':
+																	return status === 'Evaluated' ||
+																		(status === 'Signed' && !request.acknowledged) ? (
+																		<i className='bi bi-check-circle mr-1'></i>
+																	) : (
+																		<i className='bi bi-check-circle-fill mr-1'></i>
+																	);
+																case 'Director':
+																	return status === 'Evaluated' ||
+																		(status === 'Signed' && !request.acknowledged) ? (
+																		<i className='bi bi-check-circle mr-1'></i>
+																	) : (
+																		<i className='bi bi-check-circle-fill mr-1'></i>
+																	);
+																case 'Releasing':
+																	return status === 'Releasing' ||
+																		(status === 'Released' && !request.acknowledged) ? (
+																		<i className='bi bi-check-circle mr-1'></i>
+																	) : (
+																		<i className='bi bi-check-circle-fill mr-1'></i>
+																	);
+																default:
+																	return <i className='bi bi-check-circle-fill mr-1'></i>;
+															}
+														})()
 													) : (
 														<i className='bi bi-circle mr-1'></i>
 													)

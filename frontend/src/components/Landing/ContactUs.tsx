@@ -114,16 +114,16 @@ export function ContactUs() {
 				</div>
 				<div className='row'>
 					<div className='col-12 col-md-6 offset-md-3 pt-5 text-center'>
-						<a href='#'>
+						<a href='/' onClick={(e) => e.preventDefault()}>
 							<i className='fab fa-facebook fa-2x mx-2'></i>
 						</a>
-						<a href='#'>
+						<a href='/' onClick={(e) => e.preventDefault()}>
 							<i className='fab fa-twitter fa-2x mx-2'></i>
 						</a>
-						<a href='#'>
+						<a href='/' onClick={(e) => e.preventDefault()}>
 							<i className='fab fa-youtube fa-2x mx-2'></i>
 						</a>
-						<a href='#'>
+						<a href='/' onClick={(e) => e.preventDefault()}>
 							<i className='fab fa-linkedin fa-2x mx-2'></i>
 						</a>
 					</div>

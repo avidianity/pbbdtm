@@ -4,6 +4,7 @@ import { CMS } from '../../contracts/CMS';
 import { outIf } from '../../helpers';
 import { Stats } from '../Admin/Stats';
 import { AboutUs } from './AboutUs';
+import Carousel from './Carousel';
 import { ContactUs } from './ContactUs';
 import { Description } from './Description';
 import { FAQs } from './FAQs';
@@ -53,6 +54,7 @@ export function Landing() {
 				<Nav />
 				<Header cms={cms} />
 				<Description cms={cms} />
+				<Carousel />
 				<AboutUs cms={cms} />
 				<ContactUs />
 				<FAQs cms={cms} />
