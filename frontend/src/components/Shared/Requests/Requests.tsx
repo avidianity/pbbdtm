@@ -184,6 +184,7 @@ const Requests: FC<Props> = () => {
 							!match.path.includes(routes.REQUESTS.ARCHIVED) && !match.path.includes(routes.REQUESTS.INACTIVE)
 								? renderAcknowledged(request)
 								: '',
+						evaluation: request.evaluation ? request.evaluation : '',
 					}))
 					.map((request) => {
 						if (!match.path.includes(routes.REQUESTS.ARCHIVED) && !match.path.includes(routes.REQUESTS.INACTIVE)) {

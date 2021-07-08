@@ -215,7 +215,7 @@ export function View() {
 												{level !== 0 ? (
 													level >= index + 1 ? (
 														(() => {
-															switch (user.role) {
+															switch (user?.role) {
 																case 'Admin':
 																	return status === 'Received' && !request.acknowledged ? (
 																		<i className='bi bi-check-circle mr-1'></i>
