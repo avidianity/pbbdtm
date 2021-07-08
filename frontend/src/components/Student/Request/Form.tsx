@@ -80,15 +80,15 @@ export function Form() {
 				payload.append(key, data[key]);
 			}
 
-			const type = types.find((type) => type.id === data.document_type_id);
-
 			files.filter((file) => file instanceof File).forEach((file) => payload.append('files[]', file!));
 
 			const { data: request } = await axios.post<Request>('/requests', payload);
 
-			if (type) {
+			if (request.documentType) {
 				await Promise.all(
-					Array.from<string>(JSON.parse(type.requirements as any)).map((requirement) => createTask(requirement, request))
+					Array.from<string>(JSON.parse((request.documentType?.requirements as any) || '[]')).map((requirement) =>
+						createTask(requirement, request)
+					)
 				);
 			}
 

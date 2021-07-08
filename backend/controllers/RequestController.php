@@ -101,6 +101,8 @@ class RequestController extends Controller
             }
         }
 
+        $request->load(['documentType']);
+
         queue()->register(new SendMail(user()->email, 'emails.new-request', 'Request Creation', $data));
 
         $message = 'Hi! This is a message from PBBDTM. You have made a request (ID: ' . $request->request_id . '). We will notify you on further updates.';
