@@ -89,7 +89,7 @@ class RequestController extends Controller
             'date' => DateTime::createFromFormat('Y-m-d H:i:s', $request->updated_at)->format('F d, Y h:i A'),
         ];
 
-        if (input()->has('files')) {
+        if (input()->hasFile('files')) {
             foreach (input()->file('files') as $file) {
                 $model = File::process($file->fetch(), false);
                 $model->name = $file->name;
@@ -128,7 +128,7 @@ class RequestController extends Controller
 
         $request->fill($data);
 
-        if (input()->has('file')) {
+        if (input()->hasFile('file')) {
             $raw = input()->file('file');
             $file = File::process($raw->fetch(), false);
 
@@ -141,7 +141,7 @@ class RequestController extends Controller
             $request->file_id = $file->id;
         }
 
-        if (input()->has('files')) {
+        if (input()->hasFile('files')) {
             deleteMany($request->files, RequestFile::class);
             foreach (input()->file('files') as $file) {
                 $model = File::process($file->fetch(), false);

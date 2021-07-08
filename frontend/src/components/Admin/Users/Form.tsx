@@ -139,13 +139,11 @@ export function Form() {
 			<div className='form-group'>
 				<label htmlFor='role'>Role</label>
 				<select name='role' id='role' className='form-control form-control-sm' value={data.role} onChange={handleChange}>
-					{['Admin', 'Processing', 'Cashier', 'Evaluation', 'Director', 'Registrar', 'Releasing', 'Applicant'].map(
-						(role, index) => (
-							<option value={role} key={index}>
-								{role}
-							</option>
-						)
-					)}
+					{['Admin', 'Cashier', 'Evaluation', 'Director', 'Registrar', 'Releasing', 'Applicant'].map((role, index) => (
+						<option value={role} key={index}>
+							{role}
+						</option>
+					))}
 				</select>
 			</div>
 			<div className='form-group'>

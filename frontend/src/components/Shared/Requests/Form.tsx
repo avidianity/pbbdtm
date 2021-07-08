@@ -73,7 +73,7 @@ export function Form() {
 				data.file = file;
 			}
 
-			for (const key of ['documentType', 'logs', 'files', 'tasks', 'user']) {
+			for (const key of ['documentType', 'logs', 'files', 'tasks', 'user', 'evaluation', 'expired']) {
 				delete data[key];
 			}
 

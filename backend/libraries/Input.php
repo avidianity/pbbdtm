@@ -194,6 +194,17 @@ class Input implements JSONable, Arrayable
         return in_array($key, array_keys($this->data)) || in_array($key, array_keys($this->files));
     }
 
+    /**
+     * Checks if a key exists from the files
+     * 
+     * @param string $key
+     * @return bool
+     */
+    public function hasFile($key)
+    {
+        return in_array($key, array_keys($this->files));
+    }
+
     public function files()
     {
         return $this->files;

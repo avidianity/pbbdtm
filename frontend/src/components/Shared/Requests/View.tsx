@@ -338,12 +338,16 @@ export function View() {
 								<p className='card-text'>Evaluation: {request.evaluation}</p>
 								<p className='card-text'>
 									Last Updated By:{' '}
-									{request.logs && request.logs.length > 0 && request.logs[0].user.role !== 'Applicant'
-										? `${request.logs[0].user.name} - ${dayjs(request.logs[0].created_at).format('MMMM DD, YYYY')}`
+									{request.logs &&
+									request.logs.length > 0 &&
+									request.logs[request.logs.length - 1].user.role !== 'Applicant'
+										? `${request.logs[request.logs.length - 1].user.name} - ${dayjs(request.updated_at).format(
+												'MMMM DD, YYYY hh:mm A'
+										  )}`
 										: 'N/A'}
 								</p>
 								<p className='card-text'>Status: {request.status}</p>
-								<p className='card-text mb-1'>Date and Time: {dayjs(request.created_at).format('MMMM DD, YYYY h:i A')}</p>
+								<p className='card-text mb-1'>Date and Time: {dayjs(request.created_at).format('MMMM DD, YYYY hh:mm A')}</p>
 								<p className='card-title'>Files:</p>
 								<div className='container-fluid'>
 									<div className='row'>

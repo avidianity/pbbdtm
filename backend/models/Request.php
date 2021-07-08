@@ -73,7 +73,7 @@ class Request extends Model
     protected static function getNonReleasing()
     {
         return collect(static::getAll())->filter(function (self $request) {
-            return !in_array($request->status, ['Releasing', 'Released', 'Rejected']);
+            return !in_array($request->status, ['Releasing', 'Released']);
         });
     }
 
@@ -81,9 +81,7 @@ class Request extends Model
     {
         $date = DateTime::createFromFormat('Y-m-d H:i:s', $this->updated_at);
 
-        $now = time();
-
-        return round(($now - $date->getTimestamp()) / (60 * 60 * 24));
+        return (int)$date->diff(new DateTime())->format('%a');
     }
 
     public function markAsExpired()
@@ -114,6 +112,7 @@ class Request extends Model
             $request->request_id = Str::from(Str::random(5) . '-' . Str::random(5) . '-' . date('Y'))
                 ->toLowerCase()
                 ->toString();
+            $request->approved = 0;
         });
 
         static::saving(function (self $request) {
