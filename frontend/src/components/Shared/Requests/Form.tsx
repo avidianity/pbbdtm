@@ -64,6 +64,9 @@ export function Form() {
 
 	const submit = async () => {
 		if (processing) return;
+		if (data.status === 'Released' && !file) {
+			return toastr.error('You must upload a file before marking the request as Released.');
+		}
 		setProcessing(true);
 		try {
 			const payload = new FormData();
