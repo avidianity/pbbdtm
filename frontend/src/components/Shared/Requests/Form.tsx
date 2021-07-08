@@ -162,6 +162,7 @@ export function Form() {
 					disabled={processing}
 					onChange={handleChange}
 					value={data.status}>
+					<option value=''> -- Select -- </option>
 					{statuses
 						.filter((status) => statusables.includes(status))
 						.map((status, index) => (
