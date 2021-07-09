@@ -16,7 +16,13 @@ const Carousel: FC<Props> = (props) => {
 						<img className='d-block w-100' src='/assets/img/login2.png' alt='Second slide' />
 					</div>
 					<div className='carousel-item'>
-						<img className='d-block w-100' src='https://via.placeholder.com/1200x600' alt='Third slide' />
+						<img className='d-block w-100' src='/assets/img/login3.png' alt='Third slide' />
+					</div>
+					<div className='carousel-item'>
+						<img className='d-block w-100' src='/assets/img/login4.png' alt='Fourth slide' />
+					</div>
+					<div className='carousel-item'>
+						<img className='d-block w-100' src='/assets/img/login5.png' alt='Fifth slide' />
 					</div>
 				</div>
 				<a className='carousel-control-prev' href={`#${id}`} role='button' data-slide='prev'>
