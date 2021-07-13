@@ -1,7 +1,7 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Link, useHistory, useRouteMatch } from 'react-router-dom';
-import { Request } from '../../../contracts/Request';
+import { AcknowledgedDate, Request } from '../../../contracts/Request';
 import { handleError, outIf } from '../../../helpers';
 import toastr from 'toastr';
 import { statuses } from '../../../constants';
@@ -10,6 +10,7 @@ import { User } from '../../../contracts/User';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { Task } from '../../../contracts/Task';
+import Quill from '../Quill';
 
 dayjs.extend(relativeTime);
 
@@ -19,6 +20,7 @@ export function View() {
 	const [updating, setUpdating] = useState(false);
 	const [currentStatus, setCurrentStatus] = useState('Registrar');
 	const [smsMessage, setSmsMessage] = useState('');
+	const [emailMessage, setEmailMessage] = useState('<p>Hello World</p>');
 
 	const user = state.get<User>('user');
 
@@ -31,6 +33,14 @@ export function View() {
 					window.location.origin
 				}/dashboard/requests/${data.id}`
 			);
+			setEmailMessage(`
+                <div>
+                    <p>Hi ${data.user?.name}!</p>
+                    <p>Your request (ID: ${data.request_id}) is updated to: <b>${getNextStatus(user.role)}</b></p>
+                    <p>Last Updater: ${user.name}</p>
+                    <p>Date Updated: ${dayjs().format('MMMM DD, YYYY')}</p>
+                </div>
+            `);
 		} catch (error) {
 			handleError(error);
 			history.goBack();
@@ -140,6 +150,7 @@ export function View() {
 				status,
 				acknowledged: ['Releasing', 'Released'].includes(status),
 				sms_message: smsMessage,
+				email_message: emailMessage,
 			});
 			toastr.info('Request has been updated and forwarded.', 'Notice');
 			history.goBack();
@@ -258,6 +269,11 @@ export function View() {
 		}
 	};
 
+	const findDate = (status: string) => {
+		const dates = Array.from<AcknowledgedDate>(JSON.parse(request?.acknowledged_dates || '[]'));
+		return dates.find((date) => date.status === status);
+	};
+
 	return (
 		<div className='container'>
 			<div className='row'>
@@ -347,7 +363,6 @@ export function View() {
 										: 'N/A'}
 								</p>
 								<p className='card-text'>Status: {request.status}</p>
-								<p className='card-text mb-1'>Date and Time: {dayjs(request.created_at).format('MMMM DD, YYYY hh:mm A')}</p>
 								<p className='card-title'>Files:</p>
 								<div className='container-fluid'>
 									<div className='row'>
@@ -364,7 +379,7 @@ export function View() {
 											<li className='list-group-item' key={index}>
 												<div className='d-flex align-items-center'>
 													{level !== 0 ? (
-														level >= index + 1 ? (
+														findDate(status) ? (
 															<i className='bi bi-check-circle-fill mr-1'></i>
 														) : (
 															<i className='bi bi-circle mr-1'></i>
@@ -372,7 +387,10 @@ export function View() {
 													) : (
 														<i className='bi bi-x-circle-fill mr-1'></i>
 													)}
-													{status}
+													{status}{' '}
+													{findDate(status)
+														? `- ${dayjs(findDate(status)?.date).format('MMMM DD, YYYY hh:mm A')}`
+														: ''}
 												</div>
 												{request.tasks && request.tasks.length > 0 ? (
 													<ul className='list-group mt-2'>
@@ -521,12 +539,15 @@ export function View() {
 									))}
 								</select>
 							) : null}
+							<label>SMS Message</label>
 							<textarea
 								cols={20}
 								rows={5}
-								className='form-control'
+								className='form-control mb-3'
 								onChange={(e) => setSmsMessage(e.target.value)}
 								value={smsMessage}></textarea>
+							<label>Email Message</label>
+							<Quill onChange={(data) => setEmailMessage(data)} value={emailMessage} />
 						</div>
 						<div className='modal-footer'>
 							<button

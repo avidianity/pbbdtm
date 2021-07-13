@@ -6,6 +6,11 @@ import { RequestFile } from './RequestFile';
 import { Task } from './Task';
 import { User } from './User';
 
+export type AcknowledgedDate = {
+	date: string;
+	status: string;
+};
+
 export interface Request extends Model {
 	request_id: string;
 	user_id: number;
@@ -25,4 +30,5 @@ export interface Request extends Model {
 	copies: number;
 	reason: string;
 	files?: RequestFile[];
+	acknowledged_dates: string;
 }

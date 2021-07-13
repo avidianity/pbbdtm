@@ -8,6 +8,7 @@ use Models\File;
 use Models\Request;
 use Models\RequestFile;
 use Queues\SendMail;
+use Queues\SendMailRaw;
 use Queues\SendMessage;
 
 class RequestController extends Controller
@@ -158,6 +159,10 @@ class RequestController extends Controller
         $request->logs()->create(['action' => user()->role . ' has updated the request.', 'user_id' => user()->id]);
 
         $request->load(['file']);
+
+        if (input()->has('email_message')) {
+            queue()->register(new SendMailRaw($request->user->email, 'Request Updated', input()->email_message));
+        }
 
         $text  = input()->sms_message;
         $text .= sprintf('%s%s', config('app.frontend.url'), "/dashboard/requests/{$request->id}");

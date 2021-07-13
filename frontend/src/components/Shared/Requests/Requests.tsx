@@ -1,6 +1,6 @@
 import React, { FC, useEffect, useState } from 'react';
 import { useHistory, useRouteMatch } from 'react-router-dom';
-import { Request } from '../../../contracts/Request';
+import { AcknowledgedDate, Request } from '../../../contracts/Request';
 import { createTableColumns, exceptMany, handleError, ucfirst } from '../../../helpers';
 import { Table } from '../Table';
 import toastr from 'toastr';
@@ -41,6 +41,7 @@ const Requests: FC<Props> = () => {
 						'files',
 						'for',
 						'evaluation',
+						'acknowledged_dates',
 					]).filter((request) => request.expired)
 				);
 			}
@@ -58,10 +59,13 @@ const Requests: FC<Props> = () => {
 						'files',
 						'for',
 						'evaluation',
+						'acknowledged_dates',
 					]).filter((request) => request.approved)
 				);
 			}
-			setRequests(exceptMany(data, ['file', 'file_id', 'user_id', 'document_type_id', 'tasks', 'files', 'for']));
+			setRequests(
+				exceptMany(data, ['file', 'file_id', 'user_id', 'document_type_id', 'tasks', 'files', 'for', 'acknowledged_dates'])
+			);
 		} catch (error) {
 			console.log(error.toJSON());
 			toastr.error('Unable to fetch requests.');
@@ -136,11 +140,19 @@ const Requests: FC<Props> = () => {
 						e.currentTarget.classList.add('disabled');
 						e.currentTarget.textContent = 'Acknowledging...';
 						try {
-							await axios.put(`/requests?id=${request.id}`, { acknowledged: true });
+							const { data } = await axios.get(`/requests/show?id=${request.id}`);
+							const dates = Array.from<AcknowledgedDate>(JSON.parse(data.acknowledged_dates));
+
+							dates.push({ date: new Date().toJSON(), status: data.status });
+
+							await axios.put(`/requests?id=${data.id}`, {
+								acknowledged: true,
+								acknowledged_dates: JSON.stringify(dates),
+							});
 							toastr.info('Request acknowledged.', 'Notice');
 							await fetchRequests();
 						} catch (error) {
-							console.log(error.toJSON());
+							console.log(error.toJSON(), request);
 							toastr.error('Unable to acknowledge request.');
 						}
 					}}>

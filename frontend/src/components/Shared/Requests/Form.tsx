@@ -23,6 +23,7 @@ export function Form() {
 		documentType: {
 			name: 'N\\A',
 		},
+		acknowledged_dates: JSON.stringify([]),
 	});
 	const [file, setFile] = useState<File | null>(null);
 

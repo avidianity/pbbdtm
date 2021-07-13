@@ -27,6 +27,7 @@ class Request extends Model
         'evaluation',
         'copies',
         'reason',
+        'acknowledged_dates',
     ];
 
     public static function checkExpired()
@@ -119,21 +120,6 @@ class Request extends Model
             $request->approved = $request->approved ? 1 : 0;
             $request->expired = $request->expired ? 1 : 0;
             $request->acknowledged = $request->acknowledged ? 1 : 0;
-        });
-
-        static::updating(function (self $request) {
-            $clean = static::findOrFail($request->id);
-            if ($clean->status !== $request->status) {
-                $data = [
-                    'name' => $request->user->name,
-                    'requestID' => $request->request_id,
-                    'updater' => user()->name,
-                    'date' => DateTime::createFromFormat('Y-m-d H:i:s', $request->created_at)->format('F d, Y h:i A'),
-                    'status' => $request->status,
-                ];
-
-                queue()->register(new SendMail($request->user->email, 'emails.updated-request', 'Request Updated', $data));
-            }
         });
 
         static::serializing(function (self $request) {

@@ -17,6 +17,7 @@ export function Form() {
 		user_id: state.get<User>('user').id,
 		copies: 1,
 		reason: '',
+		acknowledged_dates: JSON.stringify([]),
 	});
 	const [refs, setRefs] = useState<RefObject<HTMLInputElement>[]>([]);
 	const [files, setFiles] = useState<(File | null)[]>([]);
