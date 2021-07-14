@@ -26,6 +26,9 @@ export function Login() {
 	}
 
 	const submit = async () => {
+		if (data.password.length === 0) {
+			return toastr.error('Please provide a password.');
+		}
 		setProcessing(true);
 		try {
 			const response = await axios.post<Response>('/auth/login', data);
