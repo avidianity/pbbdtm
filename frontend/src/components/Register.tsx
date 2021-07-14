@@ -35,6 +35,9 @@ export function Register() {
 	}
 
 	const submit = async () => {
+		if (data.password.length === 0) {
+			return toastr.error('Please provide a password.');
+		}
 		if (data.password !== data.password_confirmation) {
 			return toastr.error('Password and Confirm Password does not match.', 'Oops!');
 		}
