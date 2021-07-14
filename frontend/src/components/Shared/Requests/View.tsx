@@ -390,6 +390,8 @@ export function View() {
 													{level !== 0 ? (
 														findDate(status) ? (
 															<i className='bi bi-check-circle-fill mr-1'></i>
+														) : level >= index + 1 ? (
+															<i className='bi bi-check-circle mr-1'></i>
 														) : (
 															<i className='bi bi-circle mr-1'></i>
 														)
