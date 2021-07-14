@@ -11,7 +11,6 @@ import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { Task } from '../../../contracts/Task';
 import Quill from '../Quill';
-import { isArray } from 'lodash';
 
 dayjs.extend(relativeTime);
 
