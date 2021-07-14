@@ -38,6 +38,10 @@ class SendMessage implements Queueable
 
     public function report(Throwable $exception): void
     {
-        throw $exception;
+        echo PHP_EOL;
+        echo $exception->getMessage();
+        echo PHP_EOL;
+        echo $exception->getTraceAsString();
+        echo PHP_EOL;
     }
 }

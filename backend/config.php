@@ -54,6 +54,8 @@ return [
         'username' => env('EMAIL_USERNAME'),
         'password' => env('EMAIL_PASSWORD'),
         'port' => env('EMAIL_PORT'),
+        'encryption' => env('EMAIL_ENCRYPTION'),
+        'from' => env('EMAIL_FROM', 'example@email.com'),
     ],
     'sms' => [
         'token' => env('SEMAPHORE_TOKEN'),

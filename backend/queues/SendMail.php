@@ -48,6 +48,11 @@ class SendMail implements Queueable
 
     public function report(Throwable $exception): void
     {
-        //
+        echo PHP_EOL;
+        echo $exception->getMessage();
+        echo PHP_EOL;
+        echo $exception->getTraceAsString();
+        echo PHP_EOL;
+        echo var_export($this);
     }
 }

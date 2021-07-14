@@ -11,6 +11,7 @@ import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { Task } from '../../../contracts/Task';
 import Quill from '../Quill';
+import { isArray } from 'lodash';
 
 dayjs.extend(relativeTime);
 
@@ -144,15 +145,6 @@ export function View() {
 				}
 				return getNextStatus(role);
 			})(user.role);
-
-			if (['Releasing', 'Released'].includes(status)) {
-				const { data: req } = await axios.get(`/requests/show?id=${request?.id}`);
-				const dates = Array.from<AcknowledgedDate>(JSON.parse(req.acknowledged_dates));
-
-				dates.push({ date: new Date().toJSON(), status });
-
-				data.acknowledged_dates = JSON.stringify(dates);
-			}
 
 			await axios.put(`/requests?id=${request?.id}`, {
 				...data,

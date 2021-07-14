@@ -119,7 +119,9 @@ function env($key, $default = null)
     if (!in_array($key, array_keys($_ENV))) {
         return $default;
     }
-    return $_ENV[$key];
+    $value = $_ENV[$key];
+
+    return $value === 'null' ? null : $value;
 }
 
 

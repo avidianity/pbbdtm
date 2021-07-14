@@ -18,9 +18,10 @@ class Mailer
     protected $username;
     protected $password;
     protected $port;
+    protected $encryption;
     protected $body;
     protected $to = '';
-    protected $from = '';
+    protected $from;
     protected $subject = '';
 
     /**
@@ -65,19 +66,12 @@ class Mailer
 
     protected function initCredentials()
     {
-        $this->from = config('email.username');
-        if (!$this->host) {
-            $this->host = config('email.host');
-        }
-        if (!$this->username) {
-            $this->username = config('email.username');
-        }
-        if (!$this->password) {
-            $this->password = config('email.password');
-        }
-        if (!$this->port) {
-            $this->port = config('email.port');
-        }
+        $this->host = config('email.host');
+        $this->username = config('email.username');
+        $this->password = config('email.password');
+        $this->port = config('email.port');
+        $this->encryption = config('email.encryption');
+        $this->from = config('email.from');
         return $this;
     }
 
@@ -87,6 +81,10 @@ class Mailer
 
         if (!in_array('tls', $availableTransports)) {
             throw new MailerException('Your current PHP installation does not support \'tls\' encryption as a mailing transport.');
+        }
+
+        if (!in_array('ssl', $availableTransports)) {
+            throw new MailerException('Your current PHP installation does not support \'ssl\' encryption as a mailing transport.');
         }
 
         return $this;
@@ -99,7 +97,7 @@ class Mailer
 
     protected function initMailer()
     {
-        $transport = new SMTPTransport($this->host, $this->port, 'tls');
+        $transport = new SMTPTransport($this->host, $this->port, $this->encryption);
 
         $transport->setUsername($this->username)
             ->setPassword($this->password);
