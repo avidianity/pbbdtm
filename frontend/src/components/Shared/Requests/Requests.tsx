@@ -142,8 +142,11 @@ const Requests: FC<Props> = () => {
 						try {
 							const { data } = await axios.get(`/requests/show?id=${request.id}`);
 							const dates = Array.from<AcknowledgedDate>(JSON.parse(data.acknowledged_dates));
-
 							dates.push({ date: new Date().toJSON(), status: data.status });
+
+							if (user.role === 'Releasing') {
+								dates.push({ date: new Date().toJSON(), status: 'Releasing' });
+							}
 
 							await axios.put(`/requests?id=${data.id}`, {
 								acknowledged: true,
