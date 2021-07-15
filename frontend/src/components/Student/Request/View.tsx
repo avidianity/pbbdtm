@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useHistory, useRouteMatch } from 'react-router-dom';
 import toastr from 'toastr';
 import { statuses } from '../../../constants';
-import { Request } from '../../../contracts/Request';
+import { AcknowledgedDate, Request } from '../../../contracts/Request';
 import { User } from '../../../contracts/User';
 import { handleError } from '../../../helpers';
 import state from '../../../state';
@@ -144,6 +144,11 @@ export function View() {
 		}
 	};
 
+	const findDate = (status: string) => {
+		const dates = Array.from<AcknowledgedDate>(JSON.parse(request?.acknowledged_dates || '[]'));
+		return dates.find((date) => date.status === status);
+	};
+
 	useEffect(() => {
 		fetchRequest(params.id);
 		// eslint-disable-next-line
@@ -203,8 +208,12 @@ export function View() {
 								) : null}
 								<p className='card-text'>
 									Last Updated By:{' '}
-									{request.logs && request.logs.length > 0 && request.logs[0].user.role !== 'Applicant'
-										? `${request.logs[0].user.name} - ${dayjs(request.logs[0].created_at).format('MMMM DD, YYYY')}`
+									{request.logs &&
+									request.logs.length > 0 &&
+									request.logs[request.logs.length - 1].user.role !== 'Applicant'
+										? `${request.logs[request.logs.length - 1].user.name} - ${dayjs(
+												request.logs[request.logs.length - 1].created_at
+										  ).format('MMMM DD, YYYY')}`
 										: 'N/A'}
 								</p>
 								<p className='card-text mb-2'>Status: {request.status}</p>
@@ -213,64 +222,22 @@ export function View() {
 										return statuses.map((status, index) => (
 											<li className='list-group-item' key={index}>
 												{level !== 0 ? (
-													level >= index + 1 ? (
-														(() => {
-															if (!user) {
-																return <i className='bi bi-check-circle-fill mr-1'></i>;
-															}
-															switch (user.role) {
-																case 'Admin':
-																	return status === 'Received' && !request.acknowledged ? (
-																		<i className='bi bi-check-circle mr-1'></i>
-																	) : (
-																		<i className='bi bi-check-circle-fill mr-1'></i>
-																	);
-																case 'Cashier':
-																	return status === 'Payment' && !request.acknowledged ? (
-																		<i className='bi bi-check-circle mr-1'></i>
-																	) : (
-																		<i className='bi bi-check-circle-fill mr-1'></i>
-																	);
-																case 'Evaluation':
-																	return status === 'Evaluating' && !request.acknowledged ? (
-																		<i className='bi bi-check-circle mr-1'></i>
-																	) : (
-																		<i className='bi bi-check-circle-fill mr-1'></i>
-																	);
-																case 'Registrar':
-																	return status === 'Evaluated' ||
-																		(status === 'Signed' && !request.acknowledged) ? (
-																		<i className='bi bi-check-circle mr-1'></i>
-																	) : (
-																		<i className='bi bi-check-circle-fill mr-1'></i>
-																	);
-																case 'Director':
-																	return status === 'Evaluated' ||
-																		(status === 'Signed' && !request.acknowledged) ? (
-																		<i className='bi bi-check-circle mr-1'></i>
-																	) : (
-																		<i className='bi bi-check-circle-fill mr-1'></i>
-																	);
-																case 'Releasing':
-																	return status === 'Releasing' ||
-																		(status === 'Released' && !request.acknowledged) ? (
-																		<i className='bi bi-check-circle mr-1'></i>
-																	) : (
-																		<i className='bi bi-check-circle-fill mr-1'></i>
-																	);
-																default:
-																	return <i className='bi bi-check-circle-fill mr-1'></i>;
-															}
-														})()
+													findDate(status) ? (
+														<i className='bi bi-check-circle-fill mr-1'></i>
+													) : level >= index + 1 ? (
+														<i className='bi bi-check-circle mr-1'></i>
 													) : (
 														<i className='bi bi-circle mr-1'></i>
 													)
 												) : (
 													<i className='bi bi-x-circle-fill mr-1'></i>
 												)}
-												{status}
+												{status}{' '}
+												{findDate(status)
+													? `- ${dayjs(findDate(status)?.date).format('MMMM DD, YYYY hh:mm A')}`
+													: ''}
 												{request.tasks ? (
-													<ul className='list-group mt-1'>
+													<ul className='list-group mt-2'>
 														{request.tasks
 															.filter((task) => task.for === status)
 															.map((task, index) => (
