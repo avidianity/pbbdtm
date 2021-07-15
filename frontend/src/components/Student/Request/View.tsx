@@ -56,9 +56,13 @@ export function View() {
 					return 2;
 				case 'Evaluating':
 					return 3;
+				case 'Evaluated':
+					return 4;
 				case 'Signed':
 					return 4;
 				case 'Releasing':
+					return 4;
+				case 'Released':
 					return 5;
 				default:
 					return 0;
