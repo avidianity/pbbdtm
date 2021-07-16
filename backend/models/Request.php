@@ -59,13 +59,17 @@ class Request extends Model
      */
     public static function getExpiring()
     {
-        return collect(static::getAll())->map(function (self $request) {
-            $request->load(['user', 'documentType']);
-            return $request;
-        })
+        $approved = collect(static::getApproved())
             ->filter(function (self $request) {
-                return $request->getDaysFromNow() >= $request->documentType->expiry_days - 1;
+                return $request->getDaysFromNow() >= 5;
             });
+
+        $non_releasing = collect(static::getNonReleasing())
+            ->filter(function (self $request) {
+                return $request->getDaysFromNow() >= $request->documentType->expiry_days;
+            });
+
+        return $approved->merge($non_releasing);
     }
 
     /**

@@ -38,9 +38,9 @@ export function Header() {
 		try {
 			const { data } = await axios.get<Request[]>(`/requests/expiring`);
 			if (user.role === 'Applicant' && data.length > 0) {
-				return setExpiring(data.filter((request) => request.user_id === user.id));
+				return setExpiring(Array.from(data.filter((request) => request.user_id === user.id)));
 			}
-			setExpiring(data);
+			setExpiring(Array.from(data));
 		} catch (error) {
 			console.log(error.toJSON());
 		}
@@ -95,7 +95,7 @@ export function Header() {
 					<ul className='navbar-nav'>
 						<li className='nav-item btn-rotate dropdown'>
 							<div className='dropdown-menu dropdown-menu-right p-0'>
-								{expiring?.map((request, index) => (
+								{expiring.map((request, index) => (
 									<Link
 										className='dropdown-item d-flex'
 										to={`${routes.DASHBOARD}${routes.REQUESTS.ROOT}/${request.id}`}

@@ -27,6 +27,14 @@ class Collection implements ArrayAccess, Countable, Iterator, JsonSerializable, 
         }
     }
 
+    public function merge($iterable)
+    {
+        if ($iterable instanceof static) {
+            $iterable = $iterable->toArray();
+        }
+        return new static(array_merge($this->items, $iterable));
+    }
+
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
