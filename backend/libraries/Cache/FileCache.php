@@ -9,16 +9,16 @@ use Traits\Singleton;
  * Reponsible for caching data into memory
  * @link https://en.wikipedia.org/wiki/Cache_(computing)
  */
-class MemoryCache implements Cacheable
+class FileCache implements Cacheable
 {
     use Singleton;
 
-    /**
-     * The cached data
-     *
-     * @var array
-     */
-    protected $data = [];
+    protected $path;
+
+    public function __construct()
+    {
+        $this->path = config('cache.path');
+    }
 
     /**
      * Get a cached data
@@ -33,7 +33,7 @@ class MemoryCache implements Cacheable
             /**
              * @var Item
              */
-            $item = unserialize($this->data[$this->resolve($key)]);
+            $item = unserialize(file_get_contents($this->resolve($key)));
 
             if ($item->expired()) {
                 $this->remove($key);
@@ -55,7 +55,7 @@ class MemoryCache implements Cacheable
      */
     public function set($key, $value)
     {
-        $this->data[$this->resolve($key)] = serialize(new Item($key, $value));
+        file_put_contents($this->resolve($key), serialize(new Item($key, $value)));
         return $this;
     }
 
@@ -67,29 +67,17 @@ class MemoryCache implements Cacheable
      */
     public function has($key)
     {
-        if (in_array($this->resolve($key), array_keys($this->data))) {
+        if (file_exists($this->resolve($key))) {
             /**
              * @var Item
              */
-            $item = unserialize($this->data[$this->resolve($key)]);
-
-            if ($item->expired()) {
-                $this->remove($key);
-
-                return false;
+            $item = unserialize(file_get_contents($this->resolve($key)));
+            if (!$item->expired()) {
+                return true;
             }
-
-            return true;
+            $this->remove($key);
         }
-
         return false;
-    }
-
-    public function remove($key)
-    {
-        unset($this->data[$this->resolve($key)]);
-
-        return $this;
     }
 
     /**
@@ -107,8 +95,15 @@ class MemoryCache implements Cacheable
         return $this->get($key);
     }
 
+    public function remove($key)
+    {
+        unlink($this->resolve($key));
+
+        return $this;
+    }
+
     protected function resolve($key)
     {
-        return sprintf('%s_%s', session()->id(), $key);
+        return sprintf('%s/%s_%s.cache', $this->path, session()->id(), $key);
     }
 }

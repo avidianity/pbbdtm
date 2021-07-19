@@ -8,6 +8,7 @@ use Libraries\Input;
 use Libraries\Mailer;
 use Libraries\Message;
 use Libraries\Response;
+use Libraries\Session;
 use Libraries\Str;
 use Libraries\View;
 use Models\Token;
@@ -90,7 +91,7 @@ function message()
  * 
  * @return string
  */
-function map($path)
+function map($path = null)
 {
     $value = null;
     $map = $_ENV['MAP'];
@@ -105,6 +106,11 @@ function map($path)
         }
     }
     return $value;
+}
+
+function session()
+{
+    return Session::getInstance();
 }
 
 /**
@@ -271,15 +277,13 @@ function serializeArray($array)
  */
 function user()
 {
-    return cache()->store('user', function () {
-        $token = getBearerModel();
+    $token = getBearerModel();
 
-        if (!$token) {
-            return null;
-        }
+    if (!$token) {
+        return null;
+    }
 
-        return $token->user;
-    });
+    return $token->user;
 }
 
 /**
@@ -398,21 +402,20 @@ function toString($data)
  */
 function getBearer()
 {
-    return cache()->store('bearer', function () {
-        $token = getHeader('Authorization');
-        if (!$token && input()->has('access_token')) {
-            $token = "Bearer " . input()->get('access_token');
-        }
-        if ($token === null) {
-            return null;
-        }
-        $fragments = explode(' ', $token);
+    $token = getHeader('Authorization');
+    if (!$token && input()->has('access_token')) {
+        $token = "Bearer " . input()->get('access_token');
+    }
+    if ($token === null) {
+        return null;
+    }
+    $fragments = explode(' ', $token);
 
-        if (count($fragments) < 1) {
-            return null;
-        }
-        return $fragments[1];
-    });
+    if (count($fragments) < 1) {
+        return null;
+    }
+
+    return $fragments[1];
 }
 
 /**
@@ -422,27 +425,25 @@ function getBearer()
  */
 function getBearerModel()
 {
-    return cache()->store('bearerModel', function () {
-        $token = getBearer();
-        if (!$token) {
-            return null;
-        }
+    $token = getBearer();
+    if (!$token) {
+        return null;
+    }
 
-        $pdo = Token::getConnection();
+    $pdo = Token::getConnection();
 
-        $query  = 'SELECT * FROM ' . (new Token())->getTable() . ' ';
-        $query .= 'WHERE hash = :hash LIMIT 1;';
+    $query  = 'SELECT * FROM ' . (new Token())->getTable() . ' ';
+    $query .= 'WHERE hash = :hash LIMIT 1;';
 
-        $statement = $pdo->prepare($query);
+    $statement = $pdo->prepare($query);
 
-        $statement->execute([':hash' => $token]);
+    $statement->execute([':hash' => $token]);
 
-        if ($statement->rowCount() === 0) {
-            return null;
-        }
+    if ($statement->rowCount() === 0) {
+        return null;
+    }
 
-        return Token::from($statement->fetchObject());
-    });
+    return Token::from($statement->fetchObject());
 }
 
 /**

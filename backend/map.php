@@ -8,6 +8,8 @@ return [
     ],
     'cache' => [
         'memory' => \Libraries\Cache\MemoryCache::class,
+        'database' => \Libraries\Cache\DatabaseCache::class,
+        'file' => \Libraries\Cache\FileCache::class,
     ],
     'queue' => [
         'sync' => \Libraries\Queue\SyncManager::class,

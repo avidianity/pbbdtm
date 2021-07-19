@@ -26,13 +26,13 @@ class RequestController extends Controller
 
     public function index()
     {
-        return array_map(function (Request $request) {
+        return  array_map(function (Request $request) {
             $request->load(['user', 'documentType', 'file', 'tasks', 'files']);
             foreach ($request->files as $file) {
                 $file->load(['file']);
             }
             return $request;
-        }, Request::getAll());
+        }, Request::getAll())
     }
 
     public function show()

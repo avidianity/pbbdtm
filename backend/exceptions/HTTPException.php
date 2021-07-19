@@ -14,7 +14,7 @@ class HTTPException extends Exception implements JSONable, Arrayable
     protected $headers = [];
     protected $debugMode = false;
 
-    public function __construct($message, $data = [], $status, ?Throwable $previous = null)
+    public function __construct($message, $data = [], $status = 500, ?Throwable $previous = null)
     {
         parent::__construct($message, $this->status, $previous);
 

@@ -49,14 +49,6 @@ class Message implements SingletonContract
         return $this;
     }
 
-    public function getTo()
-    {
-        if (mb_substr($this->to, 0, 1, 'utf-8') !== '+') {
-            return '+' . $this->to;
-        }
-        return $this->to;
-    }
-
     public function setMessage($message)
     {
         $this->message = $message;
@@ -69,7 +61,7 @@ class Message implements SingletonContract
             $this->setMessage($message);
         }
         try {
-            $this->client->send($this->getTo(), $this->message);
+            $this->client->send($this->to, $this->message);
 
             $this->reset();
             return true;

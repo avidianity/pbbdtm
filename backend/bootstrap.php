@@ -30,4 +30,6 @@ $pdo = require_once __DIR__ . '/pdo.php';
 // set default connection to finish setup
 Model::setConnection($pdo);
 
+session();
+
 // Setup done

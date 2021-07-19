@@ -1,5 +1,7 @@
 /queue/*
 /logs/*
+/cache/*
 
 !/logs/.gitkeep
 !/queue/.gitkeep
+!/cache/.gitkeep

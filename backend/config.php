@@ -45,6 +45,7 @@ return [
     ],
     'cache' => [
         'driver' => env('CACHE_DRIVER', 'memory'),
+        'path' => __DIR__ . '/storage/cache',
     ],
     'logs' => [
         'path' => __DIR__ . '/storage/logs/',

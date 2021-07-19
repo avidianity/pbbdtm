@@ -245,6 +245,11 @@ abstract class Model implements JSONable, Arrayable
         return $this->data;
     }
 
+    public static function table()
+    {
+        return (new static())->getTable();
+    }
+
     /**
      * Attaches the database name into the keys
      * 
@@ -266,7 +271,7 @@ abstract class Model implements JSONable, Arrayable
      */
     public static function justifyKey($key)
     {
-        return (new static())->getTable() . '.' . $key;
+        return static::table() . '.' . $key;
     }
 
     /**
