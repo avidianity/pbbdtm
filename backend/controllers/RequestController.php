@@ -32,7 +32,7 @@ class RequestController extends Controller
                 $file->load(['file']);
             }
             return $request;
-        }, Request::getAll())
+        }, Request::getAll());
     }
 
     public function show()

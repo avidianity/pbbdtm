@@ -1447,6 +1447,11 @@ p.description {
 a.text-primary:focus, a.text-primary:hover {
   color: #51cbce !important; }
 
+.text-yellow,
+a.text-yellow:focus, a.text-yellow:hover {
+  color: #51cbce !important; }
+
+
 .text-info,
 a.text-info:focus, a.text-info:hover {
   color: #51bcda !important; }
@@ -1458,6 +1463,10 @@ a.text-success:focus, a.text-success:hover {
 .text-warning,
 a.text-warning:focus, a.text-warning:hover {
   color: #fbc658 !important; }
+
+.text-white,
+a.text-white:focus, a.text-white:hover {
+color: white !important; }
 
 .text-danger,
 a.text-danger:focus, a.text-danger:hover {
@@ -1939,6 +1948,17 @@ a[data-toggle="collapse"][aria-expanded="true"] .caret,
 
 .bg-primary {
   background-color: #51cbce !important; }
+
+
+
+
+
+
+.bg-jetblack {
+  background-color: #3b3c36 !important; }
+
+.bg-black {
+  background-color: black !important; }
 
 .bg-info {
   background-color: #51bcda !important; }
