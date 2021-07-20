@@ -12,6 +12,7 @@ import { User } from './contracts/User';
 import state from './state';
 import Track from './components/Landing/Track';
 import { View } from './components/Student/Request/View';
+import ForgotPassword from './components/ForgotPassword';
 
 export default function App() {
 	const verifyUser = async () => {
@@ -39,6 +40,7 @@ export default function App() {
 				<Route path={routes.DASHBOARD} component={Dashboard} />
 				<Route path={routes.TRACK_REQUEST} exact component={Track} />
 				<Route path={`${routes.TRACK_REQUEST}/:id`} component={View} />
+				<Route path={routes.FORGOT_PASSWORD} component={ForgotPassword} />
 			</Switch>
 		</Router>
 	);

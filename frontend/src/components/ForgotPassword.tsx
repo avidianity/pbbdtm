@@ -1,22 +1,17 @@
 import axios from 'axios';
-import React, { useState } from 'react';
-import { Link, useHistory } from 'react-router-dom';
-import { User } from '../contracts/User';
+import React, { FC, useState } from 'react';
+import { useHistory, Link } from 'react-router-dom';
 import { handleError, outIf } from '../helpers';
 import { routes } from '../routes';
 import state from '../state';
 import styles from '../styles/Login.module.css';
 import toastr from 'toastr';
 
-type Response = {
-	user: User;
-	token: string;
-};
+type Props = {};
 
-export function Login() {
+const ForgotPassword: FC<Props> = (props) => {
 	const [data, setData] = useState({
 		email: '',
-		password: '',
 	});
 	const [processing, setProcessing] = useState(false);
 
@@ -27,20 +22,14 @@ export function Login() {
 	}
 
 	const submit = async () => {
-		if (data.password.length === 0) {
-			return toastr.error('Please provide a password.');
+		if (data.email.length === 0) {
+			return toastr.error('Please provide a email.');
 		}
 		setProcessing(true);
 		try {
-			const response = await axios.post<Response>('/auth/login', data);
-
-			const { user, token } = response.data;
-
-			state.set('logged', true);
-			state.set('user', user);
-			state.set('token', token);
-			console.log(state.getAll(), 'all');
-			history.push(routes.DASHBOARD);
+			await axios.post('/auth/forgot-password', data);
+			toastr.success('Email sent successfully. Please check your inbox.');
+			history.push(routes.ROOT);
 		} catch (error) {
 			handleError(error);
 			console.log(error);
@@ -93,22 +82,6 @@ export function Login() {
 								/>
 							</div>
 							<div className='form-group'>
-								<label htmlFor='password'>Password</label>
-								<input
-									type='password'
-									name='password'
-									id='password'
-									placeholder='Password'
-									className={`form-control form-control-sm ${outIf(processing, 'disabled')}`}
-									disabled={processing}
-									value={data.password}
-									onChange={(e) => {
-										data.password = e.target.value;
-										setData({ ...data });
-									}}
-								/>
-							</div>
-							<div className='form-group'>
 								<button
 									type='submit'
 									className={`btn btn-sm btn-secondary ${outIf(processing, 'disabled')}`}
@@ -118,20 +91,9 @@ export function Login() {
 											<i className='bi bi-arrow-clockwise'></i>
 										</div>
 									) : (
-										'Login'
+										'Submit'
 									)}
 								</button>
-							</div>
-							<div className='form-group d-flex'>
-								<div className='mr-auto'>
-									Don't have an account?{' '}
-									<Link to={routes.REGISTER} className='d-inline'>
-										Register
-									</Link>
-								</div>
-								<div className='ml-auto'>
-									<Link to={routes.FORGOT_PASSWORD}>Forgot Password</Link>
-								</div>
 							</div>
 						</form>
 					</div>
@@ -139,4 +101,6 @@ export function Login() {
 			</div>
 		</div>
 	);
-}
+};
+
+export default ForgotPassword;

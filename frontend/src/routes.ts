@@ -15,4 +15,6 @@ export const routes = {
 	CMS: '/content-management',
 	CONTACTS: '/contacts',
 	TRACK_REQUEST: '/track-request',
+	FORGOT_PASSWORD: '/forgot-password',
+	RESET_PASSWORD: '/reset-password',
 };

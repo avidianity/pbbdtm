@@ -6,9 +6,12 @@ use Interfaces\Queue\Manager;
 use Interfaces\Queue\Queueable;
 use Libraries\Log;
 use Throwable;
+use Traits\Singleton;
 
-class SyncManager extends Manager
+class SyncManager implements Manager
 {
+    use Singleton;
+
     public function register(Queueable $queueable)
     {
         try {

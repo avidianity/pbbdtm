@@ -22,6 +22,9 @@ $router->group('/api', function (Router $router) {
         $router->post('/login', [AuthController::class, 'login']);
         $router->post('/register', [AuthController::class, 'register']);
         $router->post('/logout', [AuthController::class, 'logout']);
+
+        $router->post('/forgot-password', [AuthController::class, 'forgotPassword']);
+        $router->post('/reset-password', [AuthController::class, 'resetPassword']);
     });
 
     $router->apiResource('/requests', RequestController::class);
