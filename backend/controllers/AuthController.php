@@ -157,7 +157,7 @@ class AuthController extends Controller
 
         $statement->execute([':email' => $email]);
 
-        if ($statement->rowCount() > 0) {
+        if ($statement->rowCount() === 0) {
             return response(['message' => 'Email does not exist.'], 400);
         }
 

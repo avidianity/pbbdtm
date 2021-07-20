@@ -13,6 +13,7 @@ import state from './state';
 import Track from './components/Landing/Track';
 import { View } from './components/Student/Request/View';
 import ForgotPassword from './components/ForgotPassword';
+import ResetPassword from './components/ResetPassword';
 
 export default function App() {
 	const verifyUser = async () => {
@@ -41,6 +42,7 @@ export default function App() {
 				<Route path={routes.TRACK_REQUEST} exact component={Track} />
 				<Route path={`${routes.TRACK_REQUEST}/:id`} component={View} />
 				<Route path={routes.FORGOT_PASSWORD} component={ForgotPassword} />
+				<Route path={`${routes.RESET_PASSWORD}/:token`} component={ResetPassword} />
 			</Switch>
 		</Router>
 	);
