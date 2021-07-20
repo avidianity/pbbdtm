@@ -164,8 +164,10 @@ class RequestController extends Controller
             queue()->register(new SendMailRaw($request->user->email, 'Request Updated', input()->email_message));
         }
 
-        $text  = input()->sms_message;
-        $text .= sprintf('%s%s', config('app.frontend.url'), "/dashboard/requests/{$request->id}");
+        if (input()->has('sms_message')) {
+            $text  = input()->sms_message;
+            $text .= sprintf('%s%s', config('app.frontend.url'), "/dashboard/requests/{$request->id}");
+        }
 
         queue()->register(new SendMessage($request->user->phone, $text));
 
