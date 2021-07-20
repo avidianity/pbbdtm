@@ -167,9 +167,8 @@ class RequestController extends Controller
         if (input()->has('sms_message')) {
             $text  = input()->sms_message;
             $text .= sprintf('%s%s', config('app.frontend.url'), "/dashboard/requests/{$request->id}");
+            queue()->register(new SendMessage($request->user->phone, $text));
         }
-
-        queue()->register(new SendMessage($request->user->phone, $text));
 
         return $request;
     }
