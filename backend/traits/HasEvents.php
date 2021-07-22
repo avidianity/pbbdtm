@@ -28,6 +28,7 @@ trait HasEvents
         if (in_array(static::class, array_keys(static::$events[$type]))) {
             $callable = static::$events[$type][static::class];
             if ($callable instanceof Closure) {
+                $callable = $callable->bindTo($this, $this);
                 $callable($this);
             }
         }

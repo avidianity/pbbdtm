@@ -122,8 +122,8 @@ class Request extends Model
 
             queue()->register(new SendMail($user->email, 'emails.expired-request', 'Request Expiration Notice', $data));
 
-            $text  = 'You Request (ID: ' . $this->request_id . ') has expired. It was created at ' . $data['date'] . '. It\'s last status was \'' . $this->status . '\'.';
-            $text .= sprintf('%s%s', config('app.frontend.url'), "/dashboard/requests/{$this->id}");
+            $text  = 'You Request (ID: ' . $request->request_id . ') has expired. It was created at ' . $data['date'] . '. It\'s last status was \'' . $request->status . '\'.';
+            $text .= sprintf('%s%s', config('app.frontend.url'), "/dashboard/requests/{$request->id}");
 
             queue()->register(new SendMessage($user->phone, $text));
         });
