@@ -106,7 +106,7 @@ class RequestController extends Controller
 
         queue()->register(new SendMail(user()->email, 'emails.new-request', 'Request Creation', $data));
 
-        $message = 'Hi! This is a message from PBBDTM. You have made a request (ID: ' . $request->request_id . '). We will notify you on further updates.';
+        $message = 'Hi! This is a message from Polytechnic University of the Philippines Bansud Branch Documents Monitoring System. You have successfully created a request (ID: ' . $request->request_id . '). We will notify you on further updates. Note that incomplete requirements will not be processed.';
         $phone = user()->phone;
 
         queue()->register(new SendMessage($phone, $message));
@@ -167,9 +167,8 @@ class RequestController extends Controller
         if (input()->has('sms_message')) {
             $text  = input()->sms_message;
             $text .= sprintf('%s%s', config('app.frontend.url'), "/dashboard/requests/{$request->id}");
+            queue()->register(new SendMessage($request->user->phone, $text));
         }
-
-        queue()->register(new SendMessage($request->user->phone, $text));
 
         return $request;
     }
