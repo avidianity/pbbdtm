@@ -161,16 +161,6 @@ class AuthController extends Controller
             return response(['message' => 'Email does not exist.'], 400);
         }
 
-        $query  = sprintf('SELECT * FROM %s WHERE %s = :email LIMIT 1', ForgotPassword::table(), ForgotPassword::justifyKey('email'));
-
-        $statement = $pdo->prepare($query);
-
-        $statement->execute([':email' => $email]);
-
-        if ($statement->rowCount() > 0) {
-            return response(['message' => 'Email has already been sent a email token.'], 400);
-        }
-
         $token = Str::random(40);
 
         ForgotPassword::create(['email' => $email, 'token' => $token]);

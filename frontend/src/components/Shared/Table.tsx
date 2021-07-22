@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import pluralize from 'pluralize';
-import { useRouteMatch } from 'react-router-dom';
-import { Pagination } from './Pagination';
 import _ from 'lodash';
-import { createTableColumns, outIf, parseDate, sentencify } from '../../helpers';
+import { outIf, sentencify } from '../../helpers';
 import { State } from '../../state';
+import Datatable from 'react-data-table-component';
 
 type Props<T> = {
 	title: string;
@@ -28,8 +27,6 @@ type Props<T> = {
 
 export function Table<T>({
 	title,
-	theme,
-	columns,
 	data,
 	onViewClick,
 	onEditClick,
@@ -45,9 +42,6 @@ export function Table<T>({
 	dontShowDelete,
 	disableAddButton,
 }: Props<T>) {
-	const headColumns = columns || createTableColumns(data);
-	const match = useRouteMatch();
-
 	const state = new State(_.kebabCase(title.toLowerCase() + '-table'));
 
 	const total = data.length;
@@ -88,7 +82,24 @@ export function Table<T>({
 		}
 	}
 
-	const displayData = pagination ? paginatedData : data;
+	const columns =
+		data.length > 0
+			? Object.keys(data[0]).map((column) => ({
+					name: sentencify(column),
+					selector: ((row: any) => row[column]) as any,
+					sortable: true,
+					minWidth: '200px',
+			  }))
+			: [];
+
+	if (withAction) {
+		columns.push({
+			name: 'Actions',
+			selector: (row: any) => row['action'],
+			sortable: true,
+			minWidth: '300px',
+		});
+	}
 
 	return (
 		<div className='row'>
@@ -116,7 +127,7 @@ export function Table<T>({
 							<div className='mt-4'>
 								<div className='py-2'>
 									<button
-										className={`btn btn-${!options ? 'primary' : 'danger'} btn-sm`}
+										className={`btn btn-${!options ? 'primary' : 'danger'} btn-sm d-none`}
 										onClick={(e) => {
 											e.preventDefault();
 											setOptions(!options);
@@ -126,7 +137,7 @@ export function Table<T>({
 								</div>
 								{options ? (
 									<form
-										className='form-inline'
+										className='form-inline d-none'
 										onSubmit={(e) => {
 											e.preventDefault();
 											state.set('perPage', formInterval >= 1 ? formInterval : 10);
@@ -163,177 +174,98 @@ export function Table<T>({
 						</div>
 					) : (
 						<div className='card-body'>
-							{displayData.length > 0 ? (
+							{data.length > 0 ? (
 								<div className='table-responsive' style={{ overflowY: 'hidden' }}>
-									<table className={`table table-sm`}>
-										<thead className='text-primary'>
-											<tr>
-												{headColumns.map((column, index) => (
-													<th
-														className='sort text-center'
-														data-sort={column.toLowerCase()}
-														scope='col'
-														key={index}>
-														{column}
-													</th>
-												))}
-												{withAction ? (
-													<th scope='col' className='text-center'>
-														Actions
-													</th>
-												) : null}
-											</tr>
-										</thead>
-										<tbody>
-											{displayData.map((item, index) => (
-												<tr key={index}>
-													{Object.entries(item).map(([key, entry], index) => (
-														<td key={index} className='text-center'>
-															{key === 'updatedAt' || key === 'createdAt'
-																? parseDate(entry as string)
-																: (entry as any)}
-														</td>
-													))}
-													{withAction ? (
-														<td className='text-center'>
-															<div className='dropdown'>
-																<button
-																	className='btn btn-sm btn-icon-only text-light'
-																	data-toggle='dropdown'
-																	aria-haspopup='true'
-																	aria-expanded='false'>
-																	<i className='fas fa-ellipsis-v'></i>
-																</button>
-																<div className='dropdown-menu dropdown-menu-right dropdown-menu-arrow'>
-																	{outIf(
-																		dontShowView === undefined || dontShowView === false,
-																		<button className='dropdown-item' onClick={() => onViewClick(item)}>
-																			<i className='ni ni-active-40 text-info'></i>
-																			View
-																		</button>
-																	)}
-																	{outIf(
-																		dontShowEdit === undefined || dontShowEdit === false,
-																		<button className='dropdown-item' onClick={() => onEditClick(item)}>
-																			<i className='ni ni-ruler-pencil text-warning'></i>
-																			Edit
-																		</button>
-																	)}
-																	{outIf(
-																		dontShowDelete === undefined || dontShowDelete === false,
-																		<button
-																			type='button'
-																			data-toggle='modal'
-																			data-target={`#deleteModal${index}`}
-																			className='dropdown-item'>
-																			<i className='ni ni-fat-delete text-danger'></i>
-																			Delete
-																		</button>
-																	)}
-																</div>
-															</div>
-														</td>
-													) : null}
-												</tr>
-											))}
-										</tbody>
-										{displayData.length >= 10 ? (
-											<thead className='text-primary'>
-												<tr>
-													{headColumns.map((column, index) => (
-														<th
-															className='sort text-center'
-															data-sort={column.toLowerCase()}
-															scope='col'
-															key={index}>
-															{column}
-														</th>
-													))}
-													{withAction ? (
-														<th scope='col' className='text-center'>
-															Actions
-														</th>
-													) : null}
-												</tr>
-											</thead>
-										) : null}
-									</table>
-									{withAction
-										? displayData.map((item, index) => (
-												<div
-													key={index}
-													className='modal fade'
-													id={`deleteModal${index}`}
-													tabIndex={-1}
-													role='dialog'
-													aria-labelledby={`deleteModalLabel${index}`}
-													aria-hidden='true'>
-													<div className='modal-dialog modal-dialog-centered modal-lg' role='document'>
-														<div className='modal-content'>
-															<div className='modal-header'>
-																<h5 className='modal-title' id={`deleteModalLabel${index}`}>
-																	Delete {pluralize.singular(title)}
-																</h5>
-																<button
-																	type='button'
-																	className='close'
-																	data-dismiss='modal'
-																	aria-label='Close'>
-																	<span aria-hidden='true'>&times;</span>
-																</button>
-															</div>
-															<div className='modal-body'>
-																Are you sure you want to delete this {pluralize.singular(sentencify(title))}
-																?
-															</div>
-															<div className='modal-footer'>
-																<button
-																	type='button'
-																	className='btn btn-danger btn-sm'
-																	onClick={(e) => {
-																		e.preventDefault();
-																		const modal = $(`#deleteModal${index}`);
-																		modal.on('hidden.bs.modal', () => onDeleteConfirm(item));
-																		modal.modal('hide');
-																	}}>
-																	Confirm
-																</button>
-																<button
-																	type='button'
-																	className='btn btn-secondary btn-sm'
-																	data-dismiss='modal'>
-																	Cancel
-																</button>
-															</div>
-														</div>
-													</div>
+									<Datatable
+										columns={columns}
+										data={data.map((item, index) => ({
+											...item,
+											action: (
+												<div className={`d-flex w-100 ${!withAction ? 'd-none' : ''}`}>
+													{outIf(
+														dontShowView === undefined || dontShowView === false,
+														<button className='mx-1 btn btn-link' onClick={() => onViewClick(item)}>
+															<i className='ni ni-active-40 text-info'></i>
+															View
+														</button>
+													)}
+													{outIf(
+														dontShowEdit === undefined || dontShowEdit === false,
+														<button className='mx-1 btn btn-link' onClick={() => onEditClick(item)}>
+															<i className='ni ni-ruler-pencil text-warning'></i>
+															Edit
+														</button>
+													)}
+													{outIf(
+														dontShowDelete === undefined || dontShowDelete === false,
+														<button
+															type='button'
+															data-toggle='modal'
+															data-target={`#deleteModal${index}`}
+															className='mx-1 btn btn-link'>
+															<i className='ni ni-fat-delete text-danger'></i>
+															Delete
+														</button>
+													)}
 												</div>
-										  ))
-										: null}
+											),
+										}))}
+										pagination
+										theme={'default'}
+									/>
 								</div>
-							) : (
+							) : null}
+							{data.length === 0 ? (
 								<div className='card-body'>
 									<h3 className='text-center'>No Data</h3>
 								</div>
-							)}
-						</div>
-					)}
-
-					{pagination ? (
-						<div className='card-footer py-4'>
-							{displayData.length > 0 && Math.ceil(total / interval) > 1 ? (
-								<Pagination
-									url={match.path}
-									current={current}
-									total={total}
-									limit={interval}
-									onChange={(page) => {
-										state.set('page', page);
-									}}
-								/>
 							) : null}
 						</div>
-					) : null}
+					)}
+					{withAction
+						? data.map((item, index) => (
+								<div
+									key={index}
+									className='modal fade'
+									id={`deleteModal${index}`}
+									tabIndex={-1}
+									role='dialog'
+									aria-labelledby={`deleteModalLabel${index}`}
+									aria-hidden='true'>
+									<div className='modal-dialog modal-dialog-centered modal-lg' role='document'>
+										<div className='modal-content'>
+											<div className='modal-header'>
+												<h5 className='modal-title' id={`deleteModalLabel${index}`}>
+													Delete {pluralize.singular(title)}
+												</h5>
+												<button type='button' className='close' data-dismiss='modal' aria-label='Close'>
+													<span aria-hidden='true'>&times;</span>
+												</button>
+											</div>
+											<div className='modal-body'>
+												Are you sure you want to delete this {pluralize.singular(sentencify(title))}?
+											</div>
+											<div className='modal-footer'>
+												<button
+													type='button'
+													className='btn btn-danger btn-sm'
+													onClick={(e) => {
+														e.preventDefault();
+														const modal = $(`#deleteModal${index}`);
+														modal.on('hidden.bs.modal', () => onDeleteConfirm(item));
+														modal.modal('hide');
+													}}>
+													Confirm
+												</button>
+												<button type='button' className='btn btn-secondary btn-sm' data-dismiss='modal'>
+													Cancel
+												</button>
+											</div>
+										</div>
+									</div>
+								</div>
+						  ))
+						: null}
 				</div>
 			</div>
 		</div>

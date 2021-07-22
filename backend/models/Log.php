@@ -13,6 +13,6 @@ class Log extends Model
 
     public function loggable()
     {
-        return $this->morphTo(__FUNCTION__);
+        return $this->morphTo('loggable');
     }
 }

@@ -93,22 +93,6 @@ class Request extends Model
     {
         $this->update(['expired' => true]);
         $this->logs()->create(['action' => 'Request has expired.', 'user_id' => $this->user_id]);
-        $user = $this->user;
-
-        $data = [
-            'name' => $user->name,
-            'requestID' => $this->request_id,
-            'documentType' => $this->documentType->name,
-            'date' => DateTime::createFromFormat('Y-m-d H:i:s', $this->created_at)->format('F d, Y h:i A'),
-            'lastStatus' => $this->status,
-        ];
-
-        queue()->register(new SendMail($user->email, 'emails.expired-request', 'Request Expiration Notice', $data));
-
-        $text  = 'You Request (ID: ' . $this->request_id . ') has expired. It was created at ' . $data['date'] . '. It\'s last status was \'' . $this->status . '\'.';
-        $text .= sprintf('%s%s', config('app.frontend.url'), "/dashboard/requests/{$this->id}");
-
-        queue()->register(new SendMessage($user->phone, $text));
     }
 
     protected static function events()
@@ -124,6 +108,24 @@ class Request extends Model
             $request->approved = $request->approved ? 1 : 0;
             $request->expired = $request->expired ? 1 : 0;
             $request->acknowledged = $request->acknowledged ? 1 : 0;
+        });
+
+        static::updating(function (self $request) {
+            $user = $request->load(['user'])->user;
+            $data = [
+                'name' => $user->name,
+                'requestID' => $request->request_id,
+                'documentType' => $request->documentType->name,
+                'date' => DateTime::createFromFormat('Y-m-d H:i:s', $request->created_at)->format('F d, Y h:i A'),
+                'lastStatus' => $request->status,
+            ];
+
+            queue()->register(new SendMail($user->email, 'emails.expired-request', 'Request Expiration Notice', $data));
+
+            $text  = 'You Request (ID: ' . $this->request_id . ') has expired. It was created at ' . $data['date'] . '. It\'s last status was \'' . $this->status . '\'.';
+            $text .= sprintf('%s%s', config('app.frontend.url'), "/dashboard/requests/{$this->id}");
+
+            queue()->register(new SendMessage($user->phone, $text));
         });
 
         static::serializing(function (self $request) {

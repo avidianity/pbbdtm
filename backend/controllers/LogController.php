@@ -11,7 +11,9 @@ class LogController extends Controller
         return array_map(function (Log $log) {
             $log->load(['user', 'loggable']);
 
-            $log->loggable->load(['documentType']);
+            if (method_exists($log->loggable, 'documentType')) {
+                $log->loggable->load(['documentType']);
+            }
 
             return $log;
         }, Log::getAll());
