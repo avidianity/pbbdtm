@@ -283,6 +283,26 @@ export function View() {
 		return dates.find((date) => date.status === status);
 	};
 
+	const isTasksDone = (request: Request) => {
+		if (request.tasks && request.tasks.length === 0) {
+			return true;
+		}
+
+		if (!request.tasks) {
+			return true;
+		}
+
+		for (const task of request.tasks) {
+			if (task.for === request.status) {
+				if (!task.done) {
+					return false;
+				}
+			}
+		}
+
+		return true;
+	};
+
 	return (
 		<div className='container'>
 			<div className='row'>
@@ -326,7 +346,7 @@ export function View() {
 											e.preventDefault();
 											$('#forwardRequestModal').modal('toggle');
 										}}
-										disabled={updating || !request.acknowledged}>
+										disabled={updating || !request.acknowledged || !isTasksDone(request)}>
 										<i className='fas fa-bell'></i>{' '}
 										{request.acknowledged ? next : 'You must acknowledge the request first'}
 									</button>
@@ -338,7 +358,7 @@ export function View() {
 											e.preventDefault();
 											$('#forwardRequestModal').modal('toggle');
 										}}
-										disabled={updating || !request.acknowledged}>
+										disabled={updating || !request.acknowledged || !isTasksDone(request)}>
 										<i className='fas fa-bell'></i>{' '}
 										{request.acknowledged ? 'Forward' : 'You must acknowledge the request first'}
 									</button>

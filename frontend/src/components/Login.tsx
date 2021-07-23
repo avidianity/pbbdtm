@@ -7,6 +7,7 @@ import { routes } from '../routes';
 import state from '../state';
 import styles from '../styles/Login.module.css';
 import toastr from 'toastr';
+import dayjs from 'dayjs';
 
 type Response = {
 	user: User;
@@ -30,7 +31,19 @@ export function Login() {
 		if (data.password.length === 0) {
 			return toastr.error('Please provide a password.');
 		}
+
+		if (state.has('block')) {
+			const now = dayjs();
+			const block = dayjs(state.get<string>('block'));
+			if (!block.isValid() || block.isAfter(now)) {
+				state.remove('block').remove('attempts');
+			} else {
+				return toastr.error(`Maximum login attempts exceeded. Please wait for ${block.fromNow()} then try again.`, 'Oops!');
+			}
+		}
+
 		setProcessing(true);
+
 		try {
 			const response = await axios.post<Response>('/auth/login', data);
 
@@ -39,11 +52,20 @@ export function Login() {
 			state.set('logged', true);
 			state.set('user', user);
 			state.set('token', token);
+			state.remove('block').remove('attempts');
 			console.log(state.getAll(), 'all');
 			history.push(routes.DASHBOARD);
 		} catch (error) {
 			handleError(error);
 			console.log(error);
+
+			const attempts = state.has('attempts') ? state.get<number>('attempts') : 0;
+
+			if (attempts >= 3) {
+				state.set('block', dayjs().add(1, 'hour').toJSON());
+			} else {
+				toastr.error(`Login attempts remaining, ${attempts}.`);
+			}
 		} finally {
 			setProcessing(false);
 		}

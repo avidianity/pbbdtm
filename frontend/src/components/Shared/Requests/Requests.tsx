@@ -23,6 +23,16 @@ const Requests: FC<Props> = () => {
 
 	const readOnly = match.path.includes(routes.REQUESTS.INACTIVE) || match.path.includes(routes.REQUESTS.ARCHIVED);
 
+	const unexpire = async (request: Request) => {
+		try {
+			await axios.put(`/requests?id=${request.id}`, { expired: false });
+			toastr.success('Request updated successfully.');
+			await fetchRequests();
+		} catch (error) {
+			handleError(error);
+		}
+	};
+
 	const fetchRequests = async () => {
 		setProcessing(true);
 		try {
@@ -42,7 +52,21 @@ const Requests: FC<Props> = () => {
 						'for',
 						'evaluation',
 						'acknowledged_dates',
-					]).filter((request) => request.expired)
+					])
+						.filter((request) => request.expired)
+						.map((request) => ({
+							...request,
+							continue: (
+								<button
+									className='btn btn-info btn-sm'
+									onClick={(e) => {
+										e.preventDefault();
+										unexpire(request);
+									}}>
+									Continue
+								</button>
+							),
+						}))
 				);
 			}
 			if (match.path.includes(routes.REQUESTS.ARCHIVED)) {

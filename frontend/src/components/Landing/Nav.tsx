@@ -1,43 +1,17 @@
-import axios from 'axios';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Link, useHistory } from 'react-router-dom';
-import { Downloadable } from '../../contracts/Downloadable';
-import { exceptMany } from '../../helpers';
 import { routes } from '../../routes';
 import state from '../../state';
 
 export function Nav() {
 	const history = useHistory();
 	const url = new URLSearchParams(history.location.search);
-	const [downloadables, setDownloadables] = useState<Downloadable[]>([]);
 
 	const logged = () => {
 		return state.get('logged') && state.get('user');
 	};
 
 	const isPreview = url.get('preview') === 'true';
-
-	const fetchDownloadables = async () => {
-		try {
-			const { data } = await axios.get<Array<Downloadable>>('/downloadables');
-			setDownloadables(exceptMany(data, ['file_id']));
-		} catch (error) {
-			console.log(error.toJSON());
-		}
-	};
-
-	const categories: string[] = [];
-
-	downloadables.forEach((downloadable) => {
-		if (!categories.includes(downloadable.category!)) {
-			categories.push(downloadable.category!);
-		}
-	});
-
-	useEffect(() => {
-		fetchDownloadables();
-		// eslint-disable-next-line
-	}, []);
 
 	return (
 		<nav className='navbar navbar-expand-lg fixed-top navbar-transparent border-0' color-on-scroll='300'>

@@ -2,7 +2,7 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { useHistory, useRouteMatch } from 'react-router-dom';
 import { DocumentType } from '../../../contracts/DocumentType';
-import { createTableColumns, exceptMany, ucwords } from '../../../helpers';
+import { createTableColumns, except, exceptMany, ucwords } from '../../../helpers';
 import { Table } from '../../Shared/Table';
 import toastr from 'toastr';
 import dayjs from 'dayjs';
@@ -19,7 +19,17 @@ export function List() {
 		setProcessing(true);
 		try {
 			const { data } = await axios.get<Array<DocumentType>>('/document-types');
-			setDocumentTypes(exceptMany(data, ['requirements', 'files']));
+			setDocumentTypes(
+				exceptMany(data, ['requirements', 'files']).map((documentType) =>
+					except(
+						{
+							...documentType,
+							work_processing_days: documentType.expiry_days,
+						},
+						['expiry_days']
+					)
+				)
+			);
 		} catch (error) {
 			console.log(error.toJSON());
 			toastr.error('Unable to fetch Document Types.');

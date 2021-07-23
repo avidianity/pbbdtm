@@ -124,7 +124,7 @@ export function Form() {
 				/>
 			</div>
 			<div className='form-group'>
-				<label htmlFor='expiry_days'>Expiry Days</label>
+				<label htmlFor='expiry_days'>Work Processing Days</label>
 				<input
 					type='number'
 					name='expiry_days'

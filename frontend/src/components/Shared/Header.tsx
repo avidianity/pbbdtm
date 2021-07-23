@@ -1,7 +1,7 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Link, useHistory, useRouteMatch } from 'react-router-dom';
-import { sentencify } from '../../helpers';
+import { outIf, sentencify } from '../../helpers';
 import { routes } from '../../routes';
 import state from '../../state';
 import toastr from 'toastr';
@@ -93,7 +93,13 @@ export function Header() {
 						</div>
 					</form> */}
 					<ul className='navbar-nav'>
-						<li className='nav-item btn-rotate dropdown'>
+						<li className={`nav-item btn-rotate dropdown ${outIf(expiring.length === 0, 'd-none')}`}>
+							<a className='nav-link dropdown-toggle' href='/' data-toggle='dropdown' aria-expanded='false'>
+								<i className='nc-icon nc-bell-55'></i>
+								<p>
+									<span className='d-lg-none d-md-block'>Notifications</span>
+								</p>
+							</a>
 							<div className='dropdown-menu dropdown-menu-right p-0'>
 								{expiring.map((request, index) => (
 									<Link
@@ -107,12 +113,7 @@ export function Header() {
 							</div>
 						</li>
 						<li className='nav-item btn-rotate dropdown'>
-							<a
-								className='nav-link dropdown-toggle'
-								href='/'
-								id='navbarDropdownMenuLink'
-								data-toggle='dropdown'
-								aria-expanded='false'>
+							<a className='nav-link dropdown-toggle' href='/' data-toggle='dropdown' aria-expanded='false'>
 								<i className='nc-icon nc-circle-10'></i>
 								<p>
 									<span className='d-lg-none d-md-block'>Account</span>
