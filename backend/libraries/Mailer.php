@@ -77,14 +77,12 @@ class Mailer
 
     protected function checkCompatibility()
     {
-        $availableTransports = stream_get_transports();
+        if ($this->encryption) {
+            $availableTransports = stream_get_transports();
 
-        if (!in_array('tls', $availableTransports)) {
-            throw new MailerException('Your current PHP installation does not support \'tls\' encryption as a mailing transport.');
-        }
-
-        if (!in_array('ssl', $availableTransports)) {
-            throw new MailerException('Your current PHP installation does not support \'ssl\' encryption as a mailing transport.');
+            if (!in_array($this->encryption, $availableTransports)) {
+                throw new MailerException(sprintf('Your current PHP installation does not support \'%s\' encryption as a mailing transport.', $this->encryption));
+            }
         }
 
         return $this;

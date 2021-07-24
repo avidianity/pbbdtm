@@ -154,12 +154,13 @@ export function View() {
 				data.acknowledged_dates = JSON.stringify(dates);
 			}
 
-			await axios.put(`/requests?id=${request?.id}`, {
+			await axios.post(`/requests?id=${request?.id}`, {
 				...data,
 				status,
 				acknowledged: ['Releasing', 'Released'].includes(status),
 				sms_message: smsMessage,
 				email_message: emailMessage,
+				_method: 'PUT',
 			});
 			toastr.info('Request has been updated and forwarded.', 'Notice');
 			history.goBack();
