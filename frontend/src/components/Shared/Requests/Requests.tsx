@@ -38,8 +38,23 @@ const Requests: FC<Props> = () => {
 		try {
 			const { data } = await axios.get<Array<Request>>('/requests');
 			if (match.path.includes(routes.REQUESTS.INACTIVE)) {
+				const filtered = data
+					.filter((request) => request.expired)
+					.map((request) => ({
+						...request,
+						continue: (
+							<button
+								className='btn btn-info btn-sm'
+								onClick={(e) => {
+									e.preventDefault();
+									unexpire(request);
+								}}>
+								Continue
+							</button>
+						),
+					}));
 				return setRequests(
-					exceptMany(data, [
+					exceptMany(filtered, [
 						'file',
 						'file_id',
 						'user_id',
@@ -52,21 +67,8 @@ const Requests: FC<Props> = () => {
 						'for',
 						'evaluation',
 						'acknowledged_dates',
+						'acknowledged',
 					])
-						.filter((request) => request.expired)
-						.map((request) => ({
-							...request,
-							continue: (
-								<button
-									className='btn btn-info btn-sm'
-									onClick={(e) => {
-										e.preventDefault();
-										unexpire(request);
-									}}>
-									Continue
-								</button>
-							),
-						}))
 				);
 			}
 			if (match.path.includes(routes.REQUESTS.ARCHIVED)) {
