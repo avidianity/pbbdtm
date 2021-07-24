@@ -111,21 +111,23 @@ class Request extends Model
         });
 
         static::updating(function (self $request) {
-            $user = $request->load(['user'])->user;
-            $data = [
-                'name' => $user->name,
-                'requestID' => $request->request_id,
-                'documentType' => $request->documentType->name,
-                'date' => DateTime::createFromFormat('Y-m-d H:i:s', $request->created_at)->format('F d, Y h:i A'),
-                'lastStatus' => $request->status,
-            ];
+            if ($request->expired) {
+                $user = $request->load(['user'])->user;
+                $data = [
+                    'name' => $user->name,
+                    'requestID' => $request->request_id,
+                    'documentType' => $request->documentType->name,
+                    'date' => DateTime::createFromFormat('Y-m-d H:i:s', $request->created_at)->format('F d, Y h:i A'),
+                    'lastStatus' => $request->status,
+                ];
 
-            queue()->register(new SendMail($user->email, 'emails.expired-request', 'Request Expiration Notice', $data));
+                queue()->register(new SendMail($user->email, 'emails.expired-request', 'Request Expiration Notice', $data));
 
-            $text  = 'You Request (ID: ' . $request->request_id . ') has expired. It was created at ' . $data['date'] . '. It\'s last status was \'' . $request->status . '\'.';
-            $text .= sprintf('%s%s', config('app.frontend.url'), "/dashboard/requests/{$request->id}");
+                $text  = 'You Request (ID: ' . $request->request_id . ') has expired. It was created at ' . $data['date'] . '. It\'s last status was \'' . $request->status . '\'.';
+                $text .= sprintf('%s%s', config('app.frontend.url'), "/dashboard/requests/{$request->id}");
 
-            queue()->register(new SendMessage($user->phone, $text));
+                queue()->register(new SendMessage($user->phone, $text));
+            }
         });
 
         static::serializing(function (self $request) {
