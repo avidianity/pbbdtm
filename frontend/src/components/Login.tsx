@@ -35,7 +35,7 @@ export function Login() {
 		if (state.has('block')) {
 			const now = dayjs();
 			const block = dayjs(state.get<string>('block'));
-			if (!block.isValid() || block.isAfter(now)) {
+			if (!block.isValid() || now.isAfter(block)) {
 				state.remove('block').remove('attempts');
 			} else {
 				return toastr.error(`Maximum login attempts exceeded. Please wait for ${block.fromNow()} then try again.`, 'Oops!');
@@ -63,8 +63,10 @@ export function Login() {
 
 			if (attempts >= 3) {
 				state.set('block', dayjs().add(1, 'hour').toJSON());
+				toastr.error('Login blocked. Please try again later.');
 			} else {
-				toastr.error(`Login attempts: ${attempts}.`);
+				state.set('attempts', attempts);
+				toastr.error(`Login attempts: ${attempts}`);
 			}
 		} finally {
 			setProcessing(false);
