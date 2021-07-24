@@ -177,7 +177,7 @@ export function Form() {
 							</div>
 						</div>
 					))}
-					<div className='col-12 mt-3'>
+					<div className='col-12 mt-3 d-none'>
 						<h4>Forms</h4>
 						<button
 							className='btn btn-info btn-sm'

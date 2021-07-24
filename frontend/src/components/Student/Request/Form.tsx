@@ -180,16 +180,6 @@ export function Form() {
 						<p key={index}>{requirement}</p>
 					)
 				)}
-				<h6>Forms</h6>
-				{types
-					.find((type) => Number(type.id) === Number(data.document_type_id))
-					?.files?.map((file, index) => (
-						<p key={index}>
-							<a href={`${file.file?.url}&download=true`} target='_blank' rel='noreferrer'>
-								{file.file?.name}
-							</a>
-						</p>
-					))}
 				<h6>Compliance</h6>
 				<div className='container'>
 					<div className='row'>

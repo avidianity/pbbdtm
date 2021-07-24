@@ -69,14 +69,6 @@ export function View() {
 										{requirement}
 									</p>
 								))}
-								<h6>Forms</h6>
-								{documentType.files?.map((file, index) => (
-									<p className='card-text' key={index}>
-										<a href={`${file.file?.url}&download=true`} target='_blank' rel='noreferrer'>
-											{file.file?.name}
-										</a>
-									</p>
-								))}
 							</div>
 						</div>
 					) : (
