@@ -59,12 +59,12 @@ export function Login() {
 			handleError(error);
 			console.log(error);
 
-			const attempts = state.has('attempts') ? state.get<number>('attempts') : 0;
+			const attempts = (state.has('attempts') ? state.get<number>('attempts') : 0) + 1;
 
 			if (attempts >= 3) {
 				state.set('block', dayjs().add(1, 'hour').toJSON());
 			} else {
-				toastr.error(`Login attempts remaining, ${attempts}.`);
+				toastr.error(`Login attempts: ${attempts}.`);
 			}
 		} finally {
 			setProcessing(false);
