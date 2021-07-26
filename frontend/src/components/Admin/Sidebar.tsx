@@ -32,7 +32,7 @@ export function AdminSidebar() {
 		{
 			url: url(`${routes.REQUESTS.ROOT}${routes.REQUESTS.ARCHIVED}`),
 			icon: 'nc-icon nc-box-2',
-			title: 'Archived Requests',
+			title: 'Repository',
 		},
 		{
 			url: url(routes.USERS),

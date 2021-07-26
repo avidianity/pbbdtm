@@ -8,8 +8,8 @@ const Item: FC<Props> = ({ answer }) => {
 	const [show, setShow] = useState(false);
 
 	return (
-		<div className='card-body'>
-			{show ? <p className='card-text'>{answer}</p> : null}
+		<div className='card-body' >
+			{show ? <p className='card-text' style={{textAlign: 'justify'}}>{answer}</p> : null}
 			<a
 				href='/'
 				className='text-info font-weight-bold'

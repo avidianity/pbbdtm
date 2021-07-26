@@ -149,15 +149,28 @@ export function Form() {
 			</div>
 			<div className='form-group'>
 				<label htmlFor='reason'>Reason</label>
-				<input
-					type='text'
+				<select
 					name='reason'
 					id='reason'
 					placeholder='Reason'
 					className='form-control form-control-sm'
 					onChange={handleChange}
 					value={data.reason}
-				/>
+				>
+					<option key="For Board Examination" value="For Board Examination">
+							For Board Examination
+					</option>
+					<option key="For Employment" value="For Employment">
+							For Employment
+					</option>
+					<option key="For Scholarship" value="For Scholarship">
+							For Scholarship
+					</option>
+					<option key="For Studies" value="For Studies">
+							For Studies
+						</option>
+						
+				</select>
 			</div>
 			<div className='container-fluid'>
 				<h6>Requirements</h6>
