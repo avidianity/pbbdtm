@@ -109,7 +109,11 @@ export function Header() {
 						</div>
 					</form> */}
 					<ul className='navbar-nav'>
-						<li className={`nav-item btn-rotate dropdown ${outIf(expiring.length === 0, 'd-none')}`}>
+						<li
+							className={`nav-item btn-rotate dropdown ${outIf(
+								expiring.length === 0 && almostExpiring.length === 0,
+								'd-none'
+							)}`}>
 							<a className='nav-link dropdown-toggle' href='/' data-toggle='dropdown' aria-expanded='false'>
 								<i className='nc-icon nc-bell-55'></i>
 								<p>
