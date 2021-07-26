@@ -39,8 +39,7 @@ export function FAQ({ faq, onChange, defaultMode }: Props) {
 						/>
 					</div>
 					<div className='form-group'>
-						<input
-							type='text'
+						<textarea
 							name='answer'
 							placeholder='Answer'
 							className='form-control form-control-sm'

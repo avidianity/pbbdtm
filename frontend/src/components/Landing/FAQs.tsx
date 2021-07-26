@@ -40,9 +40,9 @@ export function FAQs(props: Props) {
 								{faqs.map((faq, index) => (
 									<div className='card m-1 border-0 shadow rounded' key={index}>
 										<div className='card-header d-flex'>
-											<p className='card-title mb-0 align-self-center' style={{ color: '#000' }}>
-												{faq.question}
-											</p>
+											<h3 className='card-title mb-0 align-self-center' style={{ color: '#000' }}>
+												<b>{faq.question}</b>
+											</h3>
 										</div>
 										<Item answer={faq.answer} />
 									</div>
