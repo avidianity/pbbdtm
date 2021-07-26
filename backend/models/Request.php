@@ -44,6 +44,13 @@ class Request extends Model
         }
     }
 
+    public static function getAlmostExpiring()
+    {
+        return collect(static::getAll())->filter(function (self $request) {
+            return ($request->documentType->expiry_days - $request->getDaysFromNow()) <= 2;
+        })->toArray();
+    }
+
     /**
      * @return static[]
      */

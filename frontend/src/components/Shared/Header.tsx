@@ -10,6 +10,7 @@ import { User } from '../../contracts/User';
 
 export function Header() {
 	const [expiring, setExpiring] = useState<Request[]>([]);
+	const [almostExpiring, setAlmostExpiring] = useState<Request[]>([]);
 	const match = useRouteMatch();
 
 	const fragments = match.path.split('/');
@@ -46,10 +47,25 @@ export function Header() {
 		}
 	};
 
+	const fetchAlmostExpiring = async () => {
+		try {
+			const { data } = await axios.get<Request[]>(`/requests/almost-expiring`);
+			if (user.role === 'Applicant' && data.length > 0) {
+				return setAlmostExpiring(Array.from(data.filter((request) => request.user_id === user.id)));
+			}
+			setAlmostExpiring(Array.from(data));
+		} catch (error) {
+			console.log(error.toJSON());
+		}
+	};
+
 	useEffect(() => {
-		const handle = setInterval(() => fetchExpiring(), 5000);
+		const expiringHandle = setInterval(() => fetchExpiring(), 5000);
+		const almostExpiringHandle = setInterval(() => fetchAlmostExpiring(), 5000);
+
 		return () => {
-			clearInterval(handle);
+			clearInterval(expiringHandle);
+			clearInterval(almostExpiringHandle);
 		};
 		// eslint-disable-next-line
 	}, []);
@@ -102,6 +118,15 @@ export function Header() {
 							</a>
 							<div className='dropdown-menu dropdown-menu-right p-0'>
 								{expiring.map((request, index) => (
+									<Link
+										className='dropdown-item d-flex'
+										to={`${routes.DASHBOARD}${routes.REQUESTS.ROOT}/${request.id}`}
+										key={index}>
+										<i className='nc-icon nc-key-25 align-self-center mr-1'></i>
+										<span className='align-self-center'>Request for user {request.user?.name} has expired.</span>
+									</Link>
+								))}
+								{almostExpiring.map((request, index) => (
 									<Link
 										className='dropdown-item d-flex'
 										to={`${routes.DASHBOARD}${routes.REQUESTS.ROOT}/${request.id}`}

@@ -190,6 +190,11 @@ class RequestController extends Controller
         return Request::getExpiring();
     }
 
+    public function almostExpiring()
+    {
+        return Request::getAlmostExpiring();
+    }
+
     protected function admin()
     {
         if ($this->user->role === 'Student') {
