@@ -6,9 +6,7 @@ use finfo;
 use InvalidArgumentException;
 use Libraries\Str;
 
-/**
- * @property Downloadable|null $downloadable
- */
+
 class File extends Model
 {
     protected $fillable = [
@@ -25,11 +23,6 @@ class File extends Model
         static::deleted(function (self $file) {
             storage()->delete($file->path);
         });
-    }
-
-    public function downloadable()
-    {
-        return $this->hasOne(Downloadable::class);
     }
 
     public function jsonSerialize()

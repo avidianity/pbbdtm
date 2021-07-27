@@ -17,7 +17,7 @@ class HasOne implements HasRelationships
      */
     protected $instance;
 
-    public function __construct($child, $foreignKey = null, $ownerKey = 'id', Model &$instance)
+    public function __construct($child, $foreignKey = null, $ownerKey = 'id', Model &$instance = null)
     {
         $this->instance = $instance;
         $this->child = $child;

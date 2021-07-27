@@ -18,11 +18,7 @@ class FileController extends Controller
         ];
 
         if (input()->has('download') && input()->download === 'true') {
-            if ($file->downloadable !== null) {
-                $headers['Content-Disposition'] = "attachment; filename=\"{$file->downloadable->name}\"";
-            } else {
-                $headers['Content-Disposition'] = "attachment; filename=\"{$file->name}\"";
-            }
+            $headers['Content-Disposition'] = "attachment; filename=\"{$file->name}\"";
         }
 
         return response(storage()->get($file->path), 200, $headers);
