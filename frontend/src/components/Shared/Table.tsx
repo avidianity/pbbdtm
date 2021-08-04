@@ -243,7 +243,7 @@ export function Table<T>({
 												</button>
 											</div>
 											<div className='modal-body'>
-												Are you sure you want to delete this {pluralize.singular(sentencify(title))}?
+												Are you sure you want to delete this {pluralize.singular(title)}?
 											</div>
 											<div className='modal-footer'>
 												<button

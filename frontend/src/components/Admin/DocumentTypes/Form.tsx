@@ -14,6 +14,7 @@ export function Form() {
 		name: '',
 		requirements: [],
 		expiry_days: 15,
+		type: '',
 	});
 
 	const history = useHistory();
@@ -26,7 +27,7 @@ export function Form() {
 		});
 	};
 
-	const reset = () => setData({ name: '', id: -1, requirements: [], expiry_days: 15 });
+	const reset = () => setData({ name: '', id: -1, requirements: [], expiry_days: 15, type: '' });
 
 	const submit = async () => {
 		if (processing) return;
@@ -110,8 +111,8 @@ export function Form() {
 					Back
 				</button>
 			</div>
-			<div className='form-group text-primary'>
-				<label htmlFor='name'></label>
+			<div className='form-group'>
+				<label htmlFor='name'>Name</label>
 				<input
 					type='text'
 					name='name'
@@ -135,6 +136,20 @@ export function Form() {
 					value={data.expiry_days}
 					onChange={handleChange}
 				/>
+			</div>
+			<div className='form-group'>
+				<label htmlFor='type'>Type</label>
+				<select
+					name='type'
+					id='type'
+					className={`form-control form-control-sm ${outIf(processing, 'disabled')}`}
+					disabled={processing}
+					value={data.type}
+					onChange={handleChange}>
+					<option value='Simple'>Simple</option>
+					<option value='Complex'>Complex</option>
+					<option value='Highly Technical'>Highly Technical</option>
+				</select>
 			</div>
 			<div className='container-fluid'>
 				<div className='row'>

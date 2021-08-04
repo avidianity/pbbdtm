@@ -9,7 +9,7 @@ namespace Models;
 class DocumentType extends Model
 {
     protected static $table = 'document_type';
-    protected $fillable = ['name', 'requirements', 'expiry_days'];
+    protected $fillable = ['name', 'requirements', 'expiry_days', 'type'];
 
     protected static function events()
     {

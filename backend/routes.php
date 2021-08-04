@@ -51,6 +51,8 @@ $router->group('/api', function (Router $router) {
     $router->get('/statistics', StatisticsController::class);
     $router->get('/requests/expiring', [RequestController::class, 'expiring']);
     $router->get('/requests/almost-expiring', [RequestController::class, 'almostExpiring']);
+
+    $router->post('/requests/reject', [RequestController::class, 'reject']);
 });
 
 $router->fallback(function () {

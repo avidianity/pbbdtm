@@ -28,6 +28,7 @@ class Request extends Model
         'copies',
         'reason',
         'acknowledged_dates',
+        'rejected',
     ];
 
     public static function checkExpired()
@@ -115,6 +116,7 @@ class Request extends Model
             $request->approved = $request->approved ? 1 : 0;
             $request->expired = $request->expired ? 1 : 0;
             $request->acknowledged = $request->acknowledged ? 1 : 0;
+            $request->rejected = $request->rejected ? 1 : 0;
         });
 
         static::updating(function (self $request) {
@@ -141,6 +143,7 @@ class Request extends Model
             $request->approved = (bool)$request->approved;
             $request->expired = (bool)$request->expired;
             $request->acknowledged = (bool)$request->acknowledged;
+            $request->rejected = (bool)$request->rejected;
         });
 
         static::deleting(function (self $request) {

@@ -10,6 +10,7 @@ import { User } from '../../../contracts/User';
 import { TrackRequest } from '../../TrackRequest';
 import axios from 'axios';
 import { routes } from '../../../routes';
+import { DocumentType } from '../../../contracts/DocumentType';
 
 type Props = {};
 
@@ -18,6 +19,8 @@ const Requests: FC<Props> = () => {
 	const [processing, setProcessing] = useState(false);
 	const match = useRouteMatch();
 	const history = useHistory();
+	const [types, setTypes] = useState<Array<DocumentType>>([]);
+	const [filter, setFilter] = useState<number | null>();
 
 	const path = (path: string) => `${match.path}${path}`;
 
@@ -192,14 +195,54 @@ const Requests: FC<Props> = () => {
 		return request.acknowledged ? <span className='badge badge-green'>Yes</span> : <span className='badge badge-red'>No</span>;
 	};
 
+	const fetchTypes = async () => {
+		try {
+			const response = await axios.get<Array<DocumentType>>('/document-types');
+			setTypes(response.data);
+			setProcessing(false);
+		} catch (error) {
+			console.log(error.toJSON());
+		}
+	};
+
 	useEffect(() => {
 		fetchRequests();
+		fetchTypes();
 		// eslint-disable-next-line
 	}, []);
 
 	return (
 		<>
 			<TrackRequest />
+			<div className='row'>
+				<div className='col-12 col-md-6 col-lg-4 col-xl-3'>
+					<div className='form-group'>
+						<label htmlFor='filter'>Filter</label>
+						<select
+							className='form-control form-control-sm'
+							onChange={(e) => {
+								const { value } = e.target;
+								if (value === 'All') {
+									setFilter(null);
+								} else {
+									const id = value.parseNumbers();
+									const type = types.find((type) => type.id === id);
+									if (type) {
+										setFilter(id);
+									}
+								}
+							}}
+							value={filter ? filter : 'All'}>
+							<option value='All'>All</option>
+							{types.map((type, index) => (
+								<option key={index} value={type.id}>
+									{type.name}
+								</option>
+							))}
+						</select>
+					</div>
+				</div>
+			</div>
 			<Table
 				title={(() => {
 					if (!readOnly) {
@@ -210,6 +253,13 @@ const Requests: FC<Props> = () => {
 				})()}
 				columns={createTableColumns(requests)}
 				data={filterToRole(requests)
+					.filter((request) => {
+						if (filter) {
+							return request.documentType?.id === filter;
+						}
+
+						return true;
+					})
 					.map((request) => ({
 						...request,
 						created_at: dayjs(request.created_at).format('MMMM DD, YYYY hh:mm A'),
@@ -226,6 +276,11 @@ const Requests: FC<Props> = () => {
 								? renderAcknowledged(request)
 								: '',
 						evaluation: request.evaluation ? request.evaluation : '',
+						rejected: request.rejected ? (
+							<span className='badge badge-danger'>Yes</span>
+						) : (
+							<span className='badge badge-success'>No</span>
+						),
 					}))
 					.map((request) => {
 						if (!match.path.includes(routes.REQUESTS.ARCHIVED) && !match.path.includes(routes.REQUESTS.INACTIVE)) {

@@ -201,4 +201,23 @@ class RequestController extends Controller
             throw new ForbiddenHTTPException();
         }
     }
+
+    public function reject()
+    {
+        $request = Request::findOrFail(input()->id);
+
+        $request->update([
+            'rejected' => true,
+        ]);
+
+        if (input()->has('email_message')) {
+            queue()->register(new SendMailRaw($request->user->email, 'Request Rejected', input()->email_message));
+        }
+
+        if (input()->has('sms_message')) {
+            $text  = input()->sms_message;
+            $text .= sprintf('%s%s', config('app.frontend.url'), "/dashboard/requests/{$request->id}");
+            queue()->register(new SendMessage($request->user->phone, $text));
+        }
+    }
 }

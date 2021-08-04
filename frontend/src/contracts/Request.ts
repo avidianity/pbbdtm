@@ -29,6 +29,7 @@ export interface Request extends Model {
 	evaluation: string | null;
 	copies: number;
 	reason: string;
+	rejected: boolean;
 	files?: RequestFile[];
 	acknowledged_dates: string;
 }

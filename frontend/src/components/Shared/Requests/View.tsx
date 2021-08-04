@@ -20,7 +20,9 @@ export function View() {
 	const [updating, setUpdating] = useState(false);
 	const [currentStatus, setCurrentStatus] = useState('Registrar');
 	const [smsMessage, setSmsMessage] = useState('');
-	const [emailMessage, setEmailMessage] = useState('<p>Hello World</p>');
+	const [emailMessage, setEmailMessage] = useState('');
+	const [rejectSmsMessage, setRejectSmsMessage] = useState('Request has been rejected');
+	const [rejectEmailMessage, setRejectEmailMessage] = useState('Request has been rejected');
 
 	const user = state.get<User>('user');
 
@@ -167,6 +169,44 @@ export function View() {
 		} catch (error) {
 			console.log(error.toJSON());
 			toastr.error('Something went wrong, please try again later.', 'Unable to forward');
+		} finally {
+			setUpdating(false);
+		}
+	};
+
+	const approve = async () => {
+		setUpdating(true);
+		try {
+			await axios.post(`/requests`, {
+				id: request?.id,
+				approved: true,
+				acknowledged: true,
+				status: 'Released',
+				_method: 'PUT',
+			});
+			toastr.info('Request has been approved and released.', 'Notice');
+			history.goBack();
+		} catch (error) {
+			console.log(error.toJSON());
+			toastr.error('Something went wrong, please try again later.', 'Unable to approve');
+		} finally {
+			setUpdating(false);
+		}
+	};
+
+	const reject = async () => {
+		setUpdating(true);
+		try {
+			await axios.post('/requests/reject', {
+				id: request?.id,
+				sms_message: rejectSmsMessage,
+				email_message: rejectEmailMessage,
+			});
+			toastr.info('Request has been rejected.', 'Notice');
+			history.goBack();
+		} catch (error) {
+			console.log(error.toJSON());
+			toastr.error('Something went wrong, please try again later.', 'Unable to reject');
 		} finally {
 			setUpdating(false);
 		}
@@ -320,11 +360,6 @@ export function View() {
 						Back
 					</button>
 					{user.role !== 'Applicant' ? (
-						<Link to={`${window.location.pathname}/edit`} className='btn btn-warning btn-sm align-self-center ml-auto'>
-							Edit
-						</Link>
-					) : null}
-					{user.role !== 'Applicant' ? (
 						<a
 							href={`${window.location.pathname}/delete`}
 							className='btn btn-danger btn-sm align-self-center ml-1'
@@ -340,7 +375,7 @@ export function View() {
 					{request ? (
 						<div className='card shadow rounded'>
 							<div className='card-header'>
-								{!['Applicant', 'Evaluation'].includes(user.role) && isForwardable() ? (
+								{!['Applicant', 'Evaluation', 'Releasing'].includes(user.role) && isForwardable() ? (
 									<button
 										className={`btn btn-info btn-sm ${outIf(updating || !request.acknowledged, 'disabled')}`}
 										onClick={(e) => {
@@ -362,6 +397,28 @@ export function View() {
 										disabled={updating || !request.acknowledged || !isTasksDone(request)}>
 										<i className='fas fa-bell'></i>{' '}
 										{request.acknowledged ? 'Forward' : 'You must acknowledge the request first'}
+									</button>
+								) : null}
+								{user.role === 'Releasing' && next === 'Notify client for document release' ? (
+									<button
+										className={`btn btn-info btn-sm ${outIf(updating || !request.acknowledged, 'disabled')}`}
+										onClick={(e) => {
+											e.preventDefault();
+											approve();
+										}}
+										disabled={updating || !request.acknowledged || !isTasksDone(request)}>
+										{request.acknowledged ? 'Release' : 'You must acknowledge the request first'}
+									</button>
+								) : null}
+								{user.role === 'Admin' ? (
+									<button
+										className='btn btn-danger btn-sm'
+										onClick={(e) => {
+											e.preventDefault();
+											$('#rejectRequestModal').modal('toggle');
+										}}
+										disabled={updating || request.rejected}>
+										Reject
 									</button>
 								) : null}
 								<button
@@ -551,7 +608,7 @@ export function View() {
 					<div className='modal-content'>
 						<div className='modal-header'>
 							<h5 className='modal-title' id={`forwardRequestModalLabel`}>
-								Forward Request
+								{user.role === 'Releasing' && next === 'Notify client for document release' ? 'Release' : 'Forward'} Request
 							</h5>
 							<button type='button' className='close' data-dismiss='modal' aria-label='Close'>
 								<span aria-hidden='true'>&times;</span>
@@ -591,6 +648,52 @@ export function View() {
 									forward(currentStatus);
 								}}>
 								Forward
+							</button>
+							<button type='button' className='btn btn-secondary btn-sm' data-dismiss='modal'>
+								Cancel
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div
+				className='modal fade'
+				id={`rejectRequestModal`}
+				tabIndex={-1}
+				role='dialog'
+				aria-labelledby={`rejectRequestModalLabel`}
+				aria-hidden='true'>
+				<div className='modal-dialog modal-dialog-centered modal-lg' role='document'>
+					<div className='modal-content'>
+						<div className='modal-header'>
+							<h5 className='modal-title' id={`rejectRequestModalLabel`}>
+								Reject Request
+							</h5>
+							<button type='button' className='close' data-dismiss='modal' aria-label='Close'>
+								<span aria-hidden='true'>&times;</span>
+							</button>
+						</div>
+						<div className='modal-body'>
+							<label>Message</label>
+							<textarea
+								cols={20}
+								rows={5}
+								className='form-control mb-3'
+								onChange={(e) => setRejectSmsMessage(e.target.value)}
+								value={rejectSmsMessage}></textarea>
+							<label>Email Message</label>
+							<Quill onChange={(data) => setRejectEmailMessage(data)} value={rejectEmailMessage} />
+						</div>
+						<div className='modal-footer'>
+							<button
+								type='button'
+								className='btn btn-danger btn-sm'
+								onClick={(e) => {
+									e.preventDefault();
+									$('#rejectRequestModal').modal('hide');
+									reject();
+								}}>
+								Confirm
 							</button>
 							<button type='button' className='btn btn-secondary btn-sm' data-dismiss='modal'>
 								Cancel
