@@ -14,7 +14,7 @@ export function Form() {
 		name: '',
 		requirements: [],
 		expiry_days: 15,
-		type: '',
+		type: 'Simple',
 	});
 
 	const history = useHistory();

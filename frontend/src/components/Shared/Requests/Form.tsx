@@ -49,7 +49,7 @@ export function Form() {
 				...response.data,
 				file: null,
 			});
-		} catch (error) {
+		} catch (error: any) {
 			console.log(error.toJSON());
 			toastr.error('Unable to fetch request.');
 			history.goBack();

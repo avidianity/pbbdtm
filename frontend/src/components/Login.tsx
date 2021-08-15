@@ -53,7 +53,7 @@ export function Login() {
 			state.set('user', user);
 			state.set('token', token);
 			state.remove('block').remove('attempts');
-			console.log(state.getAll(), 'all');
+
 			history.push(routes.DASHBOARD);
 		} catch (error) {
 			handleError(error);

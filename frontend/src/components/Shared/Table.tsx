@@ -6,6 +6,7 @@ import { State } from '../../state';
 import Datatable from 'react-data-table-component';
 
 type Props<T> = {
+	id?: string;
 	title: string;
 	theme?: 'light' | 'dark';
 	columns?: Array<string>;
@@ -41,6 +42,7 @@ export function Table<T>({
 	dontShowEdit,
 	dontShowDelete,
 	disableAddButton,
+	id,
 }: Props<T>) {
 	const state = new State(_.kebabCase(title.toLowerCase() + '-table'));
 
@@ -102,7 +104,7 @@ export function Table<T>({
 	}
 
 	return (
-		<div className='row'>
+		<div className='row' id={id}>
 			<div className='col-12'>
 				<div className={`card ${border ? 'border' : ''} w-100`}>
 					<div className='card-header border-0'>

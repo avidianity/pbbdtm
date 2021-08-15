@@ -1,6 +1,6 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import { Link, useHistory, useRouteMatch } from 'react-router-dom';
+import { useHistory, useRouteMatch } from 'react-router-dom';
 import { AcknowledgedDate, Request } from '../../../contracts/Request';
 import { handleError, outIf } from '../../../helpers';
 import toastr from 'toastr';
@@ -43,7 +43,7 @@ export function View() {
                     <p>Date Updated: ${dayjs().format('MMMM DD, YYYY')}</p>
                 </div>
             `);
-		} catch (error) {
+		} catch (error: any) {
 			handleError(error);
 			history.goBack();
 		}
@@ -58,7 +58,7 @@ export function View() {
 			});
 			toastr.info('Task updated.', 'Notice');
 			fetchRequest(`${request?.id}`);
-		} catch (error) {
+		} catch (error: any) {
 			console.log(error.toJSON());
 			toastr.error('Unable to update task.', 'Oops!');
 		}
@@ -75,7 +75,7 @@ export function View() {
 			await axios.delete(`/requests?id=${request?.id}`);
 			toastr.success('Request deleted successfully.');
 			history.goBack();
-		} catch (error) {
+		} catch (error: any) {
 			handleError(error);
 		} finally {
 			deleting = false;
@@ -166,7 +166,7 @@ export function View() {
 			});
 			toastr.info('Request has been updated and forwarded.', 'Notice');
 			history.goBack();
-		} catch (error) {
+		} catch (error: any) {
 			console.log(error.toJSON());
 			toastr.error('Something went wrong, please try again later.', 'Unable to forward');
 		} finally {
@@ -186,7 +186,7 @@ export function View() {
 			});
 			toastr.info('Request has been approved and released.', 'Notice');
 			history.goBack();
-		} catch (error) {
+		} catch (error: any) {
 			console.log(error.toJSON());
 			toastr.error('Something went wrong, please try again later.', 'Unable to approve');
 		} finally {
@@ -204,7 +204,7 @@ export function View() {
 			});
 			toastr.info('Request has been rejected.', 'Notice');
 			history.goBack();
-		} catch (error) {
+		} catch (error: any) {
 			console.log(error.toJSON());
 			toastr.error('Something went wrong, please try again later.', 'Unable to reject');
 		} finally {

@@ -31,7 +31,7 @@ const Requests: FC<Props> = () => {
 			await axios.put(`/requests?id=${request.id}`, { expired: false });
 			toastr.success('Request updated successfully.');
 			await fetchRequests();
-		} catch (error) {
+		} catch (error: any) {
 			handleError(error);
 		}
 	};
@@ -95,7 +95,7 @@ const Requests: FC<Props> = () => {
 			setRequests(
 				exceptMany(data, ['file', 'file_id', 'user_id', 'document_type_id', 'tasks', 'files', 'for', 'acknowledged_dates'])
 			);
-		} catch (error) {
+		} catch (error: any) {
 			console.log(error.toJSON());
 			toastr.error('Unable to fetch requests.');
 		} finally {
@@ -109,7 +109,7 @@ const Requests: FC<Props> = () => {
 			await axios.delete(`/requests?id=${id}`);
 			toastr.success('Request deleted successfully.');
 			await fetchRequests();
-		} catch (error) {
+		} catch (error: any) {
 			console.log(error.toJSON());
 			handleError(error);
 			setProcessing(false);
@@ -183,7 +183,7 @@ const Requests: FC<Props> = () => {
 							});
 							toastr.info('Request acknowledged.', 'Notice');
 							await fetchRequests();
-						} catch (error) {
+						} catch (error: any) {
 							console.log(error.toJSON(), request);
 							toastr.error('Unable to acknowledge request.');
 						}
@@ -200,8 +200,126 @@ const Requests: FC<Props> = () => {
 			const response = await axios.get<Array<DocumentType>>('/document-types');
 			setTypes(response.data);
 			setProcessing(false);
-		} catch (error) {
+		} catch (error: any) {
 			console.log(error.toJSON());
+		}
+	};
+
+	const print = async () => {
+		toastr.info('Printing. Please wait.');
+
+		const items = exceptMany(requests, [
+			'updated_at',
+			'created_at',
+			'approved',
+			'acknowledged',
+			'evaluation',
+			'rejected',
+			'expired',
+			'status',
+			'id',
+		]);
+
+		const content = `
+            <div class='table-responsive' style='overflow: hidden'>
+                <table class='table table-sm' style='overflow: hidden'>
+                    <thead>
+                        <tr>
+                            ${createTableColumns(items)
+								.map((column) => `<th>${column}</th>`)
+								.join('')}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${filterToRole(items)
+							.filter((request) => {
+								if (filter) {
+									return request.documentType?.id === filter;
+								}
+
+								return true;
+							})
+							.map((request) => ({
+								...request,
+								// created_at: dayjs(request.created_at).format('MMMM DD, YYYY hh:mm A'),
+								// updated_at: dayjs(request.updated_at).format('MMMM DD, YYYY hh:mm A'),
+								user: request.user!.name,
+								documentType: request.documentType!.name,
+								// approved: request.approved ? 'Yes' : 'No',
+								// acknowledged: request.acknowledged ? 'Yes' : 'No',
+								// evaluation: request.evaluation ? request.evaluation : '',
+								// rejected: request.rejected ? 'Yes' : 'No',
+							}))
+							.map((request) => {
+								if (!match.path.includes(routes.REQUESTS.ARCHIVED) && !match.path.includes(routes.REQUESTS.INACTIVE)) {
+									return {
+										...request,
+										// expired: request.expired ? 'Yes' : 'No',
+										// status: request.acknowledged ? request.status : 'Pending',
+									};
+								}
+
+								return request;
+							})
+							.map(
+								(request: any) => `
+                                <tr>
+                                    ${Object.keys(request)
+										.map((key) => `<td>${request[key]}</td>`)
+										.join('')}
+                                </tr>`
+							)
+							.join('')}
+                    </tbody>
+                </table>
+            </div>
+        `;
+
+		const iframe = $('#iframe')[0] as HTMLIFrameElement;
+		const css = [
+			'https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css',
+			'https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css',
+			'https://fonts.googleapis.com/css?family=Montserrat:400,700,200',
+			origin + '/assets/css/bootstrap.min.css',
+			origin + '/assets/css/paper-dashboard.css',
+			origin + '/assets/demo/demo.css',
+		];
+		const window = iframe.contentWindow;
+
+		window?.document.open();
+
+		if (window && window.document) {
+			window.document.write('<head>');
+
+			const parsed = await Promise.all(
+				css.map(async (url) => {
+					try {
+						const { data } = await axios.get<string>(url, { timeout: 5000 });
+						return `<style>${data}</style>`;
+					} catch (_) {
+						return `<link href="${url}" rel="stylesheet" />`;
+					}
+				})
+			);
+
+			const styles = Array.from(document.querySelectorAll('style')).map((style) => `<style>${style.innerHTML}</style>`);
+
+			parsed.forEach((css) => {
+				window.document.write(css);
+			});
+			styles.forEach((css) => {
+				window.document.write(css);
+			});
+			window.document.write('</head>');
+
+			window.document.write('<body>');
+			window.document.write(content);
+			window.document.write('</body>');
+			window.document.close();
+			window.focus();
+			setTimeout(() => {
+				window.print();
+			}, 500);
 		}
 	};
 
@@ -242,8 +360,19 @@ const Requests: FC<Props> = () => {
 						</select>
 					</div>
 				</div>
+				<div className='col-12 col-md-6 col-lg-8 col-xl-9 d-flex align-items-center'>
+					<button
+						className='btn btn-secondary btn-sm ml-auto'
+						onClick={(e) => {
+							e.preventDefault();
+							print();
+						}}>
+						Print
+					</button>
+				</div>
 			</div>
 			<Table
+				id='request-table'
 				title={(() => {
 					if (!readOnly) {
 						return 'Requests';
@@ -319,6 +448,7 @@ const Requests: FC<Props> = () => {
 				dontShowDelete={user.role === 'Applicant' || readOnly}
 				disableAddButton={user.role !== 'Applicant' || readOnly}
 			/>
+			<iframe className='d-none' title='iframe' id='iframe'></iframe>
 		</>
 	);
 };

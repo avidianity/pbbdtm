@@ -20,8 +20,8 @@ export function List() {
 		setProcessing(true);
 		try {
 			const { data } = await axios.get<Array<Request>>('/self/requests');
-			setRequests(exceptMany(data, ['document_type_id', 'file_id', 'user_id', 'file', 'acknowledged_dates']));
-		} catch (error) {
+			setRequests(exceptMany(data, ['document_type_id', 'file_id', 'user_id', 'file', 'acknowledged_dates', 'for']));
+		} catch (error: any) {
 			console.log(error.toJSON());
 			toastr.error('Unable to fetch requests.');
 		} finally {
