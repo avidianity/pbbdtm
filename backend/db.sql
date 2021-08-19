@@ -1,7 +1,7 @@
 -- --------------------------------------------------------
 -- Host:                         127.0.0.1
--- Server version:               8.0.25 - MySQL Community Server - GPL
--- Server OS:                    Win64
+-- Server version:               8.0.25 - Source distribution
+-- Server OS:                    Linux
 -- HeidiSQL Version:             11.3.0.6295
 -- --------------------------------------------------------
 
@@ -13,6 +13,7 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 -- Dumping structure for table pbbdtm.cms
+DROP TABLE IF EXISTS `cms`;
 CREATE TABLE IF NOT EXISTS `cms` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `key` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
@@ -20,11 +21,12 @@ CREATE TABLE IF NOT EXISTS `cms` (
   `created_at` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   `updated_at` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=121 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Data exporting was unselected.
 
 -- Dumping structure for table pbbdtm.contact
+DROP TABLE IF EXISTS `contact`;
 CREATE TABLE IF NOT EXISTS `contact` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
@@ -38,20 +40,22 @@ CREATE TABLE IF NOT EXISTS `contact` (
 -- Data exporting was unselected.
 
 -- Dumping structure for table pbbdtm.document_type
+DROP TABLE IF EXISTS `document_type`;
 CREATE TABLE IF NOT EXISTS `document_type` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   `requirements` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
-  `type` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `type` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `expiry_days` smallint NOT NULL DEFAULT '15',
   `created_at` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   `updated_at` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Data exporting was unselected.
 
 -- Dumping structure for table pbbdtm.document_type_file
+DROP TABLE IF EXISTS `document_type_file`;
 CREATE TABLE IF NOT EXISTS `document_type_file` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
   `file_id` bigint unsigned NOT NULL,
@@ -65,6 +69,7 @@ CREATE TABLE IF NOT EXISTS `document_type_file` (
 -- Data exporting was unselected.
 
 -- Dumping structure for table pbbdtm.file
+DROP TABLE IF EXISTS `file`;
 CREATE TABLE IF NOT EXISTS `file` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
   `type` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
@@ -74,11 +79,12 @@ CREATE TABLE IF NOT EXISTS `file` (
   `created_at` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   `updated_at` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Data exporting was unselected.
 
 -- Dumping structure for table pbbdtm.forgot_password
+DROP TABLE IF EXISTS `forgot_password`;
 CREATE TABLE IF NOT EXISTS `forgot_password` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
   `email` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
@@ -88,11 +94,12 @@ CREATE TABLE IF NOT EXISTS `forgot_password` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`),
   UNIQUE KEY `token` (`token`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Data exporting was unselected.
 
 -- Dumping structure for table pbbdtm.log
+DROP TABLE IF EXISTS `log`;
 CREATE TABLE IF NOT EXISTS `log` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
   `action` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
@@ -105,22 +112,24 @@ CREATE TABLE IF NOT EXISTS `log` (
   KEY `loggable_id` (`loggable_id`,`user_id`) USING BTREE,
   KEY `FK_log_user` (`user_id`),
   FULLTEXT KEY `loggable_type` (`loggable_type`)
-) ENGINE=InnoDB AUTO_INCREMENT=52 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Data exporting was unselected.
 
 -- Dumping structure for table pbbdtm.queue
+DROP TABLE IF EXISTS `queue`;
 CREATE TABLE IF NOT EXISTS `queue` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `payload` longtext CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   `created_at` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   `updated_at` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=75 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Data exporting was unselected.
 
 -- Dumping structure for table pbbdtm.request
+DROP TABLE IF EXISTS `request`;
 CREATE TABLE IF NOT EXISTS `request` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
   `request_id` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
@@ -142,11 +151,12 @@ CREATE TABLE IF NOT EXISTS `request` (
   PRIMARY KEY (`id`),
   KEY `FK_request_user` (`user_id`),
   KEY `FK_request_file` (`file_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Data exporting was unselected.
 
 -- Dumping structure for table pbbdtm.request_file
+DROP TABLE IF EXISTS `request_file`;
 CREATE TABLE IF NOT EXISTS `request_file` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
   `request_id` bigint unsigned NOT NULL,
@@ -155,11 +165,12 @@ CREATE TABLE IF NOT EXISTS `request_file` (
   `updated_at` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`id`),
   KEY `request_id` (`request_id`,`file_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Data exporting was unselected.
 
 -- Dumping structure for table pbbdtm.storage
+DROP TABLE IF EXISTS `storage`;
 CREATE TABLE IF NOT EXISTS `storage` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
   `path` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
@@ -172,6 +183,7 @@ CREATE TABLE IF NOT EXISTS `storage` (
 -- Data exporting was unselected.
 
 -- Dumping structure for table pbbdtm.task
+DROP TABLE IF EXISTS `task`;
 CREATE TABLE IF NOT EXISTS `task` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
   `for` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
@@ -183,11 +195,12 @@ CREATE TABLE IF NOT EXISTS `task` (
   `updated_at` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`id`),
   KEY `request_id` (`request_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Data exporting was unselected.
 
 -- Dumping structure for table pbbdtm.token
+DROP TABLE IF EXISTS `token`;
 CREATE TABLE IF NOT EXISTS `token` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
   `user_id` bigint unsigned NOT NULL,
@@ -197,11 +210,12 @@ CREATE TABLE IF NOT EXISTS `token` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `hash` (`hash`),
   KEY `user_id` (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=45 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Data exporting was unselected.
 
 -- Dumping structure for table pbbdtm.user
+DROP TABLE IF EXISTS `user`;
 CREATE TABLE IF NOT EXISTS `user` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
@@ -217,7 +231,7 @@ CREATE TABLE IF NOT EXISTS `user` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`),
   UNIQUE KEY `profile_picture_id` (`profile_picture_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Data exporting was unselected.
 
