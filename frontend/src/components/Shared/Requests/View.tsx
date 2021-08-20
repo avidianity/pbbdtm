@@ -11,6 +11,7 @@ import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { Task } from '../../../contracts/Task';
 import Quill from '../Quill';
+import { createRef } from 'react-router/node_modules/@types/react';
 
 dayjs.extend(relativeTime);
 
@@ -23,6 +24,9 @@ export function View() {
 	const [emailMessage, setEmailMessage] = useState('');
 	const [rejectSmsMessage, setRejectSmsMessage] = useState('Request has been rejected');
 	const [rejectEmailMessage, setRejectEmailMessage] = useState('Request has been rejected');
+	const [releaseSms, setReleaseSms] = useState('');
+	const [releaseEmail, setReleaseEmail] = useState('');
+	const releaseRef = createRef<HTMLDivElement>();
 
 	const user = state.get<User>('user');
 
@@ -41,6 +45,17 @@ export function View() {
                     <p>Your request (ID: ${data.request_id}) is updated to: <b>${getNextStatus(user.role)}</b></p>
                     <p>Last Updater: ${user.name}</p>
                     <p>Date Updated: ${dayjs().format('MMMM DD, YYYY')}</p>
+                </div>
+            `);
+			setReleaseSms(
+				`Your Request (ID: ${data.request_id}) has been released. ${window.location.origin}/dashboard/requests/${data.id}`
+			);
+			setReleaseEmail(`
+                <div>
+                    <p>Hi ${data.user?.name}!</p>
+                    <p>Your request (ID: ${data.request_id}) is updated released.</b></p>
+                    <p>Last Updater: ${user.name}</p>
+                    <p>Date Released: ${dayjs().format('MMMM DD, YYYY')}</p>
                 </div>
             `);
 		} catch (error: any) {
@@ -182,6 +197,8 @@ export function View() {
 				approved: true,
 				acknowledged: true,
 				status: 'Released',
+				sms_message: releaseSms,
+				email_message: releaseEmail,
 				_method: 'PUT',
 			});
 			toastr.info('Request has been approved and released.', 'Notice');
@@ -404,7 +421,9 @@ export function View() {
 										className={`btn btn-info btn-sm ${outIf(updating || !request.acknowledged, 'disabled')}`}
 										onClick={(e) => {
 											e.preventDefault();
-											approve();
+											if (releaseRef.current) {
+												$(releaseRef.current).modal('toggle');
+											}
 										}}
 										disabled={updating || !request.acknowledged || !isTasksDone(request)}>
 										{request.acknowledged ? 'Release' : 'You must acknowledge the request first'}
@@ -628,6 +647,19 @@ export function View() {
 									))}
 								</select>
 							) : null}
+							{user.role === 'Registrar' ? (
+								<select
+									className='form-control'
+									onChange={(e) => {
+										setCurrentStatus(e.target.value);
+									}}>
+									{['Releasing', 'Director'].map((status, index) => (
+										<option value={status} key={index}>
+											{status}
+										</option>
+									))}
+								</select>
+							) : null}
 							<label>SMS Message</label>
 							<textarea
 								cols={20}
@@ -646,6 +678,58 @@ export function View() {
 									e.preventDefault();
 									$('#forwardRequestModal').modal('hide');
 									forward(currentStatus);
+								}}>
+								Forward
+							</button>
+							<button type='button' className='btn btn-secondary btn-sm' data-dismiss='modal'>
+								Cancel
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div
+				ref={releaseRef}
+				className='modal fade'
+				tabIndex={-1}
+				role='dialog'
+				aria-labelledby={`releaseModalLabel`}
+				aria-hidden='true'>
+				<div className='modal-dialog modal-dialog-centered modal-lg' role='document'>
+					<div className='modal-content'>
+						<div className='modal-header'>
+							<h5 className='modal-title' id={`releaseModalLabel`}>
+								Release Request
+							</h5>
+							<button type='button' className='close' data-dismiss='modal' aria-label='Close'>
+								<span aria-hidden='true'>&times;</span>
+							</button>
+						</div>
+						<div className='modal-body'>
+							<div className='form-group'>
+								<label>SMS Message</label>
+								<textarea
+									cols={20}
+									rows={5}
+									className='form-control mb-3'
+									onChange={(e) => setReleaseSms(e.target.value)}
+									value={releaseSms}></textarea>
+							</div>
+							<div className='form-group'>
+								<label>Email Message</label>
+								<Quill onChange={(data) => setReleaseEmail(data)} value={releaseEmail} />
+							</div>
+						</div>
+						<div className='modal-footer'>
+							<button
+								type='button'
+								className='btn btn-danger btn-sm'
+								onClick={(e) => {
+									e.preventDefault();
+									if (releaseRef.current) {
+										$(releaseRef.current).modal('hide');
+									}
+									approve();
 								}}>
 								Forward
 							</button>
