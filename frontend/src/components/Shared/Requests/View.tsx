@@ -141,7 +141,7 @@ export function View() {
 			case 'Director':
 				return 'Mark as ready for releasing and forward to Releasing';
 			case 'Registrar':
-				return 'Mark as ready for releasing and forward to Releasing';
+				return 'Mark as ready for releasing and forward to Director or Releasing';
 			case 'Releasing':
 				return 'Notify client for document release';
 			default:
@@ -157,7 +157,7 @@ export function View() {
 				if (assignedRole) {
 					data.for = assignedRole;
 				}
-				if (assignedRole === 'Director') {
+				if (assignedRole === 'Director' || assignedRole === 'Registrar') {
 					return 'Evaluated';
 				}
 				return getNextStatus(role);

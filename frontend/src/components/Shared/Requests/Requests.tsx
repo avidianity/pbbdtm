@@ -39,7 +39,8 @@ const Requests: FC<Props> = () => {
 	const fetchRequests = async () => {
 		setProcessing(true);
 		try {
-			const { data } = await axios.get<Array<Request>>('/requests');
+			const { data: raw } = await axios.get<Array<Request>>('/requests');
+			const data = filterToRole(raw);
 			if (match.path.includes(routes.REQUESTS.INACTIVE)) {
 				const filtered = data
 					.filter((request) => request.expired)
@@ -127,9 +128,10 @@ const Requests: FC<Props> = () => {
 			case 'Evaluation':
 				return requests.filter((request) => request.status === 'Evaluating');
 			case 'Director':
-				return requests.filter((request) => !request.for || request.for !== 'Registrar');
+				console.log(requests);
+				return requests.filter((request) => request.for && request.for === 'Director');
 			case 'Registrar':
-				return requests.filter((request) => !request.for || request.for !== 'Director');
+				return requests.filter((request) => request.for && request.for === 'Registrar');
 			case 'Releasing':
 				return requests.filter((request) => request.status === 'Signed' || request.status === 'Releasing');
 			case 'Applicant':
@@ -231,7 +233,7 @@ const Requests: FC<Props> = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        ${filterToRole(items)
+                        ${items
 							.filter((request) => {
 								if (filter) {
 									return request.documentType?.id === filter;
@@ -381,7 +383,7 @@ const Requests: FC<Props> = () => {
 					return `${ucfirst(fragments[fragments.length - 1])} Requests`;
 				})()}
 				columns={createTableColumns(requests)}
-				data={filterToRole(requests)
+				data={requests
 					.filter((request) => {
 						if (filter) {
 							return request.documentType?.id === filter;

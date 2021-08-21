@@ -8,11 +8,11 @@ use Queues\SendMail;
 use Queues\SendMessage;
 
 /**
- * @property User $user
+ * @property User         $user
  * @property DocumentType $documentType
- * @property File|null $file
- * @property Log[] $logs
- * @property Task[] $tasks
+ * @property File|null    $file
+ * @property Log[]        $logs
+ * @property Task[]       $tasks
  */
 class Request extends Model
 {
@@ -29,6 +29,7 @@ class Request extends Model
         'reason',
         'acknowledged_dates',
         'rejected',
+        'for',
     ];
 
     public static function checkExpired()
@@ -94,7 +95,7 @@ class Request extends Model
     {
         $date = DateTime::createFromFormat('Y-m-d H:i:s', $this->updated_at);
 
-        return (int)$date->diff(new DateTime())->format('%a');
+        return (int) $date->diff(new DateTime())->format('%a');
     }
 
     public function markAsExpired()
@@ -106,7 +107,7 @@ class Request extends Model
     protected static function events()
     {
         static::creating(function (self $request) {
-            $request->request_id = Str::from(Str::random(5) . '-' . Str::random(5) . '-' . date('Y'))
+            $request->request_id = Str::from(Str::random(5).'-'.Str::random(5).'-'.date('Y'))
                 ->toLowerCase()
                 ->toString();
             $request->approved = 0;
@@ -132,7 +133,7 @@ class Request extends Model
 
                 queue()->register(new SendMail($user->email, 'emails.expired-request', 'Request Expiration Notice', $data));
 
-                $text  = 'You Request (ID: ' . $request->request_id . ') has expired. It was created at ' . $data['date'] . '. It\'s last status was \'' . $request->status . '\'.';
+                $text = 'You Request (ID: '.$request->request_id.') has expired. It was created at '.$data['date'].'. It\'s last status was \''.$request->status.'\'.';
                 $text .= sprintf('%s%s', config('app.frontend.url'), "/dashboard/requests/{$request->id}");
 
                 queue()->register(new SendMessage($user->phone, $text));
@@ -140,10 +141,10 @@ class Request extends Model
         });
 
         static::serializing(function (self $request) {
-            $request->approved = (bool)$request->approved;
-            $request->expired = (bool)$request->expired;
-            $request->acknowledged = (bool)$request->acknowledged;
-            $request->rejected = (bool)$request->rejected;
+            $request->approved = (bool) $request->approved;
+            $request->expired = (bool) $request->expired;
+            $request->acknowledged = (bool) $request->acknowledged;
+            $request->rejected = (bool) $request->rejected;
         });
 
         static::deleting(function (self $request) {
