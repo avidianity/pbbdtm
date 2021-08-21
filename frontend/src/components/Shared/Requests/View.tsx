@@ -157,6 +157,9 @@ export function View() {
 				if (assignedRole) {
 					data.for = assignedRole;
 				}
+				if (assignedRole === 'Director') {
+					return 'Evaluated';
+				}
 				return getNextStatus(role);
 			})(user.role);
 
