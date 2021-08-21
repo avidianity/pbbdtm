@@ -157,7 +157,7 @@ export function View() {
 				if (assignedRole) {
 					data.for = assignedRole;
 				}
-				if (assignedRole === 'Director' || assignedRole === 'Registrar') {
+				if (role === 'Registrar' && assignedRole === 'Director') {
 					return 'Evaluated';
 				}
 				return getNextStatus(role);

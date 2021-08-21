@@ -128,7 +128,6 @@ const Requests: FC<Props> = () => {
 			case 'Evaluation':
 				return requests.filter((request) => request.status === 'Evaluating');
 			case 'Director':
-				console.log(requests);
 				return requests.filter((request) => request.for && request.for === 'Director');
 			case 'Registrar':
 				return requests.filter((request) => request.for && request.for === 'Registrar');
