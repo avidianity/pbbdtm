@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, createRef } from 'react';
 import { useHistory, useRouteMatch } from 'react-router-dom';
 import { AcknowledgedDate, Request } from '../../../contracts/Request';
 import { handleError, outIf } from '../../../helpers';
@@ -11,8 +11,6 @@ import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { Task } from '../../../contracts/Task';
 import Quill from '../Quill';
-import { createRef } from 'react-router/node_modules/@types/react';
-
 dayjs.extend(relativeTime);
 
 export function View() {
