@@ -154,7 +154,7 @@ export function View() {
 		const data: any = {};
 		try {
 			const status: RequestStatus = ((role) => {
-				if (assignedRole && ['Registrar', 'Director'].includes(assignedRole)) {
+				if (assignedRole && ['Registrar', 'Director', 'Releasing'].includes(assignedRole)) {
 					data.for = assignedRole;
 				} else {
 					data.for = null;
@@ -165,13 +165,17 @@ export function View() {
 				return getNextStatus(role);
 			})(user.role);
 
-			if (['Registrar', 'Director'].includes(user.role)) {
+			if (['Registrar', 'Director', 'Releasing'].includes(user.role)) {
 				const { data: req } = await axios.get(`/requests/show?id=${request?.id}`);
 				const dates = Array.from<AcknowledgedDate>(JSON.parse(req.acknowledged_dates));
 
 				dates.push({ date: new Date().toJSON(), status: 'Signed' });
 
 				data.acknowledged_dates = JSON.stringify(dates);
+			}
+
+			if (!['Registrar', 'Director', 'Releasing'].includes(data.for)) {
+				data.for = null;
 			}
 
 			await axios.post(`/requests?id=${request?.id}`, {

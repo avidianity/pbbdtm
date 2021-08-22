@@ -128,9 +128,11 @@ const Requests: FC<Props> = () => {
 			case 'Evaluation':
 				return requests.filter((request) => request.status === 'Evaluating');
 			case 'Director':
-				return requests.filter((request) => !request.for || request.for === 'Director');
+				// return requests.filter((request) => !request.for || ['Director', 'Releasing'].includes(request.for));
+				return requests;
 			case 'Registrar':
-				return requests.filter((request) => !request.for || request.for === 'Registrar');
+				// return requests.filter((request) => !request.for || ['Registrar', 'Releasing'].includes(request.for));
+				return requests;
 			case 'Releasing':
 				return requests.filter((request) => request.status === 'Signed' || request.status === 'Releasing');
 			case 'Applicant':
@@ -147,7 +149,7 @@ const Requests: FC<Props> = () => {
 			case 'Evaluating':
 				return user.role === 'Evaluation';
 			case 'Evaluated':
-				return user.role === 'Registrar' || user.role === 'Director';
+				return request.for === user.role;
 			case 'Signed':
 				return user.role === 'Releasing';
 			default:
