@@ -17,7 +17,7 @@ export function View() {
 	const [request, setRequest] = useState<Request | null>(null);
 	const history = useHistory();
 	const [updating, setUpdating] = useState(false);
-	const [currentStatus, setCurrentStatus] = useState('Registrar');
+	const [currentStatus, setCurrentStatus] = useState('');
 	const [smsMessage, setSmsMessage] = useState('');
 	const [emailMessage, setEmailMessage] = useState('');
 	const [rejectSmsMessage, setRejectSmsMessage] = useState('Request has been rejected');
@@ -643,6 +643,7 @@ export function View() {
 									onChange={(e) => {
 										setCurrentStatus(e.target.value);
 									}}>
+									<option value=''> -- Select -- </option>
 									{['Registrar', 'Director'].map((status, index) => (
 										<option value={status} key={index}>
 											{status}
@@ -656,6 +657,7 @@ export function View() {
 									onChange={(e) => {
 										setCurrentStatus(e.target.value);
 									}}>
+									<option value=''> -- Select -- </option>
 									{['Releasing', 'Director'].map((status, index) => (
 										<option value={status} key={index}>
 											{status}
