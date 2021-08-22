@@ -128,9 +128,9 @@ const Requests: FC<Props> = () => {
 			case 'Evaluation':
 				return requests.filter((request) => request.status === 'Evaluating');
 			case 'Director':
-				return requests.filter((request) => request.for && request.for === 'Director');
+				return requests.filter((request) => !request.for || request.for === 'Director');
 			case 'Registrar':
-				return requests.filter((request) => request.for && request.for === 'Registrar');
+				return requests.filter((request) => !request.for || request.for === 'Registrar');
 			case 'Releasing':
 				return requests.filter((request) => request.status === 'Signed' || request.status === 'Releasing');
 			case 'Applicant':

@@ -154,8 +154,10 @@ export function View() {
 		const data: any = {};
 		try {
 			const status: RequestStatus = ((role) => {
-				if (assignedRole) {
+				if (assignedRole && ['Registrar', 'Director'].includes(assignedRole)) {
 					data.for = assignedRole;
+				} else {
+					data.for = null;
 				}
 				if (role === 'Registrar' && assignedRole === 'Director') {
 					return 'Evaluated';
