@@ -264,9 +264,9 @@ export function View() {
 			case 'Evaluation':
 				return request?.status === 'Evaluating';
 			case 'Director':
-				return request?.status === 'Evaluated';
+				return request?.status === 'Evaluated' && request.for === user.role;
 			case 'Registrar':
-				return request?.status === 'Evaluated';
+				return request?.status === 'Evaluated' && request.for === user.role;
 			case 'Releasing':
 				return request?.status === 'Signed';
 		}
