@@ -10,6 +10,7 @@ use Models\Model;
 
 /**
  * The base of the whole application
+ * @property-read \Libraries\Container $container
  */
 class Application
 {
@@ -28,8 +29,14 @@ class Application
      */
     protected $view;
 
+    /**
+     * @var \Libraries\Container
+     */
+    protected $container;
+
     public function __construct()
     {
+        $this->container = new Container();
         $this->enableCors();
     }
 
@@ -151,6 +158,10 @@ class Application
 
     public function __get($name)
     {
+        if ($name === 'container') {
+            return $this->container;
+        }
+
         if ($this->view->hasData($name)) {
             return $this->view->getData($name);
         }

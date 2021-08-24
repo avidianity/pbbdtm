@@ -6,14 +6,13 @@ use Exceptions\NotFoundException;
 use Interfaces\Arrayable;
 use Interfaces\HasRelationships;
 use Interfaces\JSONable;
-use InvalidArgumentException;
+use Interfaces\Serializable;
 use Libraries\Database;
-use LogicException;
 use stdClass;
 use Traits\HasEvents;
 use Traits\HasRelations;
 
-abstract class Model implements JSONable, Arrayable
+abstract class Model implements JSONable, Arrayable, Serializable
 {
     use HasRelations, HasEvents;
 
@@ -589,5 +588,23 @@ abstract class Model implements JSONable, Arrayable
         $this->fresh = $fresh;
 
         return $this;
+    }
+
+    public function __serialize(): array
+    {
+        return [
+            'data' => $this->data,
+            'casts' => $this->casts,
+            'fillable' => $this->fillable,
+            'hidden' => $this->hidden,
+        ];
+    }
+
+    public function __unserialize(array $data): void
+    {
+        $this->data = $data['data'];
+        $this->casts = $data['casts'];
+        $this->fillable = $data['fillable'];
+        $this->hidden = $data['hidden'];
     }
 }
