@@ -21,6 +21,7 @@ const Requests: FC<Props> = () => {
 	const history = useHistory();
 	const [types, setTypes] = useState<Array<DocumentType>>([]);
 	const [filter, setFilter] = useState<number | null>();
+	const [raws, setRaws] = useState<Array<Request>>([]);
 
 	const path = (path: string) => `${match.path}${path}`;
 
@@ -40,6 +41,7 @@ const Requests: FC<Props> = () => {
 		setProcessing(true);
 		try {
 			const { data: raw } = await axios.get<Array<Request>>('/requests');
+			setRaws(raw);
 			const data = filterToRole(raw);
 			if (match.path.includes(routes.REQUESTS.INACTIVE)) {
 				const filtered = data
@@ -149,7 +151,8 @@ const Requests: FC<Props> = () => {
 			case 'Evaluating':
 				return user.role === 'Evaluation';
 			case 'Evaluated':
-				return request.for === user.role;
+				const raw = raws.find((r) => r.id === request.id);
+				return raw?.for === user.role;
 			case 'Signed':
 				return user.role === 'Releasing';
 			default:
