@@ -22,6 +22,8 @@ const Requests: FC<Props> = () => {
 	const [types, setTypes] = useState<Array<DocumentType>>([]);
 	const [filter, setFilter] = useState<number | null>();
 	const [raws, setRaws] = useState<Array<Request>>([]);
+	const [docTypes, setDocTypes] = useState<Array<string>>([]);
+	const [typeFilter, setTypeFilter] = useState<string | null>(null);
 
 	const path = (path: string) => `${match.path}${path}`;
 
@@ -205,6 +207,7 @@ const Requests: FC<Props> = () => {
 		try {
 			const response = await axios.get<Array<DocumentType>>('/document-types');
 			setTypes(response.data);
+			setDocTypes(response.data.map((type) => type.type));
 			setProcessing(false);
 		} catch (error: any) {
 			console.log(error.toJSON());
@@ -245,11 +248,19 @@ const Requests: FC<Props> = () => {
 
 								return true;
 							})
+							.filter((request) => {
+								if (typeFilter) {
+									return request.documentType?.type === typeFilter;
+								}
+
+								return true;
+							})
 							.map((request) => ({
 								...request,
 								// created_at: dayjs(request.created_at).format('MMMM DD, YYYY hh:mm A'),
 								// updated_at: dayjs(request.updated_at).format('MMMM DD, YYYY hh:mm A'),
 								user: request.user!.name,
+								type: request.documentType!.type,
 								documentType: request.documentType!.name,
 								// approved: request.approved ? 'Yes' : 'No',
 								// acknowledged: request.acknowledged ? 'Yes' : 'No',
@@ -339,34 +350,66 @@ const Requests: FC<Props> = () => {
 		<>
 			<TrackRequest />
 			<div className='row'>
-				<div className='col-12 col-md-6 col-lg-4 col-xl-3'>
-					<div className='form-group'>
-						<label htmlFor='filter'>Filter</label>
-						<select
-							className='form-control form-control-sm'
-							onChange={(e) => {
-								const { value } = e.target;
-								if (value === 'All') {
-									setFilter(null);
-								} else {
-									const id = value.parseNumbers();
-									const type = types.find((type) => type.id === id);
-									if (type) {
-										setFilter(id);
-									}
-								}
-							}}
-							value={filter ? filter : 'All'}>
-							<option value='All'>All</option>
-							{types.map((type, index) => (
-								<option key={index} value={type.id}>
-									{type.name}
-								</option>
-							))}
-						</select>
+				<div className='col-12 col-md-6'>
+					<div className='container-fluid'>
+						<div className='row'>
+							<div className='col-12 col-md-6'>
+								<div className='form-group'>
+									<label htmlFor='filter'>Document</label>
+									<select
+										className='form-control form-control-sm'
+										onChange={(e) => {
+											const { value } = e.target;
+											if (value === 'All') {
+												setFilter(null);
+											} else {
+												const id = value.parseNumbers();
+												const type = types.find((type) => type.id === id);
+												if (type) {
+													setFilter(id);
+												}
+											}
+										}}
+										value={filter ? filter : 'All'}>
+										<option value='All'>All</option>
+										{types.map((type, index) => (
+											<option key={index} value={type.id}>
+												{type.name}
+											</option>
+										))}
+									</select>
+								</div>
+							</div>
+							<div className='col-12 col-md-6'>
+								<div className='form-group'>
+									<label>Type</label>
+									<select
+										className='form-control form-control-sm'
+										onChange={(e) => {
+											const { value } = e.target;
+											if (value === 'All') {
+												setTypeFilter(null);
+											} else {
+												const type = types.find((type) => type.type === value);
+												if (type) {
+													setTypeFilter(type.type);
+												}
+											}
+										}}
+										value={typeFilter ? typeFilter : 'All'}>
+										<option value='All'>All</option>
+										{docTypes.map((type, index) => (
+											<option key={index} value={type}>
+												{type}
+											</option>
+										))}
+									</select>
+								</div>
+							</div>
+						</div>
 					</div>
 				</div>
-				<div className='col-12 col-md-6 col-lg-8 col-xl-9 d-flex align-items-center'>
+				<div className='col-12 col-md-6 d-flex align-items-center'>
 					<button
 						className='btn btn-secondary btn-sm ml-auto'
 						onClick={(e) => {
@@ -395,11 +438,19 @@ const Requests: FC<Props> = () => {
 
 						return true;
 					})
+					.filter((request) => {
+						if (typeFilter) {
+							return request.documentType?.type === typeFilter;
+						}
+
+						return true;
+					})
 					.map((request) => ({
 						...request,
 						created_at: dayjs(request.created_at).format('MMMM DD, YYYY hh:mm A'),
 						updated_at: dayjs(request.updated_at).format('MMMM DD, YYYY hh:mm A'),
 						user: request.user!.name,
+						type: request.documentType!.type,
 						documentType: request.documentType!.name,
 						approved: request.approved ? (
 							<span className='badge badge-green'>Yes</span>

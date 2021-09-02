@@ -38,24 +38,32 @@ export function List() {
 			<TrackRequest />
 			<Table
 				title='Requests'
-				data={requests.map((request) => ({
-					...request,
-					documentType: request.documentType!.name,
-					approved: request.approved ? 'Yes' : 'No',
-					expired: request.expired ? <span className='badge badge-red'>Yes</span> : <span className='badge badge-green'>No</span>,
-					created_at: dayjs(request.created_at).fromNow(),
-					updated_at: dayjs(request.updated_at).fromNow(),
-					acknowledged: request.acknowledged ? (
-						<span className='badge badge-green'>Yes</span>
-					) : (
-						<span className='badge badge-red'>No</span>
-					),
-					status: request.acknowledged ? (
-						<span className='badge badge-green'>{request.status}</span>
-					) : (
-						<span className='badge badge-danger'>Pending</span>
-					),
-				}))}
+				data={exceptMany(
+					requests.map((request) => ({
+						...request,
+						documentType: request.documentType!.name,
+						approved: request.approved ? 'Yes' : 'No',
+						expired: request.expired ? (
+							<span className='badge badge-red'>Yes</span>
+						) : (
+							<span className='badge badge-green'>No</span>
+						),
+						created_at: dayjs(request.created_at).fromNow(),
+						updated_at: dayjs(request.updated_at).fromNow(),
+						acknowledged: request.acknowledged ? (
+							<span className='badge badge-green'>Yes</span>
+						) : (
+							<span className='badge badge-red'>No</span>
+						),
+						status:
+							request.acknowledged && !request.rejected ? (
+								<span className='badge badge-green'>{request.status}</span>
+							) : (
+								<span className='badge badge-danger'>{request.rejected ? 'Rejected' : 'Pending'}</span>
+							),
+					})),
+					['rejected']
+				)}
 				processing={processing}
 				onAddClick={() => history.push(path('add'))}
 				onViewClick={({ id }) => {

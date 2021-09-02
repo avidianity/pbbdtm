@@ -25,6 +25,7 @@ export function View() {
 	const [releaseSms, setReleaseSms] = useState('');
 	const [releaseEmail, setReleaseEmail] = useState('');
 	const releaseRef = createRef<HTMLDivElement>();
+	const [complete, setComplete] = useState(false);
 
 	const user = state.get<User>('user');
 
@@ -126,7 +127,11 @@ export function View() {
 	const { params } = useRouteMatch<{ id: string }>();
 
 	useEffect(() => {
-		fetchRequest(params.id);
+		fetchRequest(params.id).then(() => {
+			if ($('.bi-circle').length === 0) {
+				setComplete(true);
+			}
+		});
 		// eslint-disable-next-line
 	}, []);
 
@@ -436,7 +441,7 @@ export function View() {
 										{request.acknowledged ? 'Release' : 'You must acknowledge the request first'}
 									</button>
 								) : null}
-								{user.role === 'Admin' ? (
+								{user.role === 'Admin' && !complete ? (
 									<button
 										className='btn btn-danger btn-sm'
 										onClick={(e) => {
