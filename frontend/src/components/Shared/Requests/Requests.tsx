@@ -207,7 +207,15 @@ const Requests: FC<Props> = () => {
 		try {
 			const response = await axios.get<Array<DocumentType>>('/document-types');
 			setTypes(response.data);
-			setDocTypes(response.data.map((type) => type.type));
+			const types: string[] = [];
+			response.data
+				.map((type) => type.type)
+				.forEach((type) => {
+					if (!types.includes(type)) {
+						types.push(type);
+					}
+				});
+			setDocTypes(types);
 			setProcessing(false);
 		} catch (error: any) {
 			console.log(error.toJSON());

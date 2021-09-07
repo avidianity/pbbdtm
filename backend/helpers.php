@@ -27,6 +27,26 @@ function view($path, $data = [])
 }
 
 /**
+ * Get the application instance or resolve a class
+ * 
+ * @param string $abstract
+ * @return mixed
+ */
+function app($abstract = null)
+{
+    /**
+     * @var \Libraries\Application
+     */
+    $app = $GLOBALS['app'];
+
+    if ($abstract) {
+        return $app->container->get($abstract);
+    }
+
+    return $app;
+}
+
+/**
  * Get the cache instance
  * 
  * @return \Interfaces\Cacheable

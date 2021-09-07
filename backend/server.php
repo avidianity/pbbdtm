@@ -11,5 +11,7 @@ $app = new Application();
 // Store the router to the application
 $app->setRouter($router);
 
+$GLOBALS['app'] = $app;
+
 // See /public/index.php line 14
 return $app;

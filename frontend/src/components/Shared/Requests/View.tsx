@@ -25,7 +25,6 @@ export function View() {
 	const [releaseSms, setReleaseSms] = useState('');
 	const [releaseEmail, setReleaseEmail] = useState('');
 	const releaseRef = createRef<HTMLDivElement>();
-	const [complete, setComplete] = useState(false);
 
 	const user = state.get<User>('user');
 
@@ -57,6 +56,7 @@ export function View() {
                     <p>Date Released: ${dayjs().format('MMMM DD, YYYY')}</p>
                 </div>
             `);
+			return data;
 		} catch (error: any) {
 			handleError(error);
 			history.goBack();
@@ -127,11 +127,7 @@ export function View() {
 	const { params } = useRouteMatch<{ id: string }>();
 
 	useEffect(() => {
-		fetchRequest(params.id).then(() => {
-			if ($('.bi-circle').length === 0) {
-				setComplete(true);
-			}
-		});
+		fetchRequest(params.id);
 		// eslint-disable-next-line
 	}, []);
 
@@ -441,14 +437,16 @@ export function View() {
 										{request.acknowledged ? 'Release' : 'You must acknowledge the request first'}
 									</button>
 								) : null}
-								{user.role === 'Admin' && !complete ? (
+								{user.role === 'Admin' ? (
 									<button
 										className='btn btn-danger btn-sm'
 										onClick={(e) => {
 											e.preventDefault();
 											$('#rejectRequestModal').modal('toggle');
 										}}
-										disabled={updating || request.rejected}>
+										disabled={
+											updating || request.rejected || ((request.tasks?.length || 0) > 0 && isTasksDone(request))
+										}>
 										Reject
 									</button>
 								) : null}
